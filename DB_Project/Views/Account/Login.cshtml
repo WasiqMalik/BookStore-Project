@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/Login.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="modal-dialog text-center">
+        <div class="col-sm-8">
+            <div class="modal-content">
+                <form class="col-12">
+                    <div class="col-12 user-img">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvm0ADE5AoLgSbZI0uawXAT4LalIVnJLWlzCFRon_wQYuUpcxz" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Enter Email" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Enter Password" />
+                    </div>
+
+                    <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i>Login</button>
+
+                    <div class="col-12 forgot">
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+
