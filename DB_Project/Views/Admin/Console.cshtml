@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Console";
+}
+
+@model string
+
+@section CustomHeader{
+    <nav class="navbar navbar-expand-sm fixed-top bg-light">
+
+        <a class="navbar-brand" href="#">BookStore</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <p class="navbar-text"> Welcome, @Model </p>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
+            </li>
+        </ul>
+    </nav>
+}
+
+
+<div class="py-5">
+    <h2>Console</h2>
+</div>

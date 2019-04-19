@@ -1,96 +1,124 @@
 ﻿
 @{
-    ViewBag.Title = "SignUp";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Signup";
 }
 
-<head>
-    <link rel="stylesheet" type="text/css" href="~/Content/SignUp.css">
-</head>
-<body>
-    <div>
-        <h1>This is the Sign Up page.</h1>
-        <p>* are the required fields</p>
-    </div>
+@section CustomHeader{
+    <nav class="navbar navbar-expand-sm fixed-top bg-light">
 
-    <div class="modal-dialog text-center">
-        <div class="col-sm-12">
-            <div class="modal-content">
-                <form class="col-12">
-                    <div class="form-group">
-                        @*<label for="email"><b>Email*</b></label>*@
-                        <input type="email" placeholder="Enter Email" name="email" required>
-                    </div>
+        <a class="navbar-brand" href="#">BookStore</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")"> Home </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Login", "Account")"> Login </a>
+            </li>
+        </ul>
+    </nav>
+}
 
-                    <div class="form-group">
-                        @*<label for="psw"><b>Password*</b></label>*@
-                        <input type="password" placeholder="Enter Password" onchange="psw_checkLength()" id="psw" name="psw" required>
-                    </div>
 
-                    <div class="form-group">
-                        @*<label for="psw-repeat"><b>Repeat Password*</b></label>*@
-                        <input type="password" placeholder="Repeat Password" onchange="psw_match()" id="psw-repeat" name="psw-repeat" required>
-                    </div>
+<div class="py-5">
+    <h2> Sign Up </h2>
+    <div class="row py-4">
+        <div class="mx-auto">
+            <div class="card rounded px-5 py-2">
+                <div class="card-body">
+                    <form action="Register" class="form needs-validation" role="form" autocomplete="off" id="formSignup" novalidate method="post">
 
-                    <div class="form-group">
-                        @*<label for="usrname"><b>UserName*</b></label>*@
-                        <input type="text" placeholder="Username" name="usrname" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" placeholder="your@example.com" id="email" name="Email" required>
+                            <div class="invalid-feedback">Please enter valid email</div>
+                        </div>
 
-                    <div class="form-group">
-                        @*<label for="cno"><b>Contact No.</b></label>*@
-                        <input type="text" placeholder="Contact No." onchange="cno_checkLength()" id="cno" name="cno" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="psw">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter Password" minlength="8" maxlength="16" id="psw" name="Password" required>
+                            <div class="invalid-feedback">Password Length must be between 8 and 16 characters</div>
+                        </div>
 
-                    <div class="form-group">
-                        @*<label for="address"><b>Address</b></label>*@
-                        <input type="text" placeholder="Address" name="address" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="psw-repeat">Repeat Password</label>
+                            <input type="password" class="form-control" placeholder="Repeat Password" id="psw-repeat" name="psw-repeat" required>
+                            <div class="invalid-feedback">Do not match</div>
+                        </div>
 
-                    <div>
-                        <label for="gendergroup"><b>Gender*</b></label>
-                        <input type="radio" name="gendergroup">Male
-                        <input type="radio" name="gendergroup">Female
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="usrname">Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Your Name" id="usrname" name="Username" required>
+                            <div class="invalid-feedback">Please fill out this field</div>
+                        </div>
 
-                <div class="clearfix">
-                    <button type="submit" class="btn signupbtn">Sign Up</button>
-                    <button type="button" class="btn cancelbtn">Cancel</button>
+                        <div class="form-group">
+                            <label for="cno.">Contact No.</label>
+                            <input type="text" class="form-control" placeholder="e.g. +920000000000" minlength="13" id="cno" name="ContactNo" required>
+                            <div class="invalid-feedback">Please fill out this field</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add">Address</label>
+                            <input type="text" class="form-control" placeholder="Address" id="add" name="Address" required>
+                            <div class="invalid-feedback">Please fill out this field</div>
+                        </div>
+
+                        <div>
+                            <label for="Gender">Gender*</label>
+                            <input type="radio" name="Gender" value="M">Male
+                            <input type="radio" name="Gender" value="F">Female
+                            <div class="invalid-feedback">Select Option</div>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-success float-right">Sign Up</button>
+                            <button type="button" class="btn btn-danger float-left">Cancel</button>
+                        </div>
+
+                    </form>
                 </div>
-
             </div>
         </div>
-    </div>  
-        
-</body>
+    </div>
+</div>
 
-<script src="../../Content/jquery.min.js"></script>
-<script type="text/javascript">
 
-    function psw_checkLength() {
-        var pswValue = $("#psw").val();
-        if (pswValue.length < 8 || pswValue.length > 16) {
-            alert("Length of Password must meet the requirement.");
-        }
-    }
-
-    function psw_match() {
-        var pswValue1 = $("#psw").val();
-        var pswValue2 = $("#psw-repeat").val();
-        if (pswValue1 != pswValue2) {
-            alert("Must match both password");
-        }
-    }
-
-    function cno_checkLength() {
-        var cnoValue = $("#psw").val();
-        if (cnoValue.length != 13)	//Format used +92 000 0000000
-        {
-            alert("Incorrect Contact Num");
-        }
-    }
-
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
 </script>
 
 
+<script type="text/javascript">
+    var password = document.getElementById("psw")
+        , confirm_password = document.getElementById("psw-repeat");
+
+    function validatePassword() {
+        if (password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
