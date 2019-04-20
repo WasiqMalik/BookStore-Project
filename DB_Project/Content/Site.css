@@ -22,3 +22,27 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+#homepage-img-1 {
+    background-image: url('../Images/1.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    z-index: -10;
+}
+
+#homepage-img-2 {
+    background-image: url('../Images/2.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    z-index: -10;
+}
+
