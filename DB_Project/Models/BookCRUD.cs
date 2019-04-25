@@ -2,28 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using DB_Project.Models;
 
-namespace DB_Project.Controllers
+namespace DB_Project.Models
 {
-    public class BookController : Controller
+    public class BookCRUD
     {
-        SqlCommand cmd = new SqlCommand();
-        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-
-        // GET: All Books
-        public ActionResult Index()
+        //methods
+        public static List<Book> GetAllBooks()
         {
-            DataTable sqlBooks = new DataTable(); //stores IDs of all books in db
-            List<Book> allBooks = new List<Book>(); //store books objects for all books in db
-
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                DataTable sqlBooks = new DataTable(); //stores IDs of all books in db
+                List<Book> BooksList = new List<Book>(); //store books objects for all books in db            
                 SqlDataAdapter Data = new SqlDataAdapter("Select ItemID From [Books]", ServerConnection);
                 Data.Fill(sqlBooks);
 
@@ -80,25 +78,25 @@ namespace DB_Project.Controllers
                         getBook.Authors = ((string)cmd.Parameters["auth"].Value).Split(',').ToList<string>();
                         getBook.Genres = ((string)cmd.Parameters["gen"].Value).Split(',').ToList<string>();
 
-                        allBooks.Add(getBook);
+                        BooksList.Add(getBook);
                     }
 
                 }
 
                 ServerConnection.Close();
-            }
 
-            return View(allBooks);
+                return BooksList;
+            }
         }
 
-        // GET: Book/Details/1
-        public ActionResult Details(int id)
+        public static Book GetBook(int id)
         {
-            
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
 
+                SqlCommand cmd = new SqlCommand();
                 cmd.CommandText = "GetBook";
                 cmd.Connection = Server;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -151,171 +149,130 @@ namespace DB_Project.Controllers
 
                     Server.Close();
 
-                    return View(getBook);
+                    return getBook;
                 }
                 else
-                    return Content("<script>alert('Book not found.');window.location = 'Index'</script>");
-            }
-         
-        }
-
-        // POST: Book/Create
-        [HttpPost] 
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-                Book newBook = new Book();
-
-                newBook.Title = collection["Title"];
-                newBook.Synopsis = collection["Synopsis"];
-                newBook.Publisher = collection["Publisher"];
-                newBook.Category = collection["Category"];
-                newBook.Price = Int32.Parse(collection["Price"]);
-                newBook.Stock = Int32.Parse(collection["Stock"]);
-                newBook.SubStatus = collection["SubStatus"][0];
-                newBook.Authors = collection["Authors"].Split(',').ToList();
-                newBook.Genres = collection["Genres"].Split(',').ToList();
-
-                using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
-                {
-                    ServerConnection.Open();
-
-                    //calling procedure from db
-                    cmd.CommandText = "InsertBook";
-                    cmd.Connection = ServerConnection;
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    //passing parameters to procedure
-                    cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
-                    cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
-                    cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
-                    cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
-                    cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
-                    cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
-                    cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
-
-                    //passing table paras
-                    cmd.Parameters.Add(new SqlParameter("@auth", ListtoDataTableConverter.ListToDataTable<string>(newBook.Authors)));
-                    cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
-                    cmd.Parameters.Add(new SqlParameter("@gen", ListtoDataTableConverter.ListToDataTable<string>(newBook.Genres)));
-                    cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
-
-                    //passing output para
-                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                    cmd.ExecuteNonQuery();  //run procedure
-
-                    int Flag = (int)cmd.Parameters["@flag"].Value;
-                    ServerConnection.Close();
-
-                    if (Flag == 1)
-                        return Content("<script>alert('Book has been added Successfully.');window.location = 'Index';</script>");
-                    else
-                        return Content("<script>alert('Book could not be added.');window.location = 'Index'</script>");
-                }
-            }
-            catch
-            {
-                return View();
+                    return new Book();
             }
         }
 
-        // POST: Book/Edit/price
-        [HttpPost]
-        public ActionResult EditPrice(int id, FormCollection collection)
+        public static bool CreateBook(Book newBook)
         {
-            try
-            {
-                // TODO: Add update logic here
-                int newPrice = Int32.Parse(collection["Price"]);
-
-                using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
-                {
-                    ServerConnection.Open();
-
-                    cmd.CommandText = "UpdatePrice";
-                    cmd.Connection = ServerConnection;
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    //passing parameters to procedure
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    cmd.Parameters.Add(new SqlParameter("@price", newPrice));
-
-                    //passing output para
-                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                    cmd.ExecuteNonQuery();  //run procedure
-
-                    int Flag = (int)cmd.Parameters["@flag"].Value;
-                    ServerConnection.Close();
-
-                    if (Flag == 1)
-                        return Content("<script>alert('Book Updated Successfully.');window.location = 'Index';</script>");
-                    else
-                        return Content("<script>alert('Book could not be found.');window.location = 'Index'</script>");
-
-                }
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // POST: Book/Edit/stock
-        [HttpPost]
-        public ActionResult EditStock(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                int newStock = Int32.Parse(collection["Stock"]);
-
-                using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
-                {
-                    ServerConnection.Open();
-
-                    cmd.CommandText = "UpdatePrice";
-                    cmd.Connection = ServerConnection;
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    //passing parameters to procedure
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    cmd.Parameters.Add(new SqlParameter("@stocks", newStock));
-
-                    //passing output para
-                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                    cmd.ExecuteNonQuery();  //run procedure
-
-                    int Flag = (int)cmd.Parameters["@flag"].Value;
-                    ServerConnection.Close();
-
-                    if (Flag == 1)
-                        return Content("<script>alert('Book Updated Successfully.');window.location = 'Index';</script>");
-                    else
-                        return Content("<script>alert('Book could not be found.');window.location = 'Index'</script>");
-
-                }
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Book/Delete/5
-        public ActionResult Delete(int id)
-        {
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 
+                //calling procedure from db
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "InsertBook";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
+                cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
+                cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
+                cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
+                cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
+                cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
+                cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
+
+                //passing table paras
+                cmd.Parameters.Add(new SqlParameter("@auth", ListtoDataTableConverter.ListToDataTable<string>(newBook.Authors)));
+                cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
+                cmd.Parameters.Add(new SqlParameter("@gen", ListtoDataTableConverter.ListToDataTable<string>(newBook.Genres)));
+                cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+
+                if (Flag == 1)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public static bool UpdatePrice(int id, int newPrice)
+        {
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "UpdatePrice";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@id", id));
+                cmd.Parameters.Add(new SqlParameter("@price", newPrice));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                if (Flag == 1)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public static bool UpdateStock(int id, int newStock)
+        {
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "UpdatePrice";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@id", id));
+                cmd.Parameters.Add(new SqlParameter("@stocks", newStock));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                if (Flag == 1)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public static bool DeleteBook(int id)
+        {
+            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
                 cmd.CommandText = "RemoveBook";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -333,26 +290,10 @@ namespace DB_Project.Controllers
                 ServerConnection.Close();
 
                 if (Flag == 1)
-                    return Content("<script>alert('Book Deleted Successfully.');window.location = 'Index';</script>");
+                    return true;
                 else
-                    return Content("<script>alert('Book could not be found.');window.location = 'Index'</script>");
+                    return false;
 
-            }
-        }
-
-        // POST: Book/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
             }
         }
     }
@@ -416,3 +357,4 @@ namespace DB_Project.Controllers
         }
     }
 }
+

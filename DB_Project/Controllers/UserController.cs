@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DB_Project.Models;
 
 namespace DB_Project.Controllers
 {
@@ -11,7 +12,7 @@ namespace DB_Project.Controllers
         // GET: User
         public ActionResult DashBoard()
         {
-            return View();
+            return View(BookCRUD.GetAllBooks());
         }
     }
 }

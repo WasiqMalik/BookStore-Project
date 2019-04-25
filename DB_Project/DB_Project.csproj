@@ -122,7 +122,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
-    <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -130,6 +129,8 @@
     </Compile>
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BookCRUD.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Register.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
