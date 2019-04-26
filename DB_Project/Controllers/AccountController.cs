@@ -13,7 +13,8 @@ namespace DB_Project.Controllers
     {
         //Controller Members
         SqlCommand cmd = new SqlCommand();
-        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //Controller Methods
         [HttpGet]
@@ -60,9 +61,11 @@ namespace DB_Project.Controllers
             if (Flag == 1)
             {
                 if (Priviledges == "a")
-                    return View("~/Views/Admin/Console.cshtml", (object)UserName);
+                    //return View("~/Views/Admin/Console.cshtml"/*, (object)UserName*/);
+                    return RedirectToAction("Console", "Admin");
                 else if (Priviledges == "u")
-                    return View("~/Views/User/DashBoard.cshtml", (object)UserName);
+                    return RedirectToAction("DashBoard", "User");
+                //return View("~/Views/User/DashBoard.cshtml"/*, (object)UserName*/);
                 else
                     return Content("<script>alert('No Assigned User Privledges.');window.location = 'Login'</script>");
             }

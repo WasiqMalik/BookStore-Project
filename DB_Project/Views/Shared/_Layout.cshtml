@@ -8,12 +8,12 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    @RenderSection("CustomHeader", required: false)
 
+    @RenderSection("CustomHeader", required: false)
     @RenderSection("HomePageView", required: false)
 
-    <div class="container body-content">
-        @*<br/>*@
+    <div>
+
         @RenderBody()
     </div>
 

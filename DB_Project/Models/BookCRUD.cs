@@ -14,7 +14,8 @@ namespace DB_Project.Models
         //methods
         public static List<Book> GetAllBooks()
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -45,10 +46,10 @@ namespace DB_Project.Models
                 cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
                 cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@auth", SqlDbType.VarChar, 500));
-                cmd.Parameters["@auth"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.VarChar, 500));
-                cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
+                cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
+                cmd.Parameters["@genreStr"].Direction = ParameterDirection.Output;
 
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
@@ -59,7 +60,7 @@ namespace DB_Project.Models
                     getBook.BookID = (int)row["ItemID"];
 
                     //input para
-                    cmd.Parameters.Add(new SqlParameter("@item_id", getBook.BookID));
+                    cmd.Parameters.Add(new SqlParameter("@Itid", getBook.BookID));
 
                     cmd.ExecuteNonQuery();  //run procedure
 
@@ -68,15 +69,15 @@ namespace DB_Project.Models
                     if (Flag == 1)
                     {
                         //intializing book obj 
-                        getBook.Title = (string)cmd.Parameters["title"].Value;
-                        getBook.Synopsis = (string)cmd.Parameters["synp"].Value;
-                        getBook.Publisher = (string)cmd.Parameters["pub"].Value;
-                        getBook.Category = (string)cmd.Parameters["cat"].Value;
-                        getBook.Price = (int)cmd.Parameters["price"].Value;
-                        getBook.Stock = (int)cmd.Parameters["stock"].Value;
-                        getBook.SubStatus = (char)cmd.Parameters["sub"].Value;
-                        getBook.Authors = ((string)cmd.Parameters["auth"].Value).Split(',').ToList<string>();
-                        getBook.Genres = ((string)cmd.Parameters["gen"].Value).Split(',').ToList<string>();
+                        getBook.Title = (string)cmd.Parameters["@title"].Value;
+                        getBook.Synopsis = (string)cmd.Parameters["@synp"].Value;
+                        getBook.Publisher = (string)cmd.Parameters["@pub"].Value;
+                        getBook.Category = (string)cmd.Parameters["@cat"].Value;
+                        getBook.Price = Convert.ToInt32(cmd.Parameters["@price"].Value);
+                        getBook.Stock = (int)cmd.Parameters["@stock"].Value;
+                        getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
+                        getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
+                        getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
 
                         BooksList.Add(getBook);
                     }
@@ -91,7 +92,8 @@ namespace DB_Project.Models
 
         public static Book GetBook(int id)
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
@@ -100,6 +102,9 @@ namespace DB_Project.Models
                 cmd.CommandText = "GetBook";
                 cmd.Connection = Server;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //input para
+                cmd.Parameters.Add(new SqlParameter("@Itid", id));
 
                 //output parameters
                 cmd.Parameters.Add(new SqlParameter("@title", SqlDbType.VarChar, 30));
@@ -116,16 +121,13 @@ namespace DB_Project.Models
                 cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
                 cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@auth", SqlDbType.VarChar, 500));
-                cmd.Parameters["@auth"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.VarChar, 500));
-                cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
+                cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
+                cmd.Parameters["@genreStr"].Direction = ParameterDirection.Output;
 
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                //input para
-                cmd.Parameters.Add(new SqlParameter("@item_id", id));
 
                 cmd.ExecuteNonQuery();  //run procedure
 
@@ -137,15 +139,15 @@ namespace DB_Project.Models
 
                     //intializing book obj 
                     getBook.BookID = id;
-                    getBook.Title = (string)cmd.Parameters["title"].Value;
-                    getBook.Synopsis = (string)cmd.Parameters["synp"].Value;
-                    getBook.Publisher = (string)cmd.Parameters["pub"].Value;
-                    getBook.Category = (string)cmd.Parameters["cat"].Value;
-                    getBook.Price = (int)cmd.Parameters["price"].Value;
-                    getBook.Stock = (int)cmd.Parameters["stock"].Value;
-                    getBook.SubStatus = (char)cmd.Parameters["sub"].Value;
-                    getBook.Authors = ((string)cmd.Parameters["auth"].Value).Split(',').ToList<string>();
-                    getBook.Genres = ((string)cmd.Parameters["gen"].Value).Split(',').ToList<string>();
+                    getBook.Title = (string)cmd.Parameters["@title"].Value;
+                    getBook.Synopsis = (string)cmd.Parameters["@synp"].Value;
+                    getBook.Publisher = (string)cmd.Parameters["@pub"].Value;
+                    getBook.Category = (string)cmd.Parameters["@cat"].Value;
+                    getBook.Price = Convert.ToInt32(cmd.Parameters["@price"].Value);
+                    getBook.Stock = (int)cmd.Parameters["@stock"].Value;
+                    getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
+                    getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
+                    getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
 
                     Server.Close();
 
@@ -158,7 +160,8 @@ namespace DB_Project.Models
 
         public static bool CreateBook(Book newBook)
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -203,7 +206,8 @@ namespace DB_Project.Models
 
         public static bool UpdatePrice(int id, int newPrice)
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -235,7 +239,8 @@ namespace DB_Project.Models
 
         public static bool UpdateStock(int id, int newStock)
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -267,13 +272,14 @@ namespace DB_Project.Models
 
         public static bool DeleteBook(int id)
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "RemoveBook";
+                cmd.CommandText = "DeleteBook";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
