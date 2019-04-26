@@ -5,12 +5,12 @@ using System.Web;
 
 namespace DB_Project.Models
 {
-    public class Order
+    public class Request
     {
-        public int OrderID { get; set; }
+        public int RequestID { get; set; }
         public int UserID { get; set; }
         public string Date { get; set; }
-        public string OrderStatus { get; set; }
-        public List<KeyValuePair<int,int>> Items { get; set; }
+        public string RequestStatus { get; set; }
+        public string Description { get; set; }
     }
 }

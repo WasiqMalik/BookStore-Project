@@ -32,6 +32,28 @@ namespace DB_Project.Controllers
         }
 
         [HttpPost]
+        public ActionResult AddBook(FormCollection collection)
+        {
+            Book newBook = new Book();
+
+            newBook.Title = collection["Title"];
+            newBook.Synopsis = collection["Synopsis"];
+            newBook.Publisher = collection["Publisher"];
+            newBook.Category = collection["Category"];
+            newBook.Price = Int32.Parse(collection["Price"]);
+            newBook.Stock = Int32.Parse(collection["Stock"]);
+            newBook.SubStatus = Convert.ToBoolean(collection["SubStatus"]);
+            newBook.Authors = collection["Authors"].Split(',').ToList();
+            newBook.Genres = collection["Genres"].Split(',').ToList();
+
+
+            if (BookCRUD.CreateBook(newBook))
+                return Content("<script>alert('Book has been added Successfully.');window.location = 'Console';</script>");
+            else
+                return Content("<script>alert('Book could not be added.');window.location = 'Console'</script>");
+        }
+
+        [HttpPost]
         public ActionResult EditPrice(FormCollection collection)
         {
             int id = Int32.Parse(collection["BookID"]);

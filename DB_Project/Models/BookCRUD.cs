@@ -11,10 +11,11 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+
         //methods
         public static List<Book> GetAllBooks()
         {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -22,7 +23,7 @@ namespace DB_Project.Models
                 SqlCommand cmd = new SqlCommand();
                 DataTable sqlBooks = new DataTable(); //stores IDs of all books in db
                 List<Book> BooksList = new List<Book>(); //store books objects for all books in db            
-                SqlDataAdapter Data = new SqlDataAdapter("Select ItemID From [Books]", ServerConnection);
+                SqlDataAdapter Data = new SqlDataAdapter(new SqlCommand("Select ItemID From [Books]",ServerConnection));
                 Data.Fill(sqlBooks);
 
                 //using procedure that returns book info for one book
@@ -74,7 +75,7 @@ namespace DB_Project.Models
                         getBook.Category = (string)cmd.Parameters["cat"].Value;
                         getBook.Price = (int)cmd.Parameters["price"].Value;
                         getBook.Stock = (int)cmd.Parameters["stock"].Value;
-                        getBook.SubStatus = (char)cmd.Parameters["sub"].Value;
+                        getBook.SubStatus = (bool)cmd.Parameters["sub"].Value;
                         getBook.Authors = ((string)cmd.Parameters["auth"].Value).Split(',').ToList<string>();
                         getBook.Genres = ((string)cmd.Parameters["gen"].Value).Split(',').ToList<string>();
 
@@ -90,8 +91,7 @@ namespace DB_Project.Models
         }
 
         public static Book GetBook(int id)
-        {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        {            
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
@@ -143,7 +143,7 @@ namespace DB_Project.Models
                     getBook.Category = (string)cmd.Parameters["cat"].Value;
                     getBook.Price = (int)cmd.Parameters["price"].Value;
                     getBook.Stock = (int)cmd.Parameters["stock"].Value;
-                    getBook.SubStatus = (char)cmd.Parameters["sub"].Value;
+                    getBook.SubStatus = (bool)cmd.Parameters["sub"].Value;
                     getBook.Authors = ((string)cmd.Parameters["auth"].Value).Split(',').ToList<string>();
                     getBook.Genres = ((string)cmd.Parameters["gen"].Value).Split(',').ToList<string>();
 
@@ -157,8 +157,7 @@ namespace DB_Project.Models
         }
 
         public static bool CreateBook(Book newBook)
-        {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        {            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -193,17 +192,12 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool UpdatePrice(int id, int newPrice)
-        {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        {            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -226,22 +220,18 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool UpdateStock(int id, int newStock)
-        {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        {           
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdatePrice";
+                cmd.CommandText = "UpdateStock";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
@@ -258,16 +248,12 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool DeleteBook(int id)
-        {
-            string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        {            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -289,10 +275,7 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
 
             }
         }
