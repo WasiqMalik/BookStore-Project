@@ -1011,6 +1011,8 @@
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Admin\Console.cshtml" />
     <Content Include="Views\User\DashBoard.cshtml" />
+    <Content Include="Views\Admin\_AddEditBook.cshtml" />
+    <Content Include="Views\Admin\BooksList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
