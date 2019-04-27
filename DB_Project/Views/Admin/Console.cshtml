@@ -83,8 +83,8 @@
 
                             <div>
                                 <label for="SubStatus">Subscription</label>
-                                <input type="radio" name="SubStatus" value="True">Allow
-                                <input type="radio" name="SubStatus" value="False">Not Allowed
+                                <input type="radio" name="SubStatus" value="1">Allow
+                                <input type="radio" name="SubStatus" value="0">Not Allowed
                                 <div class="invalid-feedback">Select Option</div>
                             </div>
 
@@ -101,7 +101,7 @@
                             </div>
 
                             <div>
-                                <button type="submit" class="btn btn-success float-right">Sign Up</button>
+                                <button type="submit" class="btn btn-success float-right">Add Book</button>
                             </div>
 
                         </form>
@@ -151,10 +151,20 @@
                     <td>@Model.Price</td>
                     <td>@Model.Stock</td>
                     <td>@Model.SubStatus</td>
-                    <td>@Model.Authors</td>
-                    <td>@Model.Genres</td>
-                    <td><a href="#" class="btn btn-success" onclick="DeleteBookfunction(@Model.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                </tr>
+                    <td>
+                        @foreach (string str in @Model.Authors)
+                         {
+                           @str.Insert(str.Length," ");                          
+                         }
+                    </td>
+                    <td>
+                        @foreach (var str in @Model.Genres)
+                        {
+                            @str.Insert(str.Length, " ");
+                        }
+                    </td>
+                        <td><a href="#" class="btn btn-success" onclick="DeleteBookfunction(@Model.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                    </tr>
             </table>
         }
 

@@ -11,11 +11,13 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+
         //methods
         public static List<Book> GetAllBooks()
         {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -32,6 +34,7 @@ namespace DB_Project.Models
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 //output parameters
+                cmd.Parameters.Add(new SqlParameter("@Itid", 0));
                 cmd.Parameters.Add(new SqlParameter("@title", SqlDbType.VarChar, 30));
                 cmd.Parameters["@title"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@synp", SqlDbType.VarChar, 500));
@@ -54,13 +57,14 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
+                
                 foreach (DataRow row in sqlBooks.Rows)
                 {
                     Book getBook = new Book();
                     getBook.BookID = (int)row["ItemID"];
 
                     //input para
-                    cmd.Parameters.Add(new SqlParameter("@Itid", getBook.BookID));
+                    cmd.Parameters["@Itid"].Value = getBook.BookID;
 
                     cmd.ExecuteNonQuery();  //run procedure
 
@@ -92,8 +96,7 @@ namespace DB_Project.Models
 
         public static Book GetBook(int id)
         {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+            
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
@@ -160,8 +163,7 @@ namespace DB_Project.Models
 
         public static bool CreateBook(Book newBook)
         {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -182,9 +184,27 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
 
                 //passing table paras
-                cmd.Parameters.Add(new SqlParameter("@auth", ListtoDataTableConverter.ListToDataTable<string>(newBook.Authors)));
+                DataTable authtable = new DataTable();
+                authtable.Columns.Add("auth", typeof(string));
+                foreach (string str in newBook.Authors)
+                {
+                    DataRow row = authtable.NewRow();
+                    row["auth"] = str;
+                    authtable.Rows.Add(row);
+                }
+
+                DataTable gentable = new DataTable();
+                gentable.Columns.Add("auth", typeof(string));
+                foreach (string str in newBook.Genres)
+                {
+                    DataRow row = gentable.NewRow();
+                    row["auth"] = str;
+                    gentable.Rows.Add(row);
+                }
+
+                cmd.Parameters.Add(new SqlParameter("@auth", authtable));
                 cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
-                cmd.Parameters.Add(new SqlParameter("@gen", ListtoDataTableConverter.ListToDataTable<string>(newBook.Genres)));
+                cmd.Parameters.Add(new SqlParameter("@gen", gentable));
                 cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
 
                 //passing output para
@@ -196,18 +216,13 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool UpdatePrice(int id, int newPrice)
         {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+           
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -230,17 +245,13 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool UpdateStock(int id, int newStock)
         {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+         
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -263,17 +274,12 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
+                return Flag == 1;
             }
         }
 
         public static bool DeleteBook(int id)
-        {
-            //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-            string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        {           
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -295,11 +301,7 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if (Flag == 1)
-                    return true;
-                else
-                    return false;
-
+                return Flag == 1;
             }
         }
     }
@@ -309,14 +311,16 @@ namespace DB_Project.Models
         public static DataTable ListToDataTable<T>(List<T> items)
         {
             DataTable dataTable = new DataTable(typeof(T).Name);
+
             //Get all the properties
             PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo prop in Props)
             {
+                //Defining type of data column gives proper data table 
+                var type = (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(prop.PropertyType) : prop.PropertyType);
                 //Setting column names as Property names
-                dataTable.Columns.Add(prop.Name);
+                dataTable.Columns.Add(prop.Name, type);
             }
-
             foreach (T item in items)
             {
                 var values = new object[Props.Length];

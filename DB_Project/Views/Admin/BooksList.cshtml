@@ -32,8 +32,18 @@
                 <td>@item.Price</td>
                 <td>@item.Stock</td>
                 <td>@item.SubStatus</td>
-                <td>@item.Authors</td>
-                <td>@item.Genres</td>
+                <td>
+                    @foreach (string str in item.Authors)
+                    {
+                        @str.Insert(str.Length, " ");
+                    }
+                </td>
+                <td>
+                    @foreach (var str in item.Genres)
+                    {
+                        @str.Insert(str.Length, " ");
+                    }
+                </td>
                 <td><a href="#" class="btn btn-success" onclick="DeleteBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
             </tr>
         }
