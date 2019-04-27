@@ -3,14 +3,14 @@
     ViewBag.Title = "Console";
 }
 
-@*@model List<DB_Project.Models.Book>*@
+@model List<DB_Project.Models.Book>
 
-@model DB_Project.Models.Book
+@*@model DB_Project.Models.Book*@
 
 
 
 @section CustomHeader{
-    <nav class="navbar navbar-expand-sm bg-light">
+    <nav id="mynavbar" class="navbar navbar-expand-sm bg-light">
 
         <a class="navbar-brand" href="#">BookStore</a>
         <ul class="navbar-nav ml-auto">
@@ -25,13 +25,11 @@
 }
 
 
-
 <div class="row">
     <div class="col-2">
         <div class="sidenav">
             <a href="#about">Books</a>
-            <a href="#">Orders</a>
-            <a href="@Url.Action("BooksList", "Admin")"> Display All books</a>
+            <a href="@Url.Action("Order", "Admin")">Orders</a>
         </div>
     </div>
 
@@ -39,98 +37,12 @@
 
         <h2>Console</h2>
 
-        <div class="row py-4">
-            <div class="mx-auto">
-                <div class="card rounded px-5 py-2">
-                    <div class="card-body">
-                        <form action="AddBook" class="form needs-validation" role="form" autocomplete="off" id="Add_CreateBook" method="post">
-
-                            <div class="form-group">
-                                <label for="C_Title">Title</label>
-                                <input type="text" class="form-control" placeholder="Enter Title of Book" id="C_Title" name="Title" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Synopsis">Description</label>
-                                <input type="text" class="form-control" placeholder="Enter Description of Book" id="C_Synopsis" name="Synopsis" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Publisher">Publisher Name</label>
-                                <input type="text" class="form-control" placeholder="Enter Publisher of Book" id="C_Publisher" name="Publisher" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Category">Category Name</label>
-                                <input type="text" class="form-control" placeholder="Enter Category of Book" id="C_Category" name="Category" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Price">Price</label>
-                                <input type="text" class="form-control" placeholder="Enter Price of Book" id="C_Price" name="Price" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Stock">Stock</label>
-                                <input type="text" class="form-control" placeholder="Enter Stock Value" id="C_Stock" name="Stock" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div>
-                                <label for="SubStatus">Subscription</label>
-                                <input type="radio" name="SubStatus" value="1">Allow
-                                <input type="radio" name="SubStatus" value="0">Not Allowed
-                                <div class="invalid-feedback">Select Option</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Authors">Authors</label>
-                                <input type="text" class="form-control" placeholder="Enter Authors of Book in comma seperated string" id="C_Authors" name="Authors" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="C_Genres">Genres</label>
-                                <input type="text" class="form-control" placeholder="Enter Genres of Book" id="C_Genres" name="Genres" required>
-                                <div class="invalid-feedback">Please enter valid email</div>
-                            </div>
-
-                            <div>
-                                <button type="submit" class="btn btn-success float-right">Add Book</button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="row py-4">
-            <div class="mx-auto">
-                <div class="card rounded px-5 py-2">
-                    <div class="card-body">
-                        <form action="BookDetails" method="get">
-                            <input type="text" placeholder="Enter Id" name="id" required>
-                            <button type="submit" class="btn btn-success">Display</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @*Hardcoded*@
-        <input type="button" value="Display" onclick="location.href='@Url.Action("BookDetails", "Admin", new { id = 1 })'" />
+        <button type="button" class="btn btn-info btn-lg" @*onclick="DiplayAllBooks()"*@ onclick="location.href='@Url.Action("BooksList", "Admin")'">Display All Books</button>
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#AddBookModal">Add New Book</button>
 
         @if (Model != null)
         {
-            <table class="table table-striped table-bordered table-hover">
+            <table id="example" class="table table-striped table-bordered table-hover" cellspacing="0">
                 <tr>
                     <th>Title</th>
                     <th>Synopsis</th>
@@ -143,92 +55,193 @@
                     <th>Genres</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td> @Model.Title </td>
-                    <td>@Model.Synopsis</td>
-                    <td>@Model.Publisher</td>
-                    <td>@Model.Category</td>
-                    <td>@Model.Price</td>
-                    <td>@Model.Stock</td>
-                    <td>@Model.SubStatus</td>
-                    <td>            
-                        @for (int i = 0; i < Model.Authors.Count - 1; i++)
-                        {
-                            @Model.Authors[i].Insert(Model.Authors[i].Length, ",");
-                        }
-                        @Model.Genres[Model.Authors.Count - 1]
-                    </td>
-                    <td>
-                        @for (int i = 0; i < Model.Genres.Count - 1; i++)
-                        {
-                            @Model.Genres[i].Insert(Model.Genres[i].Length, ",");
-                        }
-                        @Model.Genres[Model.Genres.Count - 1]
-                    </td>
-                    <td><a href="#" class="btn btn-success" onclick="DeleteBookfunction(@Model.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td> @item.Title </td>
+                        <td>@item.Synopsis</td>
+                        <td>@item.Publisher</td>
+                        <td>@item.Category</td>
+                        <td>@item.Price</td>
+                        <td>@item.Stock</td>
+                        <td>@item.SubStatus</td>
+                        <td>
+                            @if (item.Authors != null)
+                            {
+                                foreach (string str in item.Authors)
+                                {
+                                    @str.Insert(str.Length, " ");
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (item.Genres != null)
+                            {
+                                foreach (var str in item.Genres)
+                                {
+                                    @str.Insert(str.Length, " ");
+                                }
+                            }
+                        </td>
+                        <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                        <td><a href="" class="btn btn-danger" onclick="DeleteBookfunction(@item.BookID)"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                    </tr>
+                }
             </table>
         }
 
-        <div class="row py-4">
-            <div class="mx-auto">
-                <div class="card rounded px-5 py-2">
-                    <div class="card-body">
-                        <form action="RemoveBook" method="get">
-                            <input type="text" placeholder="Enter id" name="id" required>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        @*@if (Model != null)
-            {
-                foreach (var item in Model)
-                {
-                    <table>
-                        <tr>
-                            <td> @item.Title </td>
-                        </tr>
-                    </table>
-
-                }
-            }*@
-
-        <div class="modal fade" id="myModal1">
+        <div class="modal fade" id="AddBookModal" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <a href="#" class="close" data-dismiss="modal">&times;</a>
-                        <h3 class="modal-title">AddEdit Book</h3>
+                        <h3 class="modal-title">Add Book</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <div class="modal-body" id="myModalBodyDiv1">
+                    <div class="modal-body" id="addBookModalBodyDiv1">
+                        <div class="card rounded px-5 py-2">
+                            <div class="card-body">
+                                <form action="AddBook" class="form needs-validation" role="form" autocomplete="off" id="Add_CreateBook" method="post">
 
+                                    <div class="form-group">
+                                        <label for="C_Title">Title</label>
+                                        <input type="text" class="form-control" placeholder="Enter Title of Book" id="C_Title" name="Title" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Synopsis">Description</label>
+                                        <input type="text" class="form-control" placeholder="Enter Description of Book" id="C_Synopsis" name="Synopsis" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Publisher">Publisher Name</label>
+                                        <input type="text" class="form-control" placeholder="Enter Publisher of Book" id="C_Publisher" name="Publisher" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Category">Category Name</label>
+                                        <input type="text" class="form-control" placeholder="Enter Category of Book" id="C_Category" name="Category" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Price">Price</label>
+                                        <input type="text" class="form-control" placeholder="Enter Price of Book" id="C_Price" name="Price" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Stock">Stock</label>
+                                        <input type="text" class="form-control" placeholder="Enter Stock Value" id="C_Stock" name="Stock" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div>
+                                        <label for="SubStatus">Subscription</label>
+                                        <input type="radio" name="SubStatus" value="True">Allow
+                                        <input type="radio" name="SubStatus" value="False">Not Allowed
+                                        <div class="invalid-feedback">Select Option</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Authors">Authors</label>
+                                        <input type="text" class="form-control" placeholder="Enter Authors of Book in comma seperated string" id="C_Authors" name="Authors" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="C_Genres">Genres</label>
+                                        <input type="text" class="form-control" placeholder="Enter Genres of Book" id="C_Genres" name="Genres" required>
+                                        <div class="invalid-feedback">Please enter valid email</div>
+                                    </div>
+
+                                    <div>
+                                        <button type="submit" class="btn btn-success float-right">Add Book</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="editBookModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Book</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" id="editBookModalBodyDiv1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 
     </div>
 </div>
 
+<script language="javascript" type="text/javascript">
+    window.onload = function () {
+
+        $('#example').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+        alert("hi");
+        
+
+    };
+
+    $(document).ready(function () {
+        alert("yo");
+    });
+
+</script>
 
 <script>
 
-    var DeleteBookfunction = function (bid) {
+    //$(document).ready(function () {
+    //    alert("hi");
+    //    //$('#example').DataTable();
+    //    //$('.dataTables_length').addClass('bs-select');
+    //});
 
-        var url = "/Admin/AddEditBook?id=" + bid;
+    
+    //$(document).ready(function () {
+    //    console.log("ready!");
+    //});
 
-        $("#myModalBodyDiv1").load(url, function () {
-            $("#myModal1").modal("show");
+    var EditBookfunction = function (bid) {
+
+        var url = "/Admin/EditBook?id=" + bid;
+        
+        $("#editBookModalBodyDiv1").load(url, function () {
+            $("#editBookModal").modal("show");
 
         })
     }
 
+    //var DiplayAllBooks = function () {
+    //    alert("hi");
+    //    //$.get("/Admin/BooksList", function () {
+    //    //});
+    //}
+
+
+    var DeleteBookfunction = function (bid) {
+
+        //var url = "/Admin/RemoveBook?id=" + bid;
+
+        $.post("/Admin/RemoveBook", { id: bid }, function () {
+        });
+    }
 
 </script>
 

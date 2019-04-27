@@ -15,10 +15,15 @@ namespace DB_Project.Controllers
             return View();
         }
 
+        public ActionResult tempview()
+        {
+            return View();
+        }
+
         // GET: All Books
         public ActionResult BooksList()
         {
-            return View(BookCRUD.GetAllBooks());
+            return View("~/Views/Admin/Console.cshtml", BookCRUD.GetAllBooks());
         }
 
         public ActionResult BookDetails(int id)
@@ -26,15 +31,33 @@ namespace DB_Project.Controllers
             return View("~/Views/Admin/Console.cshtml", BookCRUD.GetBook(id));
         }
 
-        public ActionResult AddEditBook(int id)
+        public ActionResult EditBook(int id)
         {
-            Book viewmodel = BookCRUD.GetBook(id);
-            return PartialView("_AddEditBook", viewmodel);
+            Book mybook = BookCRUD.GetBook(id);
+            return PartialView("_EditBook", mybook);
         }
 
-        public ActionResult UpdateBook()
+        [HttpPost]
+        public ActionResult UpdateBook(FormCollection collection)
         {
-            return View();
+            Book newBook = new Book();
+
+            newBook.BookID = Int32.Parse(collection["BookID"]);
+            newBook.Title = collection["Title"];
+            newBook.Synopsis = collection["Synopsis"];
+            newBook.Publisher = collection["Publisher"];
+            newBook.Category = collection["Category"];
+            newBook.Price = Int32.Parse(collection["Price"]);
+            newBook.Stock = Int32.Parse(collection["Stock"]);
+            newBook.SubStatus = bool.Parse(collection["SubStatus"]);
+            newBook.Authors = collection["Authors"].Split(',').ToList();
+            newBook.Genres = collection["Genres"].Split(',').ToList();
+
+
+            if (BookCRUD.UpdateBook(newBook))
+                return Content("<script>alert('Book has been Updated Successfully.');window.location = 'Console';</script>");
+            else
+                return Content("<script>alert('Book could not be Update.');window.location = 'Console'</script>");
         }
 
         [HttpPost]
@@ -59,52 +82,35 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Book could not be added.');window.location = 'Console'</script>");
         }
 
+        
         [HttpPost]
-        public ActionResult EditPrice(Book mybook)
-        {
-            //int id = Int32.Parse(collection["BookID"]);
-            //int newPrice = Int32.Parse(collection["Price"]);
-            int id = mybook.BookID;
-            int newPrice = mybook.Price;
-
-            if (BookCRUD.UpdatePrice(id, newPrice))
-                return Content("<script>alert('Book Updated Successfully.');window.location = 'Console';</script>");
-            else
-                return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
-        }
-
-        [HttpPost]
-        public ActionResult EditStock(FormCollection collection)
-        {
-            int id = Int32.Parse(collection["BookID"]);
-            int newStock = Int32.Parse(collection["Stock"]);
-
-            if (BookCRUD.UpdateStock(id, newStock))
-                return Content("<script>alert('Book Updated Successfully.');window.location = 'Console';</script>");
-            else
-                return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
-        }
-
-        [HttpPost]
-        public ActionResult EditAll(FormCollection collection)
-        {
-            int id = Int32.Parse(collection["BookID"]);
-            int newStock = Int32.Parse(collection["Stock"]);
-            int newPrice = Int32.Parse(collection["Price"]);
-
-            if (BookCRUD.UpdateStock(id, newStock) && BookCRUD.UpdatePrice(id,newPrice))
-                return Content("<script>alert('Book Updated Successfully.');window.location = 'Console';</script>");
-            else
-                return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
-        }
-
-        [HttpGet]
         public ActionResult RemoveBook(int id)
         {
             if (BookCRUD.DeleteBook(id))
-                return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
+                //return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
+                return View("~/Views/Admin/Console.cshtml");
             else
                 return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
         }
+
+        
+        public ActionResult Order()
+        {
+            return View();
+        }
+
+        public ActionResult AllOrders()
+        {
+            return View("~/Views/Admin/Order.cshtml", OrderCRUD.GetAllOrders());
+        }
+
+        public ActionResult RemoveOrder(int id)
+        {
+            if (OrderCRUD.DeleteOrder(id))
+                return Content("<script>alert('Order Deleted Successfully.');window.location = 'Order';</script>");
+            else
+                return Content("<script>alert('Order could not be found.');window.location = 'Order'</script>");
+        }
+
     }
 }

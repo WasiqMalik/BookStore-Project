@@ -11,8 +11,8 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static List<Book> GetAllBooks()
@@ -163,7 +163,6 @@ namespace DB_Project.Models
 
         public static bool CreateBook(Book newBook)
         {
-            
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -175,6 +174,65 @@ namespace DB_Project.Models
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
+                cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
+                cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
+                cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
+                cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
+                cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
+                cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
+
+                //passing table paras
+                DataTable authtable = new DataTable();
+                authtable.Columns.Add("auth", typeof(string));
+                foreach (string str in newBook.Authors)
+                {
+                    DataRow row = authtable.NewRow();
+                    row["auth"] = str;
+                    authtable.Rows.Add(row);
+                }
+
+                DataTable gentable = new DataTable();
+                gentable.Columns.Add("auth", typeof(string));
+                foreach (string str in newBook.Genres)
+                {
+                    DataRow row = gentable.NewRow();
+                    row["auth"] = str;
+                    gentable.Rows.Add(row);
+                }
+
+                cmd.Parameters.Add(new SqlParameter("@auth", authtable));
+                cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
+                cmd.Parameters.Add(new SqlParameter("@gen", gentable));
+                cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                return Flag == 1;
+            }
+        }
+
+        public static bool UpdateBook(Book newBook)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                //calling procedure from db
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "UpdateBook";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@id", newBook.BookID));
                 cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
                 cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
                 cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));

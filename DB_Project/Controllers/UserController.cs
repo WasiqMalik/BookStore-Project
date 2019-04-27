@@ -12,7 +12,7 @@ namespace DB_Project.Controllers
         // GET: User
         public ActionResult DashBoard()
         {
-            return View(BookCRUD.GetAllBooks());
+            return View();
         }
     }
 }
