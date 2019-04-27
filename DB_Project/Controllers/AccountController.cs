@@ -13,8 +13,8 @@ namespace DB_Project.Controllers
     {
         //Controller Members
         SqlCommand cmd = new SqlCommand();
-        //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //Controller Methods
         [HttpGet]

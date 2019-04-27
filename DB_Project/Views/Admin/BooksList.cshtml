@@ -33,16 +33,19 @@
                 <td>@item.Stock</td>
                 <td>@item.SubStatus</td>
                 <td>
-                    @foreach (string str in item.Authors)
+                   @for (int i = 0; i < item.Authors.Count - 1; i++)
                     {
-                        @str.Insert(str.Length, " ");
+                        @item.Authors[i].Insert(item.Authors[i].Length, ",");
                     }
+                    @item.Authors[item.Authors.Count - 1]
                 </td>
                 <td>
-                    @foreach (var str in item.Genres)
+                   @for (int i = 0; i < item.Genres.Count - 1; i++)
                     {
-                        @str.Insert(str.Length, " ");
+                        @item.Genres[i].Insert(item.Genres[i].Length, ",");
                     }
+                    @item.Genres[item.Genres.Count - 1]
+
                 </td>
                 <td><a href="#" class="btn btn-success" onclick="DeleteBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
             </tr>
