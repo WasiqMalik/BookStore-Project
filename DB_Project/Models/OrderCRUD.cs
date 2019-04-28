@@ -11,8 +11,8 @@ namespace DB_Project.Models
 {
     public class OrderCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Order> GetAllOrders()
         {
@@ -46,7 +46,7 @@ namespace DB_Project.Models
                 {
                     Order getOrder = new Order();
                     DataTable Items = new DataTable();
-                    SqlDataAdapter data = new SqlDataAdapter();
+                    SqlDataAdapter data = new SqlDataAdapter(cmd);
                     getOrder.OrderID = (int)row["OrderID"];
 
                     //input para
@@ -59,7 +59,7 @@ namespace DB_Project.Models
                     {
                         //intializing book obj 
                         getOrder.UserID = (int) cmd.Parameters["@uid"].Value;
-                        getOrder.Date = (string) cmd.Parameters["@date"].Value;
+                        getOrder.Date = Convert.ToString(cmd.Parameters["@date"].Value);
                         getOrder.OrderStatus = (string) cmd.Parameters["@status"].Value;
                         getOrder.Items = new List<KeyValuePair<int, int>>();
 
@@ -125,7 +125,7 @@ namespace DB_Project.Models
                     {
                         Order getOrder = new Order();
                         DataTable Items = new DataTable();
-                        SqlDataAdapter data = new SqlDataAdapter();
+                        SqlDataAdapter data = new SqlDataAdapter(cmd);
                         getOrder.OrderID = (int)row["OrderID"];
 
                         //input para
@@ -147,7 +147,6 @@ namespace DB_Project.Models
 
                             OrdersList.Add(getOrder);
                         }
-
                     }
 
                     ServerConnection.Close();
@@ -157,6 +156,44 @@ namespace DB_Project.Models
                     
             }
 
+        }
+
+        public static List<Book> GetOrderItems(int id)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();                 
+                //using procedure that returns book info for one book
+                cmd.CommandText = "GetOrderedItems";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@oid", id));                
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
+
+                if (Flag == 1)
+                {                    
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                    {
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+
+                ServerConnection.Close();
+
+                return books;
+            }
         }
 
         public static bool CreateOrder(Order newOrder)

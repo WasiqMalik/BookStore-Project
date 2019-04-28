@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
-using DB_Project.Models;
 
 namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static List<Book> GetAllBooks()
         {
-            
+
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -57,7 +55,7 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                
+
                 foreach (DataRow row in sqlBooks.Rows)
                 {
                     Book getBook = new Book();
@@ -96,7 +94,7 @@ namespace DB_Project.Models
 
         public static Book GetBook(int id)
         {
-            
+
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
@@ -158,6 +156,144 @@ namespace DB_Project.Models
                 }
                 else
                     return new Book();
+            }
+        }
+
+        public static List<Book> TitleSearch(string search)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "SearchBook";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@namestr", search));
+
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
+                foreach (DataRow row in itemIDs.Rows)
+                {
+                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                }
+
+                ServerConnection.Close();
+
+                return books;
+            }
+        }
+
+        public static List<Book> AuthorSearch(string search)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "SearchByAuthor";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@authstr", search));
+
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
+                foreach (DataRow row in itemIDs.Rows)
+                {
+                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                }
+
+                ServerConnection.Close();
+
+                return books;
+            }
+        }
+
+        public static List<Book> GenreSearch(string search)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "SearchByAuthor";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@genre", search));
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
+
+                if (Flag == 1)
+                {
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                    {
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+
+                ServerConnection.Close();
+
+                return books;
+            }
+        }
+
+        public static List<Book> UserRecommendations(int id)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "RecommendBooks";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@uid", id));
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
+
+                if (Flag == 1)
+                {
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                    {
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+
+                ServerConnection.Close();
+
+                return books;
             }
         }
 
@@ -280,7 +416,7 @@ namespace DB_Project.Models
 
         public static bool UpdatePrice(int id, int newPrice)
         {
-           
+
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -309,7 +445,7 @@ namespace DB_Project.Models
 
         public static bool UpdateStock(int id, int newStock)
         {
-         
+
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -337,7 +473,7 @@ namespace DB_Project.Models
         }
 
         public static bool DeleteBook(int id)
-        {           
+        {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
@@ -363,66 +499,67 @@ namespace DB_Project.Models
             }
         }
     }
+}
 
-    public class ListtoDataTableConverter
+public class ListtoDataTableConverter
+{
+    public static DataTable ListToDataTable<T>(List<T> items)
     {
-        public static DataTable ListToDataTable<T>(List<T> items)
-        {
-            DataTable dataTable = new DataTable(typeof(T).Name);
+        DataTable dataTable = new DataTable(typeof(T).Name);
 
-            //Get all the properties
-            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (PropertyInfo prop in Props)
-            {
-                //Defining type of data column gives proper data table 
-                var type = (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(prop.PropertyType) : prop.PropertyType);
-                //Setting column names as Property names
-                dataTable.Columns.Add(prop.Name, type);
-            }
-            foreach (T item in items)
-            {
-                var values = new object[Props.Length];
-                for (int i = 0; i < Props.Length; i++)
-                {
-                    //inserting property values to datatable rows
-                    values[i] = Props[i].GetValue(item, null);
-                }
-                dataTable.Rows.Add(values);
-            }
-            //put a breakpoint here and check datatable
-            return dataTable;
-        }
-    }
-
-    public class DataTabletoListConverter
-    {
-        public static List<T> TableToList<T>(DataTable dt)
+        //Get all the properties
+        PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (PropertyInfo prop in Props)
         {
-            List<T> data = new List<T>();
-            foreach (DataRow row in dt.Rows)
-            {
-                T item = GetItem<T>(row);
-                data.Add(item);
-            }
-            return data;
+            //Defining type of data column gives proper data table 
+            var type = (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(prop.PropertyType) : prop.PropertyType);
+            //Setting column names as Property names
+            dataTable.Columns.Add(prop.Name, type);
         }
-        public static T GetItem<T>(DataRow dr)
+        foreach (T item in items)
         {
-            Type temp = typeof(T);
-            T obj = Activator.CreateInstance<T>();
-
-            foreach (DataColumn column in dr.Table.Columns)
+            var values = new object[Props.Length];
+            for (int i = 0; i < Props.Length; i++)
             {
-                foreach (PropertyInfo pro in temp.GetProperties())
-                {
-                    if (pro.Name == column.ColumnName)
-                        pro.SetValue(obj, dr[column.ColumnName], null);
-                    else
-                        continue;
-                }
+                //inserting property values to datatable rows
+                values[i] = Props[i].GetValue(item, null);
             }
-            return obj;
+            dataTable.Rows.Add(values);
         }
+        //put a breakpoint here and check datatable
+        return dataTable;
     }
 }
+
+public class DataTabletoListConverter
+{
+    public static List<T> TableToList<T>(DataTable dt)
+    {
+        List<T> data = new List<T>();
+        foreach (DataRow row in dt.Rows)
+        {
+            T item = GetItem<T>(row);
+            data.Add(item);
+        }
+        return data;
+    }
+    public static T GetItem<T>(DataRow dr)
+    {
+        Type temp = typeof(T);
+        T obj = Activator.CreateInstance<T>();
+
+        foreach (DataColumn column in dr.Table.Columns)
+        {
+            foreach (PropertyInfo pro in temp.GetProperties())
+            {
+                if (pro.Name == column.ColumnName)
+                    pro.SetValue(obj, dr[column.ColumnName], null);
+                else
+                    continue;
+            }
+        }
+        return obj;
+    }
+}
+
 

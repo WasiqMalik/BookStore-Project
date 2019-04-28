@@ -87,8 +87,7 @@ namespace DB_Project.Controllers
         public ActionResult RemoveBook(int id)
         {
             if (BookCRUD.DeleteBook(id))
-                //return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
-                return View("~/Views/Admin/Console.cshtml");
+                return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
             else
                 return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
         }
