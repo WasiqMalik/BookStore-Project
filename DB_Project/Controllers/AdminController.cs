@@ -111,5 +111,13 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Order could not be found.');window.location = 'Order'</script>");
         }
 
+        
+        public ActionResult OrderStatus(int id)
+        {
+            return PartialView("_OrderStatus", id);
+        }
+
+        
+
     }
 }

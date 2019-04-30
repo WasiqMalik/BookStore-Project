@@ -28,7 +28,7 @@
 <div class="row">
     <div class="col-2">
         <div class="sidenav">
-            <a href="#about">Books</a>
+            <a href="@Url.Action("Console", "Admin")">Books</a>
             <a href="@Url.Action("Order", "Admin")">Orders</a>
         </div>
     </div>
@@ -83,8 +83,8 @@
                                 }
                             }
                         </td>
-                        <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                        <td><a href="" class="btn btn-danger" onclick="DeleteBookfunction(@item.BookID)"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                        <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="fa fa-pencil"></i> </a> </td>
+                        <td><a href="#" class="btn btn-danger" onclick="DeleteBookfunction(@item.BookID)"><i class="fa fa-trash-o"></i> </a> </td>
                     </tr>
                 }
             </table>
@@ -189,34 +189,9 @@
     </div>
 </div>
 
-<script language="javascript" type="text/javascript">
-    window.onload = function () {
 
-        $('#example').DataTable();
-        $('.dataTables_length').addClass('bs-select');
-        alert("hi");
-        
-
-    };
-
-    $(document).ready(function () {
-        alert("yo");
-    });
-
-</script>
 
 <script>
-
-    //$(document).ready(function () {
-    //    alert("hi");
-    //    //$('#example').DataTable();
-    //    //$('.dataTables_length').addClass('bs-select');
-    //});
-
-    
-    //$(document).ready(function () {
-    //    console.log("ready!");
-    //});
 
     var EditBookfunction = function (bid) {
 
@@ -227,13 +202,6 @@
 
         })
     }
-
-    //var DiplayAllBooks = function () {
-    //    alert("hi");
-    //    //$.get("/Admin/BooksList", function () {
-    //    //});
-    //}
-
 
     var DeleteBookfunction = function (bid) {
 

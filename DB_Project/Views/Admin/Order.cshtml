@@ -24,8 +24,8 @@
     <div class="row">
         <div class="col-2">
             <div class="sidenav">
-                <a href="#">Books</a>
-                <a href="">Orders</a>
+                <a href="@Url.Action("Console", "Admin")">Books</a>
+                <a href="@Url.Action("Order", "Admin")">Orders</a>
             </div>
         </div>
 
@@ -43,21 +43,37 @@
                         <th>UserID</th>
                         <th>Date</th>
                         <th>OrderStatus</th>
-                        <th></th>
+                        <th>Change Status</th>
+                        <th>Details</th>
+                        <th>Delete</th>
                     </tr>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@item.OrderID</td>
-                            <td>@item.UserID</td>
-                            <td>@item.Date</td>
-                            <td>@item.OrderStatus</td>
-                            <td><a href="#" class="btn btn-success" onclick="ShowDetails(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                            <td><a href="" onclick="DeleteOrderfunction(@item.OrderID)" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
-                        </tr>
+                    <tr>
+                        <td>@item.OrderID</td>
+                        <td>@item.UserID</td>
+                        <td>@item.Date</td>
+                        <td>@item.OrderStatus</td>
+                        <td><a href="#" class="btn btn-primary" onclick="ChangeOrderStatus(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                        <td><a href="#" class="btn btn-success" onclick="ShowDetails(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                        <td><a href="#" class="btn btn-danger" onclick="DeleteOrderfunction(@item.OrderID)"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                    </tr>
                     }
                 </table>
             }
+        </div>
+
+        <div class="modal fade" id="changeStatusModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Change Order Status</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" id="changeStatusModalBodyDiv1">
+                    </div>
+                </div>
+            </div>
         </div>
 
         @*<div class="modal fade" id="OrderDetails">          .................Pending for list of items in order
@@ -89,6 +105,17 @@
     //    })
     //}
 
+    var ChangeOrderStatus = function (oid) {
+
+        var url = "/Admin/OrderStatus?id=" + oid;
+
+        $("#changeStatusModalBodyDiv1").load(url, function () {
+            $("#changeStatusModal").modal("show");
+
+        })
+
+
+    }
 
     var DeleteOrderfunction = function (oid) {
 
