@@ -61,11 +61,9 @@ namespace DB_Project.Controllers
             if (Flag == 1)
             {
                 if (Priviledges == "a")
-                    //return View("~/Views/Admin/Console.cshtml"/*, (object)UserName*/);
                     return RedirectToAction("Console", "Admin");
                 else if (Priviledges == "u")
-                    return RedirectToAction("DashBoard", "User");
-                //return View("~/Views/User/DashBoard.cshtml"/*, (object)UserName*/);
+                    return RedirectToAction("DashBoard", "User");             
                 else
                     return Content("<script>alert('No Assigned User Privledges.');window.location = 'Login'</script>");
             }

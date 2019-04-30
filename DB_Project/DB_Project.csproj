@@ -550,12 +550,10 @@
     <Content Include="Views\Admin\Console.cshtml" />
     <Content Include="Views\User\DashBoard.cshtml" />
     <Content Include="Views\Admin\_EditBook.cshtml" />
-    <Content Include="Views\Admin\tempview.cshtml" />
     <Content Include="Views\Admin\Order.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Book\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

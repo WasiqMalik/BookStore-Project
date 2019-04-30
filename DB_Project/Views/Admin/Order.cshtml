@@ -25,7 +25,7 @@
         <div class="col-2">
             <div class="sidenav">
                 <a href="#">Books</a>
-                <a href="">Orders</a>
+                <a href="#">Orders</a>
             </div>
         </div>
 
@@ -43,7 +43,8 @@
                         <th>UserID</th>
                         <th>Date</th>
                         <th>OrderStatus</th>
-                        <th></th>
+                        <th>Details</th>
+                        <th>Delete</th>
                     </tr>
                     @foreach (var item in Model)
                     {
@@ -52,8 +53,8 @@
                             <td>@item.UserID</td>
                             <td>@item.Date</td>
                             <td>@item.OrderStatus</td>
-                            <td><a href="#" class="btn btn-success" onclick="ShowDetails(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                            <td><a href="" onclick="DeleteOrderfunction(@item.OrderID)" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                            <td><a href=" ../../Admin/OrderDetails?id=@item.OrderID" class="btn btn-success" ><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                            <td><a href=" ../../Admin/RemoveOrder?id=@item.OrderID" class ="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
                         </tr>
                     }
                 </table>
@@ -76,25 +77,3 @@
 
     </div>
 
-
-<script>
-
-    //var ShowDetails = function (oid) {
-
-    //    var url = "/Admin/?id=" + oid;          //..................Pending
-
-    //    $("#showOrderModalBodyDiv1").load(url, function () {
-    //        $("#OrderDetails").modal("show");
-
-    //    })
-    //}
-
-
-    var DeleteOrderfunction = function (oid) {
-
-        //var url = "/Admin/RemoveOrder?id=" + oid;
-
-        $.post("/Admin/RemoveOrder", { id: oid }, function () {
-        });
-    }
-</script>

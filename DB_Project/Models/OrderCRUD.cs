@@ -158,11 +158,11 @@ namespace DB_Project.Models
 
         }
 
-        public static List<Book> GetOrderItems(int id)
+        public static List<KeyValuePair<Book,int>> GetOrderItems(int id)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
-                List<Book> books = new List<Book>();
+                List<KeyValuePair<Book,int>> books = new List<KeyValuePair<Book, int>>();
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();                 
@@ -186,7 +186,8 @@ namespace DB_Project.Models
 
                     foreach (DataRow row in itemIDs.Rows)
                     {
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                        //add the book object along with its quantity to the returning list
+                        books.Add(new KeyValuePair<Book, int>(BookCRUD.GetBook((int)row["ItemID"]),(int)row["Quantity"]));
                     }
                 }
 

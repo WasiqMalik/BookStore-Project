@@ -37,7 +37,7 @@
 
         <h2>Console</h2>
 
-        <button type="button" class="btn btn-info btn-lg" @*onclick="DiplayAllBooks()"*@ onclick="location.href='@Url.Action("BooksList", "Admin")'">Display All Books</button>
+        <button type="button" class="btn btn-info btn-lg" onclick="location.href='@Url.Action("BooksList", "Admin")'">Display All Books</button>
         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#AddBookModal">Add New Book</button>
 
         @if (Model != null)
@@ -53,7 +53,8 @@
                     <th>SubStatus</th>
                     <th>Authors</th>
                     <th>Genres</th>
-                    <th></th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 @foreach (var item in Model)
                 {
@@ -68,23 +69,25 @@
                         <td>
                             @if (item.Authors != null)
                             {
-                                foreach (string str in item.Authors)
+                                for (int i = 0; i < item.Authors.Count - 1; i++)
                                 {
-                                    @str.Insert(str.Length, " ");
+                                    @item.Authors[i].Insert(item.Authors[i].Length, ", ")
                                 }
+                                @item.Authors[item.Authors.Count - 1]
                             }
                         </td>
                         <td>
                             @if (item.Genres != null)
                             {
-                                foreach (var str in item.Genres)
+                                for (int i = 0; i < item.Genres.Count - 1; i++)
                                 {
-                                    @str.Insert(str.Length, " ");
+                                    @item.Genres[i].Insert(item.Genres[i].Length, ", ")
                                 }
+                                @item.Genres[item.Genres.Count - 1]
                             }
                         </td>
                         <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                        <td><a href="" class="btn btn-danger" onclick="DeleteBookfunction(@item.BookID)"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                        <td><a href=" ../../Admin/RemoveBook?id=@item.BookID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
                     </tr>
                 }
             </table>
@@ -106,37 +109,37 @@
                                     <div class="form-group">
                                         <label for="C_Title">Title</label>
                                         <input type="text" class="form-control" placeholder="Enter Title of Book" id="C_Title" name="Title" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="C_Synopsis">Description</label>
                                         <input type="text" class="form-control" placeholder="Enter Description of Book" id="C_Synopsis" name="Synopsis" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="C_Publisher">Publisher Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Publisher of Book" id="C_Publisher" name="Publisher" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="C_Category">Category Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Category of Book" id="C_Category" name="Category" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="C_Price">Price</label>
                                         <input type="text" class="form-control" placeholder="Enter Price of Book" id="C_Price" name="Price" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="C_Stock">Stock</label>
                                         <input type="text" class="form-control" placeholder="Enter Stock Value" id="C_Stock" name="Stock" required>
-                                        <div class="invalid-feedback">Please enter valid email</div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
                                     <div>
@@ -195,54 +198,22 @@
         $('#example').DataTable();
         $('.dataTables_length').addClass('bs-select');
         alert("hi");
-        
+
 
     };
-
-    $(document).ready(function () {
-        alert("yo");
-    });
 
 </script>
 
 <script>
-
-    //$(document).ready(function () {
-    //    alert("hi");
-    //    //$('#example').DataTable();
-    //    //$('.dataTables_length').addClass('bs-select');
-    //});
-
-    
-    //$(document).ready(function () {
-    //    console.log("ready!");
-    //});
-
     var EditBookfunction = function (bid) {
 
         var url = "/Admin/EditBook?id=" + bid;
-        
+
         $("#editBookModalBodyDiv1").load(url, function () {
             $("#editBookModal").modal("show");
 
         })
     }
-
-    //var DiplayAllBooks = function () {
-    //    alert("hi");
-    //    //$.get("/Admin/BooksList", function () {
-    //    //});
-    //}
-
-
-    var DeleteBookfunction = function (bid) {
-
-        //var url = "/Admin/RemoveBook?id=" + bid;
-
-        $.post("/Admin/RemoveBook", { id: bid }, function () {
-        });
-    }
-
 </script>
 
 

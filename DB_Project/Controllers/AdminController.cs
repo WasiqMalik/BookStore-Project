@@ -49,7 +49,7 @@ namespace DB_Project.Controllers
             newBook.Category = collection["Category"];
             newBook.Price = Int32.Parse(collection["Price"]);
             newBook.Stock = Int32.Parse(collection["Stock"]);
-            newBook.SubStatus = bool.Parse(collection["SubStatus"]);
+            newBook.SubStatus = Convert.ToBoolean(collection["SubStatus"]);
             newBook.Authors = collection["Authors"].Split(',').ToList();
             newBook.Genres = collection["Genres"].Split(',').ToList();
 
@@ -71,7 +71,7 @@ namespace DB_Project.Controllers
             newBook.Category = collection["Category"];
             newBook.Price = Int32.Parse(collection["Price"]);
             newBook.Stock = Int32.Parse(collection["Stock"]);
-            newBook.SubStatus = bool.Parse(collection["SubStatus"]);
+            newBook.SubStatus = Convert.ToBoolean(collection["SubStatus"]);
             newBook.Authors = collection["Authors"].Split(',').ToList();
             newBook.Genres = collection["Genres"].Split(',').ToList();
 
@@ -110,6 +110,12 @@ namespace DB_Project.Controllers
             else
                 return Content("<script>alert('Order could not be found.');window.location = 'Order'</script>");
         }
+
+        //public ActionResult OrderDetails(int id)
+        //{
+            //replace link by your partial view one, just testing
+            //return View("~/Views/Admin/Console.cshtml", OrderCRUD.GetOrderItems(id));
+        //}
 
     }
 }
