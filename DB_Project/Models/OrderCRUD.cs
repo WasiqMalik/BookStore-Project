@@ -236,7 +236,7 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdateOrderStatus";
+                cmd.CommandText = "orderStatusUpdate";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 

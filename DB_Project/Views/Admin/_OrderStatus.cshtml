@@ -3,17 +3,23 @@
 <div>
     <div class="card rounded px-5 py-2">
         <div class="card-body">
-            <form class="form needs-validation" role="form" autocomplete="off" method="post">
+            <form action="UpdateStatus" class="form needs-validation" role="form" autocomplete="off" method="post">
 
                 <div class="form-group">
-                    <input type="text" class="form-control" id="C_BookID" name="BookID" value=@Model required />
+                    <input type="text" class="form-control" id="C_BookID" name="OrderID" value=@Model required />
                 </div>
 
-                <div class="form-group">
-                    <label for="C_Title">Title</label>
-                    <input type="text" class="form-control" placeholder="Enter Title of Book" id="C_Title" name="Title" required>
-                    <div class="invalid-feedback">Please enter valid email</div>
+                <div>
+                    <label for="OrderStatus">Status</label>
+                    <input type="radio" name="OrderStatus" value="Pending">Pending
+                    <input type="radio" name="OrderStatus" value="Delieverd">Delieverd
+                    <div class="invalid-feedback">Select Option</div>
                 </div>
+
+                <div>
+                    <button type="submit" class="btn btn-success float-right">Update Status</button>
+                </div>
+
             </form>
 
             </div>
