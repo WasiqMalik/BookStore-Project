@@ -19,6 +19,7 @@ namespace DB_Project.Models
         public List<string> Genres { get; set; }
         public int Price { get; set; }
         public int Stock { get; set; }
-        public bool SubStatus { get; set; }  
+        public bool SubStatus { get; set; }
+        public int AverageRating { get; set; }
     }
 }

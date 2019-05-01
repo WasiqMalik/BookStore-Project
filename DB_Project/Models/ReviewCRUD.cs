@@ -14,7 +14,6 @@ namespace DB_Project.Models
         public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
 
         //methods
-
         public static bool CreateReview(Review newReview)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
@@ -46,7 +45,7 @@ namespace DB_Project.Models
             }
         }
 
-        public static List<Review> GetBookReviews(int id)
+        public static List<Review> GetReviews(int id)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
@@ -66,26 +65,60 @@ namespace DB_Project.Models
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
                 DataTable bookReviews = new DataTable(); //stores IDs returned by db
-                List<Review> ReviewList = new List<Review>(); //store books objects for all books in db            
+                List<Review> ReviewList = new List<Review>(); //store objects returned from db          
                 SqlDataAdapter Data = new SqlDataAdapter(cmd);
                 Data.Fill(bookReviews);    //execute procedure
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if(Flag==1)
+                if(Flag==1) //if book found
                 {
                     foreach (DataRow row in bookReviews.Rows)
                     {
+                        Review getReview = new Review();
+                        getReview.BookID = (int)row["ItemID"];
+                        getReview.UserID = (int)row["UserID"];
+                        getReview.Rating = (int)row["Rating"];
+                        getReview.UserName = (string)row["UserName"];
+                        getReview.Description = (string)row["Review"];
+                        getReview.DatePosted = (string)row["Review_Date"];
 
-                    }
+                        ReviewList.Add(getReview);
+                    }       
                 }
+
+                return ReviewList;
             }
         }
-        //public static bool RemoveReview(int bID, int uID)
-        //{
 
+        public static bool RemoveReview(int bID, int uID)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
 
-        //}
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "DeleteReview";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@bid", bID));
+                cmd.Parameters.Add(new SqlParameter("@uid", uID));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                return Flag == 1;
+            }
+
+        }
     }
 }
