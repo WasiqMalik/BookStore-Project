@@ -10,6 +10,7 @@ namespace DB_Project.Models
         public int BookID { get; set; }
         public int UserID { get; set; }
         public int Rating { get; set; }
+        public string UserName { get; set; }
         public string Description { get; set; }
         public string DatePosted { get; set; }
         public string Status { get; set; }

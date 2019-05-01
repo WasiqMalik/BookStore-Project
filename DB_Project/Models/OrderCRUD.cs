@@ -61,11 +61,12 @@ namespace DB_Project.Models
                         getOrder.UserID = (int) cmd.Parameters["@uid"].Value;
                         getOrder.Date = Convert.ToString(cmd.Parameters["@date"].Value);
                         getOrder.OrderStatus = (string) cmd.Parameters["@status"].Value;
-                        getOrder.Items = new List<KeyValuePair<int, int>>();
+                        getOrder.Items = new List<Tuple<int,int,int>>();
 
                         foreach (DataRow Row in Items.Rows)
-                            getOrder.Items.Add(new KeyValuePair<int, int>((int)Row["ItemID"], (int)Row["Quantity"]));
+                            getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], (int) Row["PriceSoldAt"]));
 
+                        getOrder.TotalCost = CalcTotalCost(getOrder.Items);
                         OrdersList.Add(getOrder);
                     }
 
@@ -140,11 +141,12 @@ namespace DB_Project.Models
                             getOrder.UserID = (int)cmd.Parameters["@user"].Value;
                             getOrder.Date = (string)cmd.Parameters["@date"].Value;
                             getOrder.OrderStatus = (string)cmd.Parameters["@status"].Value;
-                            getOrder.Items = new List<KeyValuePair<int, int>>();
+                            getOrder.Items = new List<Tuple<int, int, int>>();
 
                             foreach (DataRow Row in Items.Rows)
-                                getOrder.Items.Add(new KeyValuePair<int, int>((int)Row["ItemID"], (int)Row["Quantity"]));
+                                getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], (int)Row["PriceSoldAt"]));
 
+                            getOrder.TotalCost = CalcTotalCost(getOrder.Items);
                             OrdersList.Add(getOrder);
                         }
                     }
@@ -187,7 +189,9 @@ namespace DB_Project.Models
                     foreach (DataRow row in itemIDs.Rows)
                     {
                         //add the book object along with its quantity to the returning list
-                        books.Add(new KeyValuePair<Book, int>(BookCRUD.GetBook((int)row["ItemID"]),(int)row["Quantity"]));
+                        Book OrderedBook = BookCRUD.GetBook((int)row["ItemID"]);
+                        OrderedBook.Price = (int)row["PriceSoldAt"];
+                        books.Add(new KeyValuePair<Book, int>(OrderedBook,(int)row["Quantity"]));
                     }
                 }
 
@@ -211,9 +215,23 @@ namespace DB_Project.Models
 
                 //passing parameters to procedure
                 cmd.Parameters.Add(new SqlParameter("@uid", newOrder.UserID));
-                
+
                 //passing table paras
-                cmd.Parameters.Add(new SqlParameter("@ITEMTABLE", ListtoDataTableConverter.ListToDataTable<KeyValuePair<int,int>>(newOrder.Items)));
+                DataTable itemDetails = new DataTable();
+                itemDetails.Columns.Add("id", typeof(int));
+                itemDetails.Columns.Add("quantity", typeof(int));
+                itemDetails.Columns.Add("priceSold", typeof(int));
+
+                foreach(var tuple in newOrder.Items)
+                {
+                    DataRow row = itemDetails.NewRow();
+                    row["id"] = tuple.Item1;
+                    row["quantity"] = tuple.Item1;
+                    row["priceSold"] = tuple.Item1;
+                    itemDetails.Rows.Add(row);
+                }
+
+                cmd.Parameters.Add(new SqlParameter("@ITEMTABLE",itemDetails));
                 cmd.Parameters["@ITEMTABLE"].SqlDbType = SqlDbType.Structured;               
 
                 //passing output para
@@ -284,6 +302,17 @@ namespace DB_Project.Models
             }
         }
 
+        private static int CalcTotalCost(List<Tuple<int,int,int>> itemDetails)
+        {
+            int OrderCost = 0;
+            foreach(var tuple in itemDetails)
+            {
+                //item2 in tuple is quantity and item3 is uni price
+                OrderCost += (tuple.Item2 * tuple.Item3);
+            }
+
+            return OrderCost;
+        }
 
     }
 }

@@ -9,8 +9,9 @@ namespace DB_Project.Models
     {
         public int OrderID { get; set; }
         public int UserID { get; set; }
+        public int TotalCost { get; set; }
         public string Date { get; set; }
         public string OrderStatus { get; set; }
-        public List<KeyValuePair<int,int>> Items { get; set; }
+        public List<Tuple<int,int,int>> Items { get; set; }
     }
 }
