@@ -1,0 +1,33 @@
+﻿@model List<KeyValuePair<DB_Project.Models.Book, int>>
+
+<div>
+    <div class="card rounded px-5 py-2">
+        <div class="card-body">
+
+            @if (Model != null)
+            {
+                <table id="example" class="table table-striped table-bordered table-hover" cellspacing="0">
+                    <tr>
+                        <th>Title</th>
+                        <th>Publisher</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td> @item.Key.Title </td>
+                            <td>@item.Key.Publisher</td>
+                            <td>@item.Key.Category</td>
+                            <td>@item.Key.Price</td>
+                            <td>@item.Value</td>
+                        </tr>
+                    }
+                </table>
+            }
+
+
+        </div>
+    </div>
+</div>

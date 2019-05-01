@@ -111,11 +111,27 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Order could not be found.');window.location = 'Order'</script>");
         }
 
-        //public ActionResult OrderDetails(int id)
-        //{
-            //replace link by your partial view one, just testing
-            //return View("~/Views/Admin/Console.cshtml", OrderCRUD.GetOrderItems(id));
-        //}
+        public ActionResult OrderStatus(int id)
+        {
+                return PartialView("_OrderStatus", id);  
+        }
 
-    }
+        [HttpPost]
+        public ActionResult UpdateStatus(FormCollection collection)
+        {
+            int oid = Int32.Parse(collection["OrderID"]);
+            string status = collection["OrderStatus"];
+
+            if (OrderCRUD.UpdateStatus(oid, status))
+                return Content("<script>alert('Order Status has been Updated Successfully.');window.location = 'Order';</script>");
+            else
+                return Content("<script>alert('Order Status could not be Update.');window.location = 'Order'</script>");
+        }
+
+        public ActionResult OrderDetails(int id)
+        {
+            return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
+        }
+
+}
 }
