@@ -226,8 +226,8 @@ namespace DB_Project.Models
                 {
                     DataRow row = itemDetails.NewRow();
                     row["id"] = tuple.Item1;
-                    row["quantity"] = tuple.Item1;
-                    row["priceSold"] = tuple.Item1;
+                    row["quantity"] = tuple.Item2;
+                    row["priceSold"] = tuple.Item3;
                     itemDetails.Rows.Add(row);
                 }
 
@@ -307,7 +307,7 @@ namespace DB_Project.Models
             int OrderCost = 0;
             foreach(var tuple in itemDetails)
             {
-                //item2 in tuple is quantity and item3 is uni price
+                //item2 in tuple is quantity and item3 is unit price
                 OrderCost += (tuple.Item2 * tuple.Item3);
             }
 
