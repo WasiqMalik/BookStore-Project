@@ -23,7 +23,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id));
+            return View(BookCRUD.GetBookReviews(id,(int)Session["UserID"]));
         }
 
         public ActionResult EditBook(int id)
@@ -85,12 +85,6 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
             else
                 return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
-        }
-
-        
-        public ActionResult Order()
-        {
-            return View();
         }
 
         public ActionResult AllOrders()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 
 namespace DB_Project.Models
 {
@@ -176,9 +175,25 @@ namespace DB_Project.Models
             }
         }
 
-        public static KeyValuePair<Book,List<Review>> GetBookReviews(int id)
+        public static KeyValuePair<Book, List<Review>> GetBookReviews(int bid, int uid)
         {
-            return new KeyValuePair<Book, List<Review>>(GetBook(id), ReviewCRUD.GetReviews(id));
+            Book book = GetBook(bid);
+            List<Review> reviews = ReviewCRUD.GetReviews(bid);
+
+            int index = reviews.FindIndex(item => item.UserID == uid);
+
+            //if user's review doesnt exist, place null at start of list
+            if (index < 0)
+                reviews.Insert(0, null);
+            else if (index > 0)
+            {
+                //move user's review to start of list
+                Review UserReview = reviews[index];
+                reviews.RemoveAt(index);
+                reviews.Insert(0, UserReview);
+            }
+
+            return new KeyValuePair<Book, List<Review>>(book, reviews);
         }
 
         public static List<Book> TitleSearch(string search)
@@ -202,9 +217,7 @@ namespace DB_Project.Models
                 Data.Fill(itemIDs);  //get procedure result set
 
                 foreach (DataRow row in itemIDs.Rows)
-                {
                     books.Add(BookCRUD.GetBook((int)row["ItemID"]));
-                }
 
                 ServerConnection.Close();
 
@@ -233,9 +246,7 @@ namespace DB_Project.Models
                 Data.Fill(itemIDs);  //get procedure result set
 
                 foreach (DataRow row in itemIDs.Rows)
-                {
                     books.Add(BookCRUD.GetBook((int)row["ItemID"]));
-                }
 
                 ServerConnection.Close();
 
@@ -270,10 +281,38 @@ namespace DB_Project.Models
                     Data.Fill(itemIDs);  //get procedure result set
 
                     foreach (DataRow row in itemIDs.Rows)
-                    {
                         books.Add(BookCRUD.GetBook((int)row["ItemID"]));
-                    }
+
                 }
+
+                ServerConnection.Close();
+
+                return books;
+            }
+        }
+
+        public static List<Book> CategorySearch(string search)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "SearchByCategory";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //parameters
+                cmd.Parameters.Add(new SqlParameter("@cat", search));
+
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
+                foreach (DataRow row in itemIDs.Rows)
+                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
 
                 ServerConnection.Close();
 
@@ -311,6 +350,34 @@ namespace DB_Project.Models
                     {
                         books.Add(BookCRUD.GetBook((int)row["ItemID"]));
                     }
+                }
+
+                ServerConnection.Close();
+
+                return books;
+            }
+        }
+
+        public static List<Book> BestSellers()
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                List<Book> books = new List<Book>();
+
+                ServerConnection.Open();
+                SqlCommand cmd = new SqlCommand();
+                //setting up command to call procedure
+                cmd.CommandText = "BestSellers";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
+                foreach (DataRow row in itemIDs.Rows)
+                {
+                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
                 }
 
                 ServerConnection.Close();

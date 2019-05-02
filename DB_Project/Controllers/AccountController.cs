@@ -46,6 +46,8 @@ namespace DB_Project.Controllers
             //passing output variables to procedure
             cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
             cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int));
+            cmd.Parameters["@uid"].Direction = ParameterDirection.Output;
             cmd.Parameters.Add(new SqlParameter("@acc_pr", SqlDbType.VarChar, 5));
             cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
             cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
@@ -54,12 +56,17 @@ namespace DB_Project.Controllers
 
             //get output values from procedure
             int Flag = (int)cmd.Parameters["@flag"].Value;
+            int UserId = (int)cmd.Parameters["@uid"].Value;
             string Priviledges = (string)cmd.Parameters["@acc_pr"].Value;
             string UserName = (string)cmd.Parameters["@uname"].Value;
             ServerConnection.Close();
 
             if (Flag == 1)
             {
+                Session["UserID"] = UserId;
+                Session["UserName"] = UserName;
+                Session["Priviledges"] = Priviledges;
+
                 if (Priviledges == "a")
                     return RedirectToAction("Console", "Admin");
                 else if (Priviledges == "u")
