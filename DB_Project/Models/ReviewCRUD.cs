@@ -13,6 +13,7 @@ namespace DB_Project.Models
     {
         public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
 
+
         //methods
         public static bool CreateReview(Review newReview)
         {

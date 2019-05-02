@@ -9,8 +9,8 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static List<Book> GetAllBooks()
@@ -165,7 +165,7 @@ namespace DB_Project.Models
                     getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
                     getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
                     getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
-                    getBook.AverageRating = (int)cmd2.Parameters["@avg"].Value;
+                    getBook.AverageRating = Convert.ToInt32(cmd2.Parameters["@avg"].Value);
 
                     Server.Close();
 
