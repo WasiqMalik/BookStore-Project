@@ -22,7 +22,7 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "InsertBook";
+                cmd.CommandText = "AddBookReview";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
@@ -53,7 +53,7 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "getBookReivew";
+                cmd.CommandText = "GetBookReview";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
@@ -77,12 +77,12 @@ namespace DB_Project.Models
                     foreach (DataRow row in bookReviews.Rows)
                     {
                         Review getReview = new Review();
-                        getReview.BookID = (int)row["ItemID"];
+                        getReview.BookID = id;
                         getReview.UserID = (int)row["UserID"];
-                        getReview.Rating = (int)row["Rating"];
+                        getReview.Rating = Convert.ToInt32(row["Rating"]);
                         getReview.UserName = (string)row["UserName"];
                         getReview.Description = (string)row["Review"];
-                        getReview.DatePosted = (string)row["Review_Date"];
+                        getReview.DatePosted = Convert.ToString(row["Review_Date"]);
 
                         ReviewList.Add(getReview);
                     }       
@@ -99,7 +99,7 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "DeleteReview";
+                cmd.CommandText = "RemoveReview";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 

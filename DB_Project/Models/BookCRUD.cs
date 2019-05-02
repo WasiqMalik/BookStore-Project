@@ -9,8 +9,8 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static List<Book> GetAllBooks()
@@ -153,7 +153,6 @@ namespace DB_Project.Models
                     cmd2.Parameters["@flag"].Direction = ParameterDirection.Output;
 
                     cmd2.ExecuteNonQuery();  //run procedure
-
 
                     //intializing book obj 
                     getBook.BookID = id;

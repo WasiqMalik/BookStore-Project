@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "BookDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model KeyValuePair<DB_Project.Models.Book, List<DB_Project.Models.Review>>
+
+@section CustomHeader{
+    <nav id="mynavbar" class="navbar navbar-expand-sm bg-light">
+
+        <a class="navbar-brand" href="#">BookStore</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <p class="navbar-text"> Welcome, </p>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
+            </li>
+        </ul>
+    </nav>
+}
+
+<div class="container body-content">
+    <h1>Book Details</h1>
+    <div class="card rounded px-5 py-2">
+        <div class="card-body">
+            <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
+
+            <h3>
+                @Model.Key.Title
+                @if (Model.Key.AverageRating >= 0 && Model.Key.AverageRating <= 5)
+                {
+                    //loop 5 times to print 5 star ratings
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (i < 5 - Model.Key.AverageRating)
+                        {
+                            <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
+                        }
+                        else
+                        {
+                            <span class="justify-content-center"><i class="text-warning fa fa-star"></i></span>
+                        }
+                    }
+                }
+
+            </h3>
+            <p>
+                By @if (Model.Key.Authors != null)
+                {
+                    for (int i = 0; i < Model.Key.Authors.Count - 1; i++)
+                    {
+                        @Model.Key.Authors[i].Insert(Model.Key.Authors[i].Length, ", ")
+                    }
+                    @Model.Key.Authors[Model.Key.Authors.Count - 1]
+                }
+            </p>
+            <p>
+                <strong>Genres: </strong>
+                @if (Model.Key.Genres != null)
+                {
+                    for (int i = 0; i < Model.Key.Genres.Count - 1; i++)
+                    {
+                        @Model.Key.Genres[i].Insert(Model.Key.Genres[i].Length, ", ")
+                    }
+                    @Model.Key.Genres[Model.Key.Genres.Count - 1]
+                }
+            </p>
+            <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
+        </div>
+    </div>
+</div>
+
+@if (Model.Value[0] == null)
+{
+
+}
+
+@foreach (DB_Project.Models.Review rew in Model.Value)
+{
+    <div class="container">
+        <h2 class="text-center">Book Reviews</h2>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="http://mindandculture.org/wordpress6/wp-content/uploads/2018/07/Fotolia_188161178_XS.jpg" class="img-rounded img-fluid"/>
+                        <p class="text-secondary text-center">Posted on @rew.DatePosted</p>
+                    </div>
+                    <div class="col-md-10">
+                        <p>
+                            <a class="float-left" href="#"><strong>@rew.UserName</strong></a>
+                            @if (rew.Rating >= 0 && rew.Rating <= 5)
+                            {
+                                //loop 5 times to print 5 star ratings
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (i < 5 - rew.Rating )
+                                    {
+                                        <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                    }
+                                }
+                            }
+
+                        </p>
+                        <div class="clearfix"></div>
+                        <p>@rew.Description</p>
+                        <p>
+                            <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
+                            <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

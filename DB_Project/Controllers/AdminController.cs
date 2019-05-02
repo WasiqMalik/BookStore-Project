@@ -15,11 +15,6 @@ namespace DB_Project.Controllers
             return View();
         }
 
-        public ActionResult tempview()
-        {
-            return View();
-        }
-
         // GET: All Books
         public ActionResult BooksList()
         {
@@ -28,7 +23,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View("~/Views/Admin/Console.cshtml", BookCRUD.GetBook(id));
+            return View(BookCRUD.GetBookReviews(id));
         }
 
         public ActionResult EditBook(int id)
