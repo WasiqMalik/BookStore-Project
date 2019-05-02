@@ -25,9 +25,11 @@ namespace DB_Project.Controllers
             return View("~/Views/User/Books.cshtml", BookCRUD.GetAllBooks());
         }
 
-        public ActionResult SearchByTitle(string svalue)
+        [HttpPost]
+        public ActionResult SearchByGenre(FormCollection collection)
         {
-            return View("~/Views/User/DashBoard.cshtml", BookCRUD.TitleSearch(svalue));
+            string svalue = collection["searchString"];
+            return View("~/Views/User/Books.cshtml", BookCRUD.GenreSearch(svalue));
         }
 
         public ActionResult BookDetails(int id)
