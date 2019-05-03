@@ -557,7 +557,7 @@
     <Content Include="Views\User\Books.cshtml" />
     <Content Include="Views\User\Requests.cshtml" />
     <Content Include="Views\User\History.cshtml" />
-    <Content Include="Views\User\Profile.cshtml" />
+    <Content Include="Views\User\ProfileInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
