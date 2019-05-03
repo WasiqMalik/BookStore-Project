@@ -1,14 +1,17 @@
 ﻿@model DB_Project.Models.Account
 
-<div>
+@if(Model != null)
+{ 
     <div class="card rounded px-5 py-2">
         <div class="card-body">
             <p>UserID : @Model.UserID</p>
             <p>Name : @Model.Username </p>
-            <p> </p>
-            <p> </p>
-            <p> </p>
-            <p> </p>
-            <p> </p>
+            <p>Email : @Model.Email </p>
+            <p>Gender : @Model.Gender </p>
+            <p>Address : @Model.Address</p>
+            <p>Contact : @Model.ContactNo</p>
+            <p>DateJoined : @Model.DateJoined</p>
+            <p>Account Status : @Model.AccStatus</p>
+        </div>
     </div>
-</div>
+}

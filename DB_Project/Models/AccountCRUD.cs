@@ -51,7 +51,7 @@ namespace DB_Project.Models
                 //passing output variables to procedure
                 cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
                 cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char));
+                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char, 1));
                 cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
                 cmd.Parameters["@conta"].Direction = ParameterDirection.Output;

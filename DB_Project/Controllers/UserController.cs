@@ -104,10 +104,26 @@ namespace DB_Project.Controllers
 
         public ActionResult ProfileInfo()
         {
-            //int uid = (int)Session["UserID"];
-            int uid = 3;
-            return View();
+            int uid = (int)Session["UserID"];
+            //int uid = 1;
+            return View(AccountCRUD.GetAccount(uid));
+        }
 
+        public ActionResult PasswordChange()
+        {
+            return PartialView("_PasswordChange");
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection collection)
+        {
+            //int id = 1;
+            string newPass = collection["Password"];
+
+            if (AccountCRUD.ChangePassword((int)Session["UserID"], newPass))
+                return Content("<script>alert('Password Changed Successfully Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Book could not be Update.');window.location.href=document.referrer</script>");
         }
 
     }
