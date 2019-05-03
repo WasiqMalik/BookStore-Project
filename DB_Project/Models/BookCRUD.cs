@@ -240,16 +240,24 @@ namespace DB_Project.Models
 
                 //parameters
                 cmd.Parameters.Add(new SqlParameter("@authstr", search));
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                DataTable itemIDs = new DataTable(); //stores IDs      
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(itemIDs);  //get procedure result set
+                cmd.ExecuteNonQuery();
 
-                foreach (DataRow row in itemIDs.Rows)
-                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+
+                if (Flag == 1)
+                {
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                }
 
                 ServerConnection.Close();
-
                 return books;
             }
         }
@@ -263,7 +271,7 @@ namespace DB_Project.Models
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
                 //setting up command to call procedure
-                cmd.CommandText = "SearchByAuthor";
+                cmd.CommandText = "SearchByGenre";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
@@ -271,6 +279,8 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@genre", search));
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
 
@@ -286,7 +296,6 @@ namespace DB_Project.Models
                 }
 
                 ServerConnection.Close();
-
                 return books;
             }
         }
@@ -306,16 +315,24 @@ namespace DB_Project.Models
 
                 //parameters
                 cmd.Parameters.Add(new SqlParameter("@cat", search));
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                DataTable itemIDs = new DataTable(); //stores IDs      
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(itemIDs);  //get procedure result set
+                cmd.ExecuteNonQuery();
 
-                foreach (DataRow row in itemIDs.Rows)
-                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+
+                if (Flag == 1)
+                {
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                }
 
                 ServerConnection.Close();
-
                 return books;
             }
         }

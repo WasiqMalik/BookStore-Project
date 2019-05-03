@@ -3,7 +3,7 @@
     ViewBag.Title = "DashBoard";
 }
 
-@model List<DB_Project.Models.Book>
+@model KeyValuePair<List<DB_Project.Models.Book>, List<DB_Project.Models.Book>>
 
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
@@ -36,11 +36,90 @@
     </div>
 
 
-
     <div class="container body-content">
-            <h2>Something</h2>
-            
-            
+        <h3 class="divheading text-center">Best Sellers</h3>
+        <hr class="hunderline"/>
+
+        @if (Model.Key != null)
+        {
+            <div class="card-deck">
+                @foreach (var item in Model.Key)
+                {
+                    <div id="f1_container">
+                        <div id="f1_card" class="shadow card">
+                            <div class="front face">
+                                <div class="card-up">
+                                    <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/photo7.jpg" alt="Book Image">
+                                </div>
+                                <div class="card-body text-center">
+                                    <h4 class="font-weight-bold mb-3">@item.Title</h4>
+                                    <button type="button" class="btn btn-info" onclick="">Read More</button>
+                                </div>
+                            </div>
+                            <div class="back face">
+                                <p>Category: @item.Category</p>
+                                <p>Publisher: @item.Publisher</p>
+                                <p>
+                                    Authors:
+                                    @if (item.Authors != null)
+                                    {
+                                        for (int i = 0; i < item.Authors.Count - 1; i++)
+                                        {
+                                            @item.Authors[i].Insert(item.Authors[i].Length, ", ")
+                                        }
+                                        @item.Authors[item.Authors.Count - 1]
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        }
+
+
+        @if (Model.Value != null)
+        {
+            <br />
+            <h3 class="divheading text-center"> Reccomendations </h3>
+            <hr class="hunderline"/>
+            <div class="card-deck">
+                @foreach (var item in Model.Key)
+                {
+                    <div id="f1_container">
+                        <div id="f1_card" class="shadow card">
+                            <div class="front face">
+                                <div class="card-up">
+                                    <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/photo7.jpg" alt="Book Image">
+                                </div>
+                                <div class="card-body text-center">
+                                    <h4 class="font-weight-bold mb-3">@item.Title</h4>
+                                    <button type="button" class="btn btn-info" onclick="">Read More</button>
+                                </div>
+                            </div>
+                            <div class="back face">
+                                <p>Category: @item.Category</p>
+                                <p>Publisher: @item.Publisher</p>
+                                <p>
+                                    Authors:
+                                    @if (item.Authors != null)
+                                    {
+                                        for (int i = 0; i < item.Authors.Count - 1; i++)
+                                        {
+                                            @item.Authors[i].Insert(item.Authors[i].Length, ", ")
+                                        }
+                                        @item.Authors[item.Authors.Count - 1]
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+
 
     </div>
 </div>
