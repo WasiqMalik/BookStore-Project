@@ -85,28 +85,24 @@ namespace DB_Project.Controllers
             newReview.Rating = Int32.Parse(collection["Rating"]);
 
             if (ReviewCRUD.CreateReview(newReview))
-                return Content("<script>alert('Review has been added Successfully.');window.location.reload();</script>");
+                return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Review Failed.');window.location.reload();</script>");
+                return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult Requests()
         {
             return View();
-
         }
 
         public ActionResult History()
         {
             return View();
-
         }
 
         public ActionResult ProfileInfo()
         {
-            int uid = (int)Session["UserID"];
-            //int uid = 1;
-            return View(AccountCRUD.GetAccount(uid));
+            return View(AccountCRUD.GetAccount((int)Session["UserID"]));
         }
 
         public ActionResult PasswordChange()

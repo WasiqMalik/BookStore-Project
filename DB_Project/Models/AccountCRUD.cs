@@ -93,7 +93,7 @@ namespace DB_Project.Models
             }
         }
 
-        public static Account UserLogin(string email, string password, ref bool validity)
+        public static Account UserLogin(string email, string password)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
@@ -118,19 +118,22 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
                 cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
                 cmd.ExecuteNonQuery();  //run procedure
-
-                Account retAcc = new Account();
+                
                 //get output values from procedure
-                validity = (int)cmd.Parameters["@flag"].Value == 1;
-                if (validity)
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                if (Flag == 1)
                 {
+                    Account retAcc = new Account();
                     retAcc.UserID = (int)cmd.Parameters["@uid"].Value;
                     retAcc.AccStatus = (string)cmd.Parameters["@acc_pr"].Value;
                     retAcc.Username = (string)cmd.Parameters["@uname"].Value;
-                }
-                ServerConnection.Close();
 
-                return retAcc;
+                    return retAcc;
+                }
+                else
+                    return null;             
             }
         }
 
@@ -152,7 +155,7 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@sadd", newUser.Address));
                 cmd.Parameters.Add(new SqlParameter("email", newUser.Email));
                 cmd.Parameters.Add(new SqlParameter("@psw", newUser.Password));
-                cmd.Parameters.Add(new SqlParameter("@acc_pr", "u"));
+                cmd.Parameters.Add(new SqlParameter("@acc_pr", "User"));
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
@@ -186,6 +189,34 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@Address", user.Address));
                 cmd.Parameters.Add(new SqlParameter("@access", user.AccStatus));
                 cmd.Parameters.Add(new SqlParameter("@email", user.Email));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                return Flag == 1;
+            }
+        }
+
+        public static bool ChangePriviledges(int id, string newAccess)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "Changestatus";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@uid", id));
+                cmd.Parameters.Add(new SqlParameter("@str", newAccess));
 
                 //passing output para
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));

@@ -28,6 +28,14 @@ namespace DB_Project.Controllers
             return PartialView("_UserDetail", AccountCRUD.GetAccount(id));
         }
 
+        public ActionResult UpdateUserPriviledges(int id,int value)
+        {
+            if (AccountCRUD.ChangePriviledges(id, value == 1 ? "Admin" : "User"))
+                return Content("<script>alert('User's Priviledges Changed.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('User not found.');window.location.href=document.referrer</script>");
+        }
+
         public ActionResult RemoveUsers(int id)
         {
             if (AccountCRUD.RemoveUser(id))
@@ -45,9 +53,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            //return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
-            int uid = 1;
-            return View(BookCRUD.GetBookReviews(id, uid));
+            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
         }
 
         public ActionResult EditBook(int id)

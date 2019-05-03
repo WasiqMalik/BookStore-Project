@@ -80,9 +80,9 @@
 
 
 <script>
-    var UserDetailsfunction = function (bid) {
+    var UserDetailsfunction = function (uid) {
 
-        var url = "/Admin/EditBook?id=" + bid;
+        var url = "/Admin/UserDetail?id=" + uid;
 
         $("#userDetailsModalBodyDiv1").load(url, function () {
             $("#userDetailsModal").modal("show");
