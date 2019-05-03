@@ -3,7 +3,7 @@
     ViewBag.Title = "Books";
 }
 
-@model List<DB_Project.Models.Book>
+@*@model List<DB_Project.Models.Book>*@
 
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
@@ -45,6 +45,45 @@
             <button type="button" class="btn btn-info float-right" onclick="location.href='@Url.Action("BooksList", "User")'">Display All Books</button>
         </div>
 
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#SearchByModal">Search Settings</button>
+
+        <div class="modal fade" id="SearchByModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Search By</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" id="addBookModalBodyDiv1">
+                        <div class="card rounded px-5 py-2">
+
+                                <form action="SearchBy" class="form needs-validation" role="form" autocomplete="off" method="post">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Enter Search Text.." name="searchString" required>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+
+                                    <div>
+                                        <label for="searchBy">Search By</label>
+                                        <input type="radio" name="searchBy" value="none" checked>None
+                                        <input type="radio" name="searchBy" value="Genre">Genre
+                                        <input type="radio" name="searchBy" value="Author">Author
+                                        <input type="radio" name="searchBy" value="Category">Category
+                                        <div class="invalid-feedback">Select Option</div>
+                                    </div>
+
+                                    <div>
+                                        <button type="submit" class="btn btn-success float-right">Done</button>
+                                    </div>
+                                </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
 
         <div id="searchDIV" class="mt-3">
             @if (Model != null)
@@ -86,19 +125,19 @@
         </div>
 
     </div>
-</div>
+                        </div>
 
 
-<script>
+                        <script>
 
-    $(document).ready(function () {
-        $("#searchInput").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#searchDIV *").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
+                            $(document).ready(function () {
+                                $("#searchInput").on("keyup", function () {
+                                    var value = $(this).val().toLowerCase();
+                                    $("#searchDIV *").filter(function () {
+                                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                    });
+                                });
+                            });
 
 
-</script>
+                        </script>

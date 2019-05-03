@@ -12,7 +12,9 @@ namespace DB_Project.Controllers
         // GET: User
         public ActionResult DashBoard()
         {
-            return View();
+            //int id =  3; //User Id from session variables
+            //return View(new KeyValuePair<List<Book>, List<Book>>(BookCRUD.BestSellers(), BookCRUD.UserRecommendations(id)));
+            return View(new KeyValuePair<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
         }
 
         public ActionResult DeleteAccount()
@@ -31,9 +33,24 @@ namespace DB_Project.Controllers
             return View("~/Views/User/Books.cshtml", BookCRUD.GetAllBooks());
         }
 
-        public ActionResult SearchByTitle(string svalue)
+        [HttpPost]
+        public ActionResult SearchBy(FormCollection collection)
         {
-            return View("~/Views/User/DashBoard.cshtml", BookCRUD.TitleSearch(svalue));
+            string svalue = collection["searchString"];
+            string scat = collection["searchBy"];
+
+            switch(scat)
+            {
+                case "Genre":
+                    return View("~/Views/User/Books.cshtml", BookCRUD.GenreSearch(svalue));
+                    
+                case "Author":
+                    return View("~/Views/User/Books.cshtml", BookCRUD.AuthorSearch(svalue));
+
+                case "Category":
+                    return View("~/Views/User/Books.cshtml", BookCRUD.CategorySearch(svalue));
+            }
+            return View("~/Views/User/Books.cshtml");
         }
 
         public ActionResult BookDetails(int id)
