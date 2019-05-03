@@ -39,6 +39,7 @@ namespace DB_Project.Controllers
                 Session["UserID"] = UserAcc.UserID;
                 Session["UserName"] = UserAcc.Username;
                 Session["Priviledges"] = UserAcc.AccStatus;
+                Session["OrderItems"] = new List<Tuple<int, int, int>>();
 
                 if (UserAcc.AccStatus == "a")
                     return RedirectToAction("Console", "Admin");

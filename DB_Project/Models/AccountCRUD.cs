@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace DB_Project.Models
@@ -7,10 +9,29 @@ namespace DB_Project.Models
     {
         public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
 
-        //public static List<Account> GetAllUsers()
-        //{
+        public static List<Account> GetAllUsers()
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
 
-        //}
+                SqlCommand cmd = new SqlCommand();
+                DataTable sqlUsers = new DataTable(); //stores IDs from db
+                List<Account> Users = new List<Account>(); //store objects for all items from db          
+                SqlDataAdapter Data = new SqlDataAdapter("Select UserID From [User]", ServerConnection);
+                Data.Fill(sqlUsers);
+
+                foreach (DataRow row in sqlUsers.Rows)
+                {
+                    Account acc = GetAccount((int)row["ItemID"]);
+                    if (acc != null)
+                        Users.Add(acc);
+                }
+                ServerConnection.Close();
+
+                return Users;
+            }
+        }
 
         public static Account GetAccount(int id)
         {
@@ -19,7 +40,7 @@ namespace DB_Project.Models
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
                 //calling login procedure from db
-                cmd.CommandText = "GetUserInfo";
+                cmd.CommandText = "GetUser";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
@@ -29,13 +50,17 @@ namespace DB_Project.Models
                 //passing output variables to procedure
                 cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.Int));
                 cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gender", SqlDbType.Char));
+                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char));
                 cmd.Parameters["@gender"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@cno", SqlDbType.Char, 13));
+                cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
                 cmd.Parameters["@cno"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@add", SqlDbType.VarChar, 30));
+                cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 30));
                 cmd.Parameters["@add"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@acc_pr", SqlDbType.VarChar, 5));
+                cmd.Parameters.Add(new SqlParameter("@access", SqlDbType.VarChar, 5));
+                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@dJoined", SqlDbType.Date));
+                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@email", SqlDbType.VarChar, 30));
                 cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
 
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
@@ -43,21 +68,27 @@ namespace DB_Project.Models
 
                 cmd.ExecuteNonQuery();  //run procedure
 
-                Account retAcc = new Account();
+
                 //get output values from procedure
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                if (Flag == 1)
-                {
-                    retAcc.UserID = (int)cmd.Parameters["@uid"].Value;
-                    retAcc.Username = (string)cmd.Parameters["@uname"].Value;
-                    retAcc.AccStatus = (string)cmd.Parameters["@acc_pr"].Value;
-                    retAcc.Gender = (char)cmd.Parameters["@gender"].Value;
-                    retAcc.ContactNo = (string)cmd.Parameters["@cno"].Value;
-                    retAcc.Address = (string)cmd.Parameters["@add"].Value;
-                }
                 ServerConnection.Close();
 
-                return retAcc;
+                if (Flag == 1)
+                {
+                    Account retAcc = new Account();
+                    retAcc.UserID = id;
+                    retAcc.Username = (string)cmd.Parameters["@uname"].Value;
+                    retAcc.AccStatus = (string)cmd.Parameters["@acc_pr"].Value;
+                    retAcc.Gender = (char)cmd.Parameters["@gen"].Value;
+                    retAcc.ContactNo = (string)cmd.Parameters["@conta"].Value;
+                    retAcc.Address = (string)cmd.Parameters["@Address"].Value;
+                    retAcc.DateJoined = Convert.ToString(cmd.Parameters["@dJoined"].Value);
+                    retAcc.Email = (string)cmd.Parameters["@email"].Value;
+
+                    return retAcc;
+                }
+                else
+                    return null;
             }
         }
 
@@ -134,6 +165,68 @@ namespace DB_Project.Models
             }
         }
 
+        public static bool UpdateUser(Account user)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                //calling procedure from db
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "UpdateUser";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@uid", user.UserID));
+                cmd.Parameters.Add(new SqlParameter("@uname", user.Username));
+                cmd.Parameters.Add(new SqlParameter("@gen", user.Gender));
+                cmd.Parameters.Add(new SqlParameter("@conta", user.ContactNo));
+                cmd.Parameters.Add(new SqlParameter("@Address", user.Address));
+                cmd.Parameters.Add(new SqlParameter("@access", user.AccStatus));
+                cmd.Parameters.Add(new SqlParameter("@email", user.Email));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                return Flag == 1;
+            }
+        }
+
+        public static bool ChangePassword(int id, string newPass)
+        {
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
+            {
+                ServerConnection.Open();
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "UpdatePassword";
+                cmd.Connection = ServerConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //passing parameters to procedure
+                cmd.Parameters.Add(new SqlParameter("@uid", id));
+                cmd.Parameters.Add(new SqlParameter("@newpass", newPass));
+
+                //passing output para
+                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                cmd.ExecuteNonQuery();  //run procedure
+
+                int Flag = (int)cmd.Parameters["@flag"].Value;
+                ServerConnection.Close();
+
+                return Flag == 1;
+            }
+        }
+
         public static bool RemoveUser(int id)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
@@ -146,7 +239,7 @@ namespace DB_Project.Models
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@id", id));
+                cmd.Parameters.Add(new SqlParameter("@uid", id));
 
                 //passing output para
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
