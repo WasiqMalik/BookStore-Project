@@ -7,7 +7,8 @@ namespace DB_Project.Models
 {
     public class AccountCRUD
     {
-        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Account> GetAllUsers()
         {
@@ -23,7 +24,7 @@ namespace DB_Project.Models
 
                 foreach (DataRow row in sqlUsers.Rows)
                 {
-                    Account acc = GetAccount((int)row["ItemID"]);
+                    Account acc = GetAccount((int)row["UserID"]);
                     if (acc != null)
                         Users.Add(acc);
                 }
@@ -48,20 +49,20 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@uid", id));
 
                 //passing output variables to procedure
-                cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
                 cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char));
-                cmd.Parameters["@gender"].Direction = ParameterDirection.Output;
+                cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
-                cmd.Parameters["@cno"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 30));
-                cmd.Parameters["@add"].Direction = ParameterDirection.Output;
+                cmd.Parameters["@conta"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 50));
+                cmd.Parameters["@Address"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@access", SqlDbType.VarChar, 5));
-                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                cmd.Parameters["@access"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@dJoined", SqlDbType.Date));
-                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                cmd.Parameters["@dJoined"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@email", SqlDbType.VarChar, 30));
-                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                cmd.Parameters["@email"].Direction = ParameterDirection.Output;
 
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;

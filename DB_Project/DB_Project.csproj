@@ -559,6 +559,8 @@
     <Content Include="Views\User\Requests.cshtml" />
     <Content Include="Views\User\History.cshtml" />
     <Content Include="Views\User\ProfileInfo.cshtml" />
+    <Content Include="Views\Admin\Users.cshtml" />
+    <Content Include="Views\Admin\_UserDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

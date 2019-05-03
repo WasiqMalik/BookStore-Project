@@ -13,12 +13,28 @@ namespace DB_Project.Controllers
             return View();
         }
 
+        public ActionResult Users()
+        {
+            return View();
+        }
+
+        public ActionResult UserList()
+        {
+            return View("~/Views/Admin/Console.cshtml", AccountCRUD.GetAllUsers());
+        }
+
+        public ActionResult UserDetail(int id)
+        {
+            Account myacc = AccountCRUD.GetAccount(id);
+            return PartialView("_UserDetail", myacc);
+        }
+
         public ActionResult RemoveUsers(int id)
         {
             if (AccountCRUD.RemoveUser(id))
-                return Content("<script>alert('Review has been added Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
             else
-                return Content("<script>alert('Review Failed.');window.location = 'Console';</script>");
+                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
 
         }
 
@@ -30,7 +46,9 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
+            //return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
+            int uid = 1;
+            return View(BookCRUD.GetBookReviews(id, uid));
         }
 
         public ActionResult EditBook(int id)
