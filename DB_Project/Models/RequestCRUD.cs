@@ -9,7 +9,7 @@ namespace DB_Project.Models
 {
     public class RequestCRUD
     {
-        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
 
         public static bool CreateRequest(Request newRequest)
         {

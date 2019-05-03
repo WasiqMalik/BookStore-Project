@@ -1,9 +1,7 @@
-﻿using System;
+﻿using DB_Project.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using DB_Project.Models;
 
 namespace DB_Project.Controllers
 {
@@ -12,9 +10,28 @@ namespace DB_Project.Controllers
         // GET: User
         public ActionResult DashBoard()
         {
-            //int id =  3; //User Id from session variables
-            //return View(new KeyValuePair<List<Book>, List<Book>>(BookCRUD.BestSellers(), BookCRUD.UserRecommendations(id)));
-            return View(new KeyValuePair<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
+            //displaying books in best seller section and recommended section
+            return View(new Tuple<List<Book>, List<Book>>(BookCRUD.BestSellers(), BookCRUD.UserRecommendations((int)Session["UserID"])));
+        }
+
+        public ActionResult AddToCart(int item, int quantity, int price)
+        {
+            ((List<Tuple<int, int, int>>)Session["OrderItems"]).Add(new Tuple<int, int, int>(item, quantity, price));
+
+            return Content("<script>alert('Item Added to Cart.');window.location = 'Console';</script>");
+        }
+
+        public ActionResult PlaceOrder()
+        {
+            Order newOrder = new Order();
+            newOrder.UserID = (int)Session["UserID"];
+            newOrder.Items = (List<Tuple<int, int, int>>)Session["OrderItems"];
+            newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
+
+            if(OrderCRUD.CreateOrder(newOrder))
+                return Content("<script>alert('Order Placed Successfully.');window.location = 'Console';</script>");
+            else
+                return Content("<script>alert('Order could not be placed.');window.location = 'Console';</script>");
         }
 
         public ActionResult DeleteAccount()
@@ -39,11 +56,11 @@ namespace DB_Project.Controllers
             string svalue = collection["searchString"];
             string scat = collection["searchBy"];
 
-            switch(scat)
+            switch (scat)
             {
                 case "Genre":
                     return View("~/Views/User/Books.cshtml", BookCRUD.GenreSearch(svalue));
-                    
+
                 case "Author":
                     return View("~/Views/User/Books.cshtml", BookCRUD.AuthorSearch(svalue));
 
@@ -58,7 +75,6 @@ namespace DB_Project.Controllers
             return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
         }
 
-        [HttpPost]
         public ActionResult ReviewBook(FormCollection collection)
         {
             Review newReview = new Review();
@@ -74,11 +90,10 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review Failed.');window.location.reload();</script>");
         }
 
-
         public ActionResult Requests()
         {
             return View();
-         
+
         }
 
         public ActionResult History()

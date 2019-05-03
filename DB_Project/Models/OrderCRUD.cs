@@ -302,7 +302,7 @@ namespace DB_Project.Models
             }
         }
 
-        private static int CalcTotalCost(List<Tuple<int,int,int>> itemDetails)
+        public static int CalcTotalCost(List<Tuple<int,int,int>> itemDetails)
         {
             int OrderCost = 0;
             foreach(var tuple in itemDetails)

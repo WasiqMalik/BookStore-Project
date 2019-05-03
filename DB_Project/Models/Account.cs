@@ -14,6 +14,7 @@ namespace DB_Project.Models
         public string ContactNo { get; set; }
         public string Address { get; set; }
         public string AccStatus { get; set; }
+        public string DateJoined { get; set; }
         public char Gender { get; set; }
     }
 }

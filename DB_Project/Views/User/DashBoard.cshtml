@@ -3,7 +3,7 @@
     ViewBag.Title = "DashBoard";
 }
 
-@model KeyValuePair<List<DB_Project.Models.Book>, List<DB_Project.Models.Book>>
+@model Tuple<List<DB_Project.Models.Book>, List<DB_Project.Models.Book>>
 
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
@@ -42,10 +42,10 @@
         <h3 class="divheading text-center">Best Sellers</h3>
         <hr class="hunderline"/>
 
-        @if (Model.Key != null)
+        @if (Model.item1 != null)
         {
             <div class="card-deck">
-                @foreach (var item in Model.Key)
+                @foreach (var item in Model.item1)
                 {
                     <div id="f1_container">
                         <div id="f1_card" class="shadow card">
@@ -80,13 +80,13 @@
 
         }
 
-        @if (Model.Value != null)
+        @if (Model.item2 != null)
         {
             <br />
             <h3 class="divheading text-center"> Reccomendations </h3>
             <hr class="hunderline"/>
             <div class="card-deck">
-                @foreach (var item in Model.Key)
+                @foreach (var item in Model.item2)
                 {
                     <div id="f1_container">
                         <div id="f1_card" class="shadow card">

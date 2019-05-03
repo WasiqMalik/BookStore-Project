@@ -91,7 +91,7 @@ namespace DB_Project.Models
                     return getBook;
                 }
                 else
-                    return new Book();
+                    return null;
             }
         }
 
@@ -108,65 +108,11 @@ namespace DB_Project.Models
                 SqlDataAdapter Data = new SqlDataAdapter("Select ItemID From [Books]", ServerConnection);
                 Data.Fill(sqlBooks);
 
-                ////using procedure that returns book info for one book
-                //cmd.CommandText = "GetBook";
-                //cmd.Connection = ServerConnection;
-                //cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                ////output parameters
-                //cmd.Parameters.Add(new SqlParameter("@Itid", 0));
-                //cmd.Parameters.Add(new SqlParameter("@title", SqlDbType.VarChar, 30));
-                //cmd.Parameters["@title"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@synp", SqlDbType.VarChar, 500));
-                //cmd.Parameters["@synp"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@pub", SqlDbType.VarChar, 20));
-                //cmd.Parameters["@pub"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@cat", SqlDbType.VarChar, 10));
-                //cmd.Parameters["@cat"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@price", SqlDbType.SmallMoney));
-                //cmd.Parameters["@price"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@stock", SqlDbType.Int));
-                //cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
-                //cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
-                //cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
-                //cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
-                //cmd.Parameters["@genreStr"].Direction = ParameterDirection.Output;
-
-                //cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                //cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-
                 foreach (DataRow row in sqlBooks.Rows)
                 {
-                    BooksList.Add(GetBook((int)row["ItemID"]));
-                    //Book getBook = new Book();
-                    //getBook.BookID = (int)row["ItemID"];
-
-                    ////input para
-                    //cmd.Parameters["@Itid"].Value = getBook.BookID;
-
-                    //cmd.ExecuteNonQuery();  //run procedure
-
-                    //int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required book id retrieved 
-
-                    //if (Flag == 1)
-                    //{
-                    //    //intializing book obj 
-                    //    getBook.Title = (string)cmd.Parameters["@title"].Value;
-                    //    getBook.Synopsis = (string)cmd.Parameters["@synp"].Value;
-                    //    getBook.Publisher = (string)cmd.Parameters["@pub"].Value;
-                    //    getBook.Category = (string)cmd.Parameters["@cat"].Value;
-                    //    getBook.Price = Convert.ToInt32(cmd.Parameters["@price"].Value);
-                    //    getBook.Stock = (int)cmd.Parameters["@stock"].Value;
-                    //    getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
-                    //    getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
-                    //    getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
-
-                    //    BooksList.Add(getBook);
-                    //}
-
+                    Book book = GetBook((int)row["ItemID"]);
+                    if (book != null)
+                        BooksList.Add(book);
                 }
 
                 ServerConnection.Close();

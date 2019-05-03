@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DB_Project.Models;
+using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using DB_Project.Models;
 
 namespace DB_Project.Controllers
 {
@@ -17,7 +15,7 @@ namespace DB_Project.Controllers
 
         public ActionResult RemoveUsers(int id)
         {
-            if(AccountCRUD.RemoveUser(id))
+            if (AccountCRUD.RemoveUser(id))
                 return Content("<script>alert('Review has been added Successfully.');window.location = 'Console';</script>");
             else
                 return Content("<script>alert('Review Failed.');window.location = 'Console';</script>");
@@ -32,7 +30,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id,(int)Session["UserID"]));
+            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
         }
 
         public ActionResult EditBook(int id)
@@ -59,9 +57,9 @@ namespace DB_Project.Controllers
 
 
             if (BookCRUD.UpdateBook(newBook))
-                return Content("<script>alert('Book has been Updated Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Book has been Updated Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Book could not be Update.');window.location = 'Console'</script>");
+                return Content("<script>alert('Book could not be Update.');window.location.href=document.referrer</script>");
         }
 
         [HttpPost]
@@ -81,18 +79,18 @@ namespace DB_Project.Controllers
 
 
             if (BookCRUD.CreateBook(newBook))
-                return Content("<script>alert('Book has been added Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Book has been added Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Book could not be added.');window.location = 'Console'</script>");
+                return Content("<script>alert('Book could not be added.');window.location.href=document.referrer</script>");
         }
-       
+
         [HttpPost]
         public ActionResult RemoveBook(int id)
         {
             if (BookCRUD.DeleteBook(id))
-                return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Book Deleted Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
+                return Content("<script>alert('Book could not be found.');window.location.href=document.referrer</script>");
         }
 
         [HttpPost]
@@ -106,9 +104,9 @@ namespace DB_Project.Controllers
             newReview.Rating = Int32.Parse(collection["Rating"]);
 
             if (ReviewCRUD.CreateReview(newReview))
-                return Content("<script>alert('Review has been added Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Review Failed.');window.location = 'Console';</script>");
+                return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult AllOrders()
@@ -119,14 +117,14 @@ namespace DB_Project.Controllers
         public ActionResult RemoveOrder(int id)
         {
             if (OrderCRUD.DeleteOrder(id))
-                return Content("<script>alert('Order Deleted Successfully.');window.location = 'Order';</script>");
+                return Content("<script>alert('Order Deleted Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Order could not be found.');window.location = 'Order'</script>");
+                return Content("<script>alert('Order could not be found.');window.location.href=document.referrer</script>");
         }
 
         public ActionResult OrderStatus(int id)
         {
-                return PartialView("_OrderStatus", id);  
+            return PartialView("_OrderStatus", id);
         }
 
         [HttpPost]
@@ -136,9 +134,9 @@ namespace DB_Project.Controllers
             string status = collection["OrderStatus"];
 
             if (OrderCRUD.UpdateStatus(oid, status))
-                return Content("<script>alert('Order Status has been Updated Successfully.');window.location = 'Order';</script>");
+                return Content("<script>alert('Order Status has been Updated Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Order Status could not be Update.');window.location = 'Order'</script>");
+                return Content("<script>alert('Order Status could not be Update.');window.location.href=document.referrer</script>");
         }
 
         public ActionResult OrderDetails(int id)
@@ -146,5 +144,5 @@ namespace DB_Project.Controllers
             return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
         }
 
-}
+    }
 }
