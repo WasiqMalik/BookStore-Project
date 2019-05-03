@@ -18,7 +18,7 @@ namespace DB_Project.Controllers
         {
             ((List<Tuple<int, int, int>>)Session["OrderItems"]).Add(new Tuple<int, int, int>(item, quantity, price));
 
-            return Content("<script>alert('Item Added to Cart.');window.location = 'Console';</script>");
+            return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult PlaceOrder()
@@ -29,9 +29,9 @@ namespace DB_Project.Controllers
             newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
 
             if(OrderCRUD.CreateOrder(newOrder))
-                return Content("<script>alert('Order Placed Successfully.');window.location = 'Console';</script>");
+                return Content("<script>alert('Order Placed Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Order could not be placed.');window.location = 'Console';</script>");
+                return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult DeleteAccount()
