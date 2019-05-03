@@ -3,6 +3,8 @@
     ViewBag.Title = "ProfileInfo";
 }
 
+@model DB_Project.Models.Account
+
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
 
@@ -39,6 +41,10 @@
     <div class="container body-content">
         <h3 class="divheading text-center">Account Info</h3>
         <hr class="hunderline" />
+
+        <p>Email:   @Model.Email <p>
+
+        
 
 
         <h3 class="divheading text-center">Personal Info</h3>

@@ -87,8 +87,10 @@ namespace DB_Project.Controllers
 
         }
 
-        public ActionResult Profile()
+        public ActionResult ProfileInfo()
         {
+            //int uid = (int)Session["UserID"];
+            int uid = 3;
             return View();
 
         }
