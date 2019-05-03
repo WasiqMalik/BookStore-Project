@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Profile";
+}
+
+@section CustomHeader{
+    <nav class="navbar navbar-expand-sm bg-light">
+
+        <a class="navbar-brand" href="#">BookStore</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#"> DashBoard </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            @*<li class="nav-item">
+                    <p class="navbar-text"> Welcome, @Model </p>
+                </li>*@
+            <li class="nav-item ml-auto">
+                <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
+            </li>
+        </ul>
+    </nav>
+}
+
+
+<div class="row">
+    <div class="col-2">
+        <div class="sidenav">
+            <a href="@Url.Action("DashBoard", "User")">DashBoard</a>
+            <a href="@Url.Action("Books", "User")">Books</a>
+            <a href="@Url.Action("Requests", "User")">Requests</a>
+            <a href="@Url.Action("History", "User")">History</a>
+            <a href="@Url.Action("Profile", "User")">Profile</a>
+        </div>
+    </div>
+
+
+    <div class="container body-content">
+        <h3 class="divheading text-center">Account Info</h3>
+        <hr class="hunderline" />
+
+
+        <h3 class="divheading text-center">Personal Info</h3>
+        <hr class="hunderline" />
+
+
+
+    </div>
+</div>
+
+
+

@@ -68,5 +68,27 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review Failed.');window.location.reload();</script>");
         }
 
+
+        public ActionResult Requests()
+        {
+            return View();
+         
+        }
+
+        public ActionResult History()
+        {
+            return View();
+
+        }
+
+        public ActionResult Profile()
+        {
+            return View();
+
+        }
+
     }
+
+
+
 }
