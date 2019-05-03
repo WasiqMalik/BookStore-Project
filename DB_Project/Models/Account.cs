@@ -7,7 +7,13 @@ namespace DB_Project.Models
 {
     public class Account
     {
-        public string email { get; set; }
-        public string password { get; set; }
+        public int UserID { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Username { get; set; }
+        public string ContactNo { get; set; }
+        public string Address { get; set; }
+        public string AccStatus { get; set; }
+        public char Gender { get; set; }
     }
 }

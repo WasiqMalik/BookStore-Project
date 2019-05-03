@@ -128,11 +128,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\AccountCRUD.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BookCRUD.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderCRUD.cs" />
-    <Compile Include="Models\Register.cs" />
     <Compile Include="Models\Request.cs" />
     <Compile Include="Models\Review.cs" />
     <Compile Include="Models\ReviewCRUD.cs" />
