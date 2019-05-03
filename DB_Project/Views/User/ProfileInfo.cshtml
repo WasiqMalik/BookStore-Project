@@ -42,16 +42,49 @@
         <h3 class="divheading text-center">Account Info</h3>
         <hr class="hunderline" />
 
-        <p>Email:   @Model.Email <p>
+        <p>Email : @Model.Email <p>
+            <button type="button" class="btn btn-info" onclick="PasswordChangefunction(@Model.UserID)">Change Password</button>
 
-        
+
+            <h3 class="divheading text-center">Personal Info</h3>
+            <hr class="hunderline" />
+
+        <p>Name : @Model.Username </p>
+        <p>Email : @Model.Email </p>
+        <p>Gender : @Model.Gender </p>
+        <p>Address : @Model.Address</p>
+        <p>Contact : @Model.ContactNo</p>
+        <p>DateJoined : @Model.DateJoined</p>
+        <p>Account Status : @Model.AccStatus</p>
 
 
-        <h3 class="divheading text-center">Personal Info</h3>
-        <hr class="hunderline" />
+        <div class="modal fade" id="changePasswordModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Book</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" id="changePasswordModalBodyDiv1">
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
     </div>
 </div>
 
+
+<script>
+    var PasswordChangefunction = function (bid) {
+
+        var url = "/Admin/PasswordChange?id=" + bid;
+
+        $("#changePasswordModalBodyDiv1").load(url, function () {
+            $("#changePasswordModal").modal("show");
+
+        })
+    }
+</script>
