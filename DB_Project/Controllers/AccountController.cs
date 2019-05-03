@@ -13,8 +13,8 @@ namespace DB_Project.Controllers
     {
         //Controller Members
         SqlCommand cmd = new SqlCommand();
-        //string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //Controller Methods
         [HttpGet]
@@ -29,47 +29,20 @@ namespace DB_Project.Controllers
         }
 
         [HttpPost]
-        public ActionResult Authenticate(Account acc)
+        public ActionResult Authenticate(string email, string password)
         {
-            SqlConnection ServerConnection = new SqlConnection(ConnectionString);
-            ServerConnection.Open();
-            
-            //calling login procedure from db
-            cmd.CommandText = "LoginValidate";
-            cmd.Connection = ServerConnection;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            bool flag=false;
+            Account UserAcc = AccountCRUD.UserLogin(email, password, ref flag);
 
-            //passing parameters to procedure
-            cmd.Parameters.Add(new SqlParameter("@em", acc.email));
-            cmd.Parameters.Add(new SqlParameter("@pa", acc.password));
-
-            //passing output variables to procedure
-            cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-            cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-            cmd.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int));
-            cmd.Parameters["@uid"].Direction = ParameterDirection.Output;
-            cmd.Parameters.Add(new SqlParameter("@acc_pr", SqlDbType.VarChar, 5));
-            cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
-            cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
-            cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-            cmd.ExecuteNonQuery();  //run procedure
-
-            //get output values from procedure
-            int Flag = (int)cmd.Parameters["@flag"].Value;
-            int UserId = (int)cmd.Parameters["@uid"].Value;
-            string Priviledges = (string)cmd.Parameters["@acc_pr"].Value;
-            string UserName = (string)cmd.Parameters["@uname"].Value;
-            ServerConnection.Close();
-
-            if (Flag == 1)
+            if (flag)
             {
-                Session["UserID"] = UserId;
-                Session["UserName"] = UserName;
-                Session["Priviledges"] = Priviledges;
+                Session["UserID"] = UserAcc.UserID;
+                Session["UserName"] = UserAcc.Username;
+                Session["Priviledges"] = UserAcc.AccStatus;
 
-                if (Priviledges == "a")
+                if (UserAcc.AccStatus == "a")
                     return RedirectToAction("Console", "Admin");
-                else if (Priviledges == "u")
+                else if (UserAcc.AccStatus == "u")
                     return RedirectToAction("DashBoard", "User");             
                 else
                     return Content("<script>alert('No Assigned User Privledges.');window.location = 'Login'</script>");
@@ -78,38 +51,12 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Incorrect Email or Password.');window.location = 'Login';</script>");   
         }
 
-        public ActionResult Register(Register reg)
+        public ActionResult Register(Account reg)
         {
-            SqlConnection ServerConnection = new SqlConnection(ConnectionString);
-            ServerConnection.Open();
-
-            //calling signup procedure from db
-            cmd.CommandText = "Signup";
-            cmd.Connection = ServerConnection;
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-            //passing parameters to procedure
-            cmd.Parameters.Add(new SqlParameter("@uname", reg.Username));
-            cmd.Parameters.Add(new SqlParameter("@gender", reg.Gender));
-            cmd.Parameters.Add(new SqlParameter("@cno", reg.ContactNo));
-            cmd.Parameters.Add(new SqlParameter("@sadd", reg.Address));
-            cmd.Parameters.Add(new SqlParameter("email", reg.Email));
-            cmd.Parameters.Add(new SqlParameter("@psw", reg.Password));
-            cmd.Parameters.Add(new SqlParameter("@acc_pr", "u"));
-            cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-            cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-            cmd.ExecuteNonQuery(); //run procedure
-
-            int Flag = (int)cmd.Parameters["@flag"].Value;
-            ServerConnection.Close();
-
-            if (Flag == 1) 
+            if (AccountCRUD.RegisterUser(reg)) 
                 return Content("<script>alert('Account Registeration Successful.');window.location = 'Login';</script>");           
             else         
-                return Content("<script>alert('Account Registeration Failed.');window.location = 'SignUp'</script>");
-            
+                return Content("<script>alert('Account Registeration Failed.');window.location = 'SignUp'</script>");            
         }
-
     }
 }

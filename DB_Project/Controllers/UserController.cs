@@ -15,6 +15,12 @@ namespace DB_Project.Controllers
             return View();
         }
 
+        public ActionResult DeleteAccount()
+        {
+            AccountCRUD.RemoveUser((int)Session["UserID"]);
+            return Redirect("Home");
+        }
+
         public ActionResult Books()
         {
             return View();

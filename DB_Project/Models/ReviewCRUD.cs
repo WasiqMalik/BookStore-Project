@@ -13,7 +13,6 @@ namespace DB_Project.Models
     {
         public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
 
-
         //methods
         public static bool CreateReview(Review newReview)
         {
@@ -28,10 +27,10 @@ namespace DB_Project.Models
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@bID", newReview.BookID));
-                cmd.Parameters.Add(new SqlParameter("@user", newReview.UserID));
+                cmd.Parameters.Add(new SqlParameter("@BID", newReview.BookID));
+                cmd.Parameters.Add(new SqlParameter("@uid", newReview.UserID));
                 cmd.Parameters.Add(new SqlParameter("@rate", newReview.Rating));
-                cmd.Parameters.Add(new SqlParameter("@text", newReview.Description));
+                cmd.Parameters.Add(new SqlParameter("@BookReview", newReview.Description));
 
                 //passing output para
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));

@@ -15,6 +15,15 @@ namespace DB_Project.Controllers
             return View();
         }
 
+        public ActionResult RemoveUsers(int id)
+        {
+            if(AccountCRUD.RemoveUser(id))
+                return Content("<script>alert('Review has been added Successfully.');window.location = 'Console';</script>");
+            else
+                return Content("<script>alert('Review Failed.');window.location = 'Console';</script>");
+
+        }
+
         // GET: All Books
         public ActionResult BooksList()
         {
@@ -76,8 +85,7 @@ namespace DB_Project.Controllers
             else
                 return Content("<script>alert('Book could not be added.');window.location = 'Console'</script>");
         }
-
-        
+       
         [HttpPost]
         public ActionResult RemoveBook(int id)
         {
@@ -85,6 +93,22 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Book Deleted Successfully.');window.location = 'Console';</script>");
             else
                 return Content("<script>alert('Book could not be found.');window.location = 'Console'</script>");
+        }
+
+        [HttpPost]
+        public ActionResult ReviewBook(FormCollection collection)
+        {
+            Review newReview = new Review();
+            newReview.UserID = (int)Session["UserID"];
+            newReview.UserName = (string)Session["UserName"];
+            newReview.BookID = Int32.Parse(collection["BookID"]);
+            newReview.Description = collection["ReviewText"];
+            newReview.Rating = Int32.Parse(collection["Rating"]);
+
+            if (ReviewCRUD.CreateReview(newReview))
+                return Content("<script>alert('Review has been added Successfully.');window.location = 'Console';</script>");
+            else
+                return Content("<script>alert('Review Failed.');window.location = 'Console';</script>");
         }
 
         public ActionResult AllOrders()
