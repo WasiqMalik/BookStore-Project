@@ -20,13 +20,12 @@ namespace DB_Project.Controllers
 
         public ActionResult UserList()
         {
-            return View("~/Views/Admin/Console.cshtml", AccountCRUD.GetAllUsers());
+            return View("~/Views/Admin/Users.cshtml", AccountCRUD.GetAllUsers());
         }
 
         public ActionResult UserDetail(int id)
         {
-            Account myacc = AccountCRUD.GetAccount(id);
-            return PartialView("_UserDetail", myacc);
+            return PartialView("_UserDetail", AccountCRUD.GetAccount(id));
         }
 
         public ActionResult RemoveUsers(int id)

@@ -7,8 +7,8 @@ namespace DB_Project.Models
 {
     public class AccountCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Account> GetAllUsers()
         {
@@ -51,7 +51,7 @@ namespace DB_Project.Models
                 //passing output variables to procedure
                 cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
                 cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char));
+                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char,1));
                 cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
                 cmd.Parameters["@conta"].Direction = ParameterDirection.Output;
@@ -79,8 +79,8 @@ namespace DB_Project.Models
                     Account retAcc = new Account();
                     retAcc.UserID = id;
                     retAcc.Username = (string)cmd.Parameters["@uname"].Value;
-                    retAcc.AccStatus = (string)cmd.Parameters["@acc_pr"].Value;
-                    retAcc.Gender = (char)cmd.Parameters["@gen"].Value;
+                    retAcc.AccStatus = (string)cmd.Parameters["@access"].Value;
+                    retAcc.Gender = Convert.ToChar(cmd.Parameters["@gen"].Value);
                     retAcc.ContactNo = (string)cmd.Parameters["@conta"].Value;
                     retAcc.Address = (string)cmd.Parameters["@Address"].Value;
                     retAcc.DateJoined = Convert.ToString(cmd.Parameters["@dJoined"].Value);
