@@ -11,8 +11,8 @@ namespace DB_Project.Models
 {
     public class ReviewCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static bool CreateReview(Review newReview)
@@ -73,7 +73,7 @@ namespace DB_Project.Models
                 int Flag = (int)cmd.Parameters["@flag"].Value;
                 ServerConnection.Close();
 
-                if(Flag==1) //if book found
+                if(Flag==1) //if found
                 {
                     foreach (DataRow row in bookReviews.Rows)
                     {

@@ -1,19 +1,13 @@
 ﻿using DB_Project.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Web.Mvc;
 
 namespace DB_Project.Controllers
 {
     public class AccountController : Controller
     {
-        //Controller Members
-        SqlCommand cmd = new SqlCommand();
-        string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        //string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
-        //Controller Methods
         [HttpGet]
         public ActionResult Login()
         {

@@ -15,7 +15,21 @@ namespace DB_Project.Controllers
             //return View(new Tuple<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
         }
 
-        [HttpPost]
+        //Shopping Cart and User Order related methods
+        public ActionResult ViewCart()
+        {
+            List<Tuple<int, int, int>> items = (List<Tuple<int, int, int>>)Session["OrderItems"];
+            List<Book> BooksList = new List<Book>();
+            foreach (var tuple in items)
+            {
+                Book getBook = BookCRUD.GetBook(tuple.Item1);
+                if (getBook != null)
+                    BooksList.Add(getBook);
+            }
+
+            return View(BooksList);
+        }
+
         public ActionResult AddToCart(FormCollection collection)
         {
             int item = Int32.Parse(collection["ID"]);
@@ -26,6 +40,19 @@ namespace DB_Project.Controllers
             return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult RemoveFromCart(int id)
+        {
+            int index = ((List<Tuple<int, int, int>>)Session["OrderItems"]).FindIndex(tuple => tuple.Item1 == id);
+            if (index >= 0)
+            {
+                ((List<Tuple<int, int, int>>)Session["OrderItems"]).RemoveAt(index);
+
+                return Content("<script>alert('Cart has been Updated.');window.location.href=document.referrer;</script>");
+            }
+            else
+                return Content("<script>alert('Item not found in Cart.');window.location.href=document.referrer;</script>");
+        }
+
         public ActionResult PlaceOrder()
         {
             Order newOrder = new Order();
@@ -33,23 +60,18 @@ namespace DB_Project.Controllers
             newOrder.Items = (List<Tuple<int, int, int>>)Session["OrderItems"];
             newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
 
-            if(OrderCRUD.CreateOrder(newOrder))
+            if (OrderCRUD.CreateOrder(newOrder))
                 return Content("<script>alert('Order Placed Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
         }
 
-        public ActionResult DeleteAccount()
-        {
-            AccountCRUD.RemoveUser((int)Session["UserID"]);
-            return Redirect("Home");
-        }
-
-        public ActionResult Books()
+        public ActionResult History()
         {
             return View();
         }
 
+        //Books related methods
         public ActionResult BooksList()
         {
             return View("~/Views/User/Books.cshtml", BookCRUD.GetAllBooks());
@@ -95,16 +117,33 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult Subscribe(int id)
+        {
+            if (SubscriptionCRUD.AddSubscription(id, (int)Session["UserID"]))
+                return Content("<script>alert('Subscribed Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Subscription Failed.');window.location.href=document.referrer;</script>");
+        }
+
+        public ActionResult UnSubscribe(int id)
+        {
+            if (SubscriptionCRUD.UnSubscribe(id, (int)Session["UserID"]))
+                return Content("<script>alert('Unsubscribed Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Operation Failed.');window.location.href=document.referrer;</script>");
+        }
+
+        public ActionResult ViewSubscriptions()
+        {
+            return View(SubscriptionCRUD.GetSubscribedItems((int)Session["UserID"]));
+        }
+
         public ActionResult Requests()
         {
             return View();
         }
 
-        public ActionResult History()
-        {
-            return View();
-        }
-
+        //User Account related methods
         public ActionResult ProfileInfo()
         {
             return View(AccountCRUD.GetAccount((int)Session["UserID"]));
@@ -125,6 +164,12 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Password Changed Successfully Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Book could not be Update.');window.location.href=document.referrer</script>");
+        }
+
+        public ActionResult DeleteAccount()
+        {
+            AccountCRUD.RemoveUser((int)Session["UserID"]);
+            return Redirect("Home");
         }
 
     }
