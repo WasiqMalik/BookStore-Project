@@ -26,6 +26,8 @@ namespace DB_Project.Controllers
             return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");
         }
 
+        
+
         public ActionResult PlaceOrder()
         {
             Order newOrder = new Order();

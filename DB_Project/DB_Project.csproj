@@ -563,6 +563,7 @@
     <Content Include="Views\Admin\_UserDetail.cshtml" />
     <Content Include="Views\User\_PasswordChange.cshtml" />
     <Content Include="Views\User\BookDetails.cshtml" />
+    <Content Include="Views\User\Cart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

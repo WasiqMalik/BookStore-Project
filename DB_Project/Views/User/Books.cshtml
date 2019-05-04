@@ -3,7 +3,7 @@
     ViewBag.Title = "Books";
 }
 
-@*@model List<DB_Project.Models.Book>*@
+@model List<DB_Project.Models.Book>
 
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
@@ -41,7 +41,8 @@
 
 
     <div class="container body-content">
-        <h2>Filter Anything</h2>
+        <h3 class="divheading text-center">Books</h3>
+        <hr class="hunderline" />
 
         <div class="form-group">
             <input class="form-control" id="searchInput" type="text" placeholder="Search..">
@@ -127,7 +128,7 @@
             }
         </div>
 
-        
+
     </div>
 </div>
 
