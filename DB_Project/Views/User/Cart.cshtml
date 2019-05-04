@@ -3,6 +3,8 @@
     ViewBag.Title = "Cart";
 }
 
+@model List<DB_Project.Models.Book>
+
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
 
@@ -30,8 +32,10 @@
         <div class="sidenav">
             <a href="@Url.Action("DashBoard", "User")">DashBoard</a>
             <a href="@Url.Action("Books", "User")">Books</a>
+            <a href="@Url.Action("Cart", "User")">Cart</a>
             <a href="@Url.Action("Requests", "User")">Requests</a>
             <a href="@Url.Action("History", "User")">History</a>
+            <a href="@Url.Action("Subscriptions", "User")">Subscriptions</a>
             <a href="@Url.Action("ProfileInfo", "User")">Profile</a>
         </div>
     </div>
@@ -41,6 +45,41 @@
     <div class="container body-content">
         <h3 class="divheading text-center">Cart</h3>
         <hr class="hunderline" />
+
+        <button class="btn btn-success btn-block float-right" onclick="location.href='@Url.Action("PlaceOrder", "User")'"> Confirm</button>
+
+        @if (Model != null)
+        {
+        <table id="example" class="table table-striped table-bordered table-hover" cellspacing="0">
+            <tr>
+                <th>Title</th>
+                <th>Publisher</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Change Quantity</th>
+                <th>Remove</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><a href=" ../../User/BookDetails?id=@item.BookID">@item.Title</a>  </td>
+                    <td>@item.Publisher</td>
+                    <td>@item.Category</td>
+                    <td>@item.Price</td>
+                    <td><a href="#" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                    <td><a href=" ../../User/RemoveFromCart?id=@item.BookID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                </tr>
+            }
+            <tr>
+                <td><b>Total</b></td>
+                <td></td>
+                <td></td>
+                <td><b>@Model.Sum(i=>i.Price)</b></td>
+                <td></td>
+                <td><button class="btn btn-danger btn-block"> Clear All </button></td>
+            </tr>
+        </table>
+        }
 
 
     </div>

@@ -53,7 +53,8 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
+            int temp = 0;
+            return View(BookCRUD.GetBookReviews(id, temp));
         }
 
         public ActionResult EditBook(int id)
@@ -165,6 +166,19 @@ namespace DB_Project.Controllers
         public ActionResult OrderDetails(int id)
         {
             return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
+        }
+
+        public ActionResult BookSubscriptions(int id)
+        {
+            return View(SubscriptionCRUD.GetSubscribers(id));
+        }
+
+        public ActionResult UnSubscribe(int id)
+        {
+            if (SubscriptionCRUD.UnSubscribe(id, (int)Session["UserID"]))
+                return Content("<script>alert('Unsubscribed Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Operation Failed.');window.location.href=document.referrer;</script>");
         }
 
     }
