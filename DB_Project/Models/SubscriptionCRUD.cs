@@ -8,7 +8,8 @@ namespace DB_Project.Models
 {
     public class SubscriptionCRUD
     {
-        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static bool AddSubscription(int bid, int uid)
         {
@@ -112,7 +113,7 @@ namespace DB_Project.Models
 
         public static List<Book> GetSubscribedItems(int uid)
         {
-            using (SqlConnection ServerConnection = new SqlConnection())
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 

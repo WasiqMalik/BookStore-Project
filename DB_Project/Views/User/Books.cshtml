@@ -3,7 +3,7 @@
     ViewBag.Title = "Books";
 }
 
-@*@model List<DB_Project.Models.Book>*@
+@model List<DB_Project.Models.Book>
 
 @section CustomHeader{
     <nav class="navbar navbar-expand-sm bg-light">
@@ -32,8 +32,10 @@
         <div class="sidenav">
             <a href="@Url.Action("DashBoard", "User")">DashBoard</a>
             <a href="@Url.Action("Books", "User")">Books</a>
+            <a href="@Url.Action("Cart", "User")">Cart</a>
             <a href="@Url.Action("Requests", "User")">Requests</a>
             <a href="@Url.Action("History", "User")">History</a>
+            <a href="@Url.Action("Subscriptions", "User")">Subscriptions</a>
             <a href="@Url.Action("ProfileInfo", "User")">Profile</a>
         </div>
     </div>
@@ -41,11 +43,12 @@
 
 
     <div class="container body-content">
-        <h2>Filter Anything</h2>
+        <h3 class="divheading text-center">Books</h3>
+        <hr class="hunderline" />
 
         <div class="form-group">
             <input class="form-control" id="searchInput" type="text" placeholder="Search..">
-            <button type="button" class="btn btn-info float-right" onclick="location.href='@Url.Action("BooksList", "User")'">Display All Books</button>
+            <button type="button" class="btn btn-info float-right" onclick="location.href='@Url.Action("Books", "User")'">Display All Books</button>
         </div>
 
         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#SearchByModal">Search Settings</button>
@@ -127,7 +130,7 @@
             }
         </div>
 
-        
+
     </div>
 </div>
 

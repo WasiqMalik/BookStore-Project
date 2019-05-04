@@ -22,149 +22,113 @@
 }
 
 @*This block is displaying book along with the information and cover*@
-<div class="container body-content">
-    <h1>Book Details</h1>
-    <div class="card rounded px-5 py-2">
-        <div class="card-body">
-            <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
+    <div class="container body-content">
+        <h3 class="divheading text-center">Book Details</h3>
+        <hr class="hunderline" />
 
-            <h3>
-                @Model.Key.Title
-                @if (Model.Key.AverageRating >= 0 && Model.Key.AverageRating <= 5)
-                {
-                    //loop 5 times to print 5 star ratings
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (i < Model.Key.AverageRating)
-                        {
-                            <span class="justify-content-center"><i class="text-warning fa fa-star"></i></span>
-                        }
-                        else
-                        {
-                            <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
-                        }
-                    }
-                }
+        <div class="card rounded px-5 py-2">
+            <div class="card-body">
+                <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
 
-            </h3>
-            <p>
-                By @if (Model.Key.Authors != null)
-                {
-                    for (int i = 0; i < Model.Key.Authors.Count - 1; i++)
+                <h3>
+                    @Model.Key.Title
+                    @if (Model.Key.AverageRating >= 0 && Model.Key.AverageRating <= 5)
                     {
-                        @Model.Key.Authors[i].Insert(Model.Key.Authors[i].Length, ", ")
+                        //loop 5 times to print 5 star ratings
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (i < Model.Key.AverageRating)
+                            {
+                                <span class="justify-content-center"><i class="text-warning fa fa-star"></i></span>
+                            }
+                            else
+                            {
+                                <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
+                            }
+                        }
                     }
-                    @Model.Key.Authors[Model.Key.Authors.Count - 1]
-                }
-            </p>
-            <p><strong>Publisher: </strong>@Model.Key.Publisher</p>
-            <p>
-                <strong>Genres: </strong>
-                @if (Model.Key.Genres != null)
-                {
-                    for (int i = 0; i < Model.Key.Genres.Count - 1; i++)
+
+                </h3>
+                <p>
+                    By @if (Model.Key.Authors != null)
                     {
-                        @Model.Key.Genres[i].Insert(Model.Key.Genres[i].Length, ", ")
+                        for (int i = 0; i < Model.Key.Authors.Count - 1; i++)
+                        {
+                            @Model.Key.Authors[i].Insert(Model.Key.Authors[i].Length, ", ")
+                        }
+                        @Model.Key.Authors[Model.Key.Authors.Count - 1]
                     }
-                    @Model.Key.Genres[Model.Key.Genres.Count - 1]
-                }
-            </p>
-            <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
-            <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
-            @if (Model.Key.Stock >= 0)
-            {
-                <button class="btn btn-success"> + Add to Cart </button>
-            }
-            else
-            {
-                <button class="btn btn-danger"> Out of Stock </button>
-            }
+                </p>
+                <p><strong>Publisher: </strong>@Model.Key.Publisher</p>
+                <p>
+                    <strong>Genres: </strong>
+                    @if (Model.Key.Genres != null)
+                    {
+                        for (int i = 0; i < Model.Key.Genres.Count - 1; i++)
+                        {
+                            @Model.Key.Genres[i].Insert(Model.Key.Genres[i].Length, ", ")
+                        }
+                        @Model.Key.Genres[Model.Key.Genres.Count - 1]
+                    }
+                </p>
+                <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
+                <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
+                <button type="button" class="btn btn-success" onclick="location.href='../../Admin/BookSubscriptions?id=@Model.Key.BookID'"> Show All Subscribers </button>
+            </div>
         </div>
     </div>
-</div>
 
-
-@*This block displays all book reviews, with current user review on top, if user hasnt added a review, add review option is shown*@
-<div class="container">
-    <h2 class="text-center">Book Reviews</h2>
-    @if (Model.Value[0] == null)
-    {
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-2">
-                        <img src="http://mindandculture.org/wordpress6/wp-content/uploads/2018/07/Fotolia_188161178_XS.jpg" class="img-rounded img-fluid" />
-                        <p class="text-secondary text-center">You</p>
-                    </div>
-                    <div class="col-md-10">
-                        <form action="ReviewBook" class="form needs-validation" role="form" autocomplete="off" id="Add_Review" method="post">
-                            <div class="form-group">
-                                <input type="hidden" value="@Model.Key.BookID" name="BookID" />
-
-                                <label for="Text">Review</label>
-                                <input type="text" class="form-control" placeholder="Write your comment here..." id="Text" name="ReviewText" required>
-
-                                <label for="rate">Rating 0-5 </label>
-                                <input type="range" class="form-control" id="rate" name="Rating" min="0" max="5">
-                                <div class="invalid-feedback">Please enter valid input</div>
-                            </div>
-
-                            <div>
-                                <button type="submit" class="btn btn-success float-right">Add Review</button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    @*Looping over all book's reviews to display them*@
-    @foreach (DB_Project.Models.Review rew in Model.Value)
-    {
-        if (rew != null)
+@if (Model.Value != null)
+{
+    <div class="container">
+        <h3 class="divheading text-center">Book Reviews</h3>
+        <hr class="hunderline" />
+        @*Looping over all book's reviews to display them*@
+        @foreach (DB_Project.Models.Review rew in Model.Value)
         {
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <img src="http://mindandculture.org/wordpress6/wp-content/uploads/2018/07/Fotolia_188161178_XS.jpg" class="img-rounded img-fluid" />
-                            <p class="text-secondary text-center">Posted on @rew.DatePosted</p>
-                        </div>
-                        <div class="col-md-10">
-                            <p>
-                                <a class="float-left" href="#"><strong>@rew.UserName</strong></a>
-                                @if (rew.Rating >= 0 && rew.Rating <= 5)
-                                {
-                                    //loop 5 times to print 5 star ratings
-                                    for (int i = 0; i < 5; i++)
+            if (rew != null)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="http://mindandculture.org/wordpress6/wp-content/uploads/2018/07/Fotolia_188161178_XS.jpg" class="img-rounded img-fluid" />
+                                <p class="text-secondary text-center">Posted on @rew.DatePosted</p>
+                            </div>
+                            <div class="col-md-10">
+                                <p>
+                                    <a class="float-left" href="#"><strong>@rew.UserName</strong></a>
+                                    @if (rew.Rating >= 0 && rew.Rating <= 5)
                                     {
-                                        if (i < 5 - rew.Rating)
+                                        //loop 5 times to print 5 star ratings
+                                        for (int i = 0; i < 5; i++)
                                         {
-                                            <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
-                                        }
-                                        else
-                                        {
-                                            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                            if (i < 5 - rew.Rating)
+                                            {
+                                                <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                                            }
                                         }
                                     }
-                                }
 
-                            </p>
-                            <div class="clearfix"></div>
-                            <p>@rew.Description</p>
-                            <p>
-                                <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
-                                <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
-                            </p>
+                                </p>
+                                <div class="clearfix"></div>
+                                <p>@rew.Description</p>
+                                <p>
+                                    <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
+                                    <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
+                                </p>
+                            </div>
+
                         </div>
-
                     </div>
-                </div>
 
-            </div>
+                </div>
+            }
         }
-    }
-</div>
+    </div>
+}
 

@@ -16,7 +16,7 @@ namespace DB_Project.Controllers
         }
 
         //Shopping Cart and User Order related methods
-        public ActionResult ViewCart()
+        public ActionResult Cart()
         {
             List<Tuple<int, int, int>> items = (List<Tuple<int, int, int>>)Session["OrderItems"];
             List<Book> BooksList = new List<Book>();
@@ -72,9 +72,9 @@ namespace DB_Project.Controllers
         }
 
         //Books related methods
-        public ActionResult BooksList()
+        public ActionResult Books()
         {
-            return View("~/Views/User/Books.cshtml", BookCRUD.GetAllBooks());
+            return View(BookCRUD.GetAllBooks());
         }
 
         [HttpPost]
@@ -117,6 +117,11 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult Subscriptions()
+        {
+            return View(SubscriptionCRUD.GetSubscribedItems((int)Session["UserID"]));
+        }
+
         public ActionResult Subscribe(int id)
         {
             if (SubscriptionCRUD.AddSubscription(id, (int)Session["UserID"]))
@@ -131,11 +136,6 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Unsubscribed Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Operation Failed.');window.location.href=document.referrer;</script>");
-        }
-
-        public ActionResult ViewSubscriptions()
-        {
-            return View(SubscriptionCRUD.GetSubscribedItems((int)Session["UserID"]));
         }
 
         public ActionResult Requests()

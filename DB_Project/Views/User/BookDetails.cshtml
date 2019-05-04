@@ -10,6 +10,9 @@
 
         <a class="navbar-brand" href="#">BookStore</a>
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Cart", "User")"> (Cart Icon) </a>
+            </li>
             @if (Session["UserName"] != null)
             {
                 <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
@@ -79,6 +82,10 @@
             {
                 <button class="btn btn-danger"> Out of Stock </button>
             }
+            @if (Model.Key.SubStatus == true)
+            {
+                <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
+            }
         </div>
 
 
@@ -95,12 +102,12 @@
                             <div class="card-body">
                                 <form action="AddToCart" class="form needs-validation" role="form" autocomplete="off" method="post">
 
-                                    <input type="text" class="form-control" id="C_ID" name="ID" value="@Model.Key.BookID" required>
-                                    <input type="text" class="form-control" id="C_Price" name="Price" value="@Model.Key.Price" required>
+                                    <input type="hidden" class="form-control" id="C_ID" name="ID" value="@Model.Key.BookID" required>
+                                    <input type="hidden" class="form-control" id="C_Price" name="Price" value="@Model.Key.Price" required>
 
                                     <div class="form-group">
                                         <label for="C_Quantity">Quantity</label>
-                                        <input type="text" class="form-control" placeholder="Enter Quantity Value" id="C_Quantity" name="Quantity" required>
+                                        <input type="number" class="form-control" id="C_Quantity" name="Quantity" min="1" max="@Model.Key.Stock" value="1" required>
                                         <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
 
