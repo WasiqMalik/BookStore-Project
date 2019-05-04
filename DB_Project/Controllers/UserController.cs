@@ -109,7 +109,7 @@ namespace DB_Project.Controllers
             newReview.UserName = (string)Session["UserName"];
             newReview.BookID = Int32.Parse(collection["BookID"]);
             newReview.Description = collection["ReviewText"];
-            newReview.Rating = Int32.Parse(collection["Rating"]);
+            newReview.Rating = 6 - Int32.Parse(collection["review-rating"]);
 
             if (ReviewCRUD.CreateReview(newReview))
                 return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");

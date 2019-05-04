@@ -42,7 +42,7 @@ namespace DB_Project.Models
 
         public static bool UnSubscribe(int bid, int uid)
         {
-            using (SqlConnection ServerConnection = new SqlConnection())
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 
@@ -71,7 +71,7 @@ namespace DB_Project.Models
 
         public static List<Account> GetSubscribers(int bid)
         {
-            using (SqlConnection ServerConnection = new SqlConnection())
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 
