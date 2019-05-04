@@ -70,12 +70,16 @@ textarea {
 }
 
 
-/*for bok cards*/
+/*for book cards*/
 #f1_container {
     position: relative;
     width: 250px;
     height: 300px;
     z-index: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 #f1_container {
@@ -108,7 +112,7 @@ textarea {
         padding: 10px;
         color: white;
         text-align: center;
-        background-color: #aaa;
+        background-color: #333;
     }
 
 

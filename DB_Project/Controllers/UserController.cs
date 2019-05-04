@@ -15,8 +15,12 @@ namespace DB_Project.Controllers
             //return View(new Tuple<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
         }
 
-        public ActionResult AddToCart(int item, int quantity, int price)
+        [HttpPost]
+        public ActionResult AddToCart(FormCollection collection)
         {
+            int item = Int32.Parse(collection["ID"]);
+            int price = Int32.Parse(collection["Price"]);
+            int quantity = Int32.Parse(collection["Quantity"]);
             ((List<Tuple<int, int, int>>)Session["OrderItems"]).Add(new Tuple<int, int, int>(item, quantity, price));
 
             return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");

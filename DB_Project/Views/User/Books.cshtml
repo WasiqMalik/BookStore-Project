@@ -101,8 +101,7 @@
                                         <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/photo7.jpg" alt="Book Image">
                                     </div>
                                     <div class="card-body text-center">
-                                        <h4 class="font-weight-bold mb-3"><a href=" ../../User/BookDetails?id=@item.BookID">@item.Title</a></h4>
-                                        <button type="button" class="btn btn-info" onclick="">Read More</button>
+                                        <h4 class="font-weight-bold mb-3">@item.Title</h4>
                                     </div>
                                 </div>
                                 <div class="back face">
@@ -119,6 +118,7 @@
                                             @item.Authors[item.Authors.Count - 1]
                                         }
                                     </p>
+                                    <button type="button" class="btn btn-info" onclick="location.href='@Url.Action("BookDetails", "User")?id=' + @item.BookID">Read More</button>
                                 </div>
                             </div>
                         </div>
