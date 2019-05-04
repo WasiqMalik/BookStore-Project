@@ -1,6 +1,5 @@
 ﻿using DB_Project.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -8,21 +7,15 @@ namespace DB_Project.Controllers
 {
     public class AdminController : Controller
     {
-        
+        // GET: Admin
         public ActionResult Console()
         {
             return View();
         }
 
-        //Users related methods
         public ActionResult Users()
         {
-            return View();
-        }
-
-        public ActionResult UserList()
-        {
-            return View("~/Views/Admin/Users.cshtml", AccountCRUD.GetAllUsers());
+            return View(AccountCRUD.GetAllUsers());
         }
 
         public ActionResult UserDetail(int id)
@@ -30,32 +23,32 @@ namespace DB_Project.Controllers
             return PartialView("_UserDetail", AccountCRUD.GetAccount(id));
         }
 
-        public ActionResult UpdateUserPriviledges(int id, int value)
+        public ActionResult ChangeAccess(int id)
         {
+            return PartialView("_changeAccess", id);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateUserPriviledges(FormCollection collection)
+        {
+            int id = Int32.Parse(collection["UserID"]);
+            int value = Int32.Parse(collection["AccessStatus"]);
             if (AccountCRUD.ChangePriviledges(id, value == 1 ? "Admin" : "User"))
-                return Content("<script>alert('User's Priviledges Changed.');window.location.href=document.referrer;</script>");
+                return Content("<script>alert('User's Access Changed Successfully.');window.location = 'Users';</script>");
             else
-                return Content("<script>alert('User not found.');window.location.href=document.referrer</script>");
+                return Content("<script>alert('User not found.');window.location = 'Users';</script>");
         }
 
         public ActionResult RemoveUsers(int id)
         {
-
-            List<Order> orders = OrderCRUD.GetUserOrders(id);
-
-            //if any order exists that hasnt been delievered then cannot delete account
-            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
-            {
-                AccountCRUD.RemoveUser(id);
-                return Redirect("Console");
-            }
+            if (AccountCRUD.RemoveUser(id))
+                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
             else
-                return Content("<script>alert('This User still has pending Orders.');window.location.href=document.referrer</script>");
-
+                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
 
         }
 
-        //Book related methods
+        // GET: All Books
         public ActionResult BooksList()
         {
             return View("~/Views/Admin/Console.cshtml", BookCRUD.GetAllBooks());
@@ -63,7 +56,8 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
+            int temp = 0;
+            return View(BookCRUD.GetBookReviews(id, temp));
         }
 
         public ActionResult EditBook(int id)
@@ -140,12 +134,6 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
-        }
-
-        //Order related methods
-        public ActionResult Order()
-        {
-            return View();
         }
 
         public ActionResult AllOrders()
