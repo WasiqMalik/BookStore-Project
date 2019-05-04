@@ -1,6 +1,6 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "BookDetails";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @model KeyValuePair<DB_Project.Models.Book, List<DB_Project.Models.Review>>
@@ -71,7 +71,7 @@
             </p>
             <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
             <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
-            @if (Model.Key.Stock >= 0)
+            @if (Model.Key.Stock > 0)
             {
                 <button class="btn btn-success"> + Add to Cart </button>
             }
@@ -167,4 +167,5 @@
         }
     }
 </div>
+
 

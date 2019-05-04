@@ -10,9 +10,10 @@
 
         <a class="navbar-brand" href="#">BookStore</a>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <p class="navbar-text"> Welcome, </p>
-            </li>
+            @if (Session["UserName"] != null)
+            {
+                <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
+            }
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
             </li>

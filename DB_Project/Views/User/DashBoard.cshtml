@@ -15,9 +15,12 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            @*<li class="nav-item">
-                    <p class="navbar-text"> Welcome, @Model </p>
-                </li>*@
+            <li class="nav-item">
+                @if (Session["UserName"] != null)
+                {
+                    <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
+                }
+            </li>
             <li class="nav-item ml-auto">
                 <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
             </li>
@@ -42,10 +45,10 @@
         <h3 class="divheading text-center">Best Sellers</h3>
         <hr class="hunderline"/>
 
-        @if (Model.item1 != null)
+        @if (Model.Item1 != null)
         {
             <div class="card-deck">
-                @foreach (var item in Model.item1)
+                @foreach (var item in Model.Item1)
                 {
                     <div id="f1_container">
                         <div id="f1_card" class="shadow card">
@@ -80,13 +83,13 @@
 
         }
 
-        @if (Model.item2 != null)
+        @if (Model.Item2 != null)
         {
             <br />
             <h3 class="divheading text-center"> Reccomendations </h3>
             <hr class="hunderline"/>
             <div class="card-deck">
-                @foreach (var item in Model.item2)
+                @foreach (var item in Model.Item2)
                 {
                     <div id="f1_container">
                         <div id="f1_card" class="shadow card">

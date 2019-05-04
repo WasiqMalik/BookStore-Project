@@ -79,7 +79,7 @@ namespace DB_Project.Models
                     Account retAcc = new Account();
                     retAcc.UserID = id;
                     retAcc.Username = (string)cmd.Parameters["@uname"].Value;
-                    retAcc.AccStatus = (string)cmd.Parameters["@acc_pr"].Value;
+                    retAcc.AccStatus = (string)cmd.Parameters["@access"].Value;
                     retAcc.Gender = (char)cmd.Parameters["@gen"].Value;
                     retAcc.ContactNo = (string)cmd.Parameters["@conta"].Value;
                     retAcc.Address = (string)cmd.Parameters["@Address"].Value;

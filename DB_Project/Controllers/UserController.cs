@@ -12,6 +12,7 @@ namespace DB_Project.Controllers
         {
             //displaying books in best seller section and recommended section
             return View(new Tuple<List<Book>, List<Book>>(BookCRUD.BestSellers(), BookCRUD.UserRecommendations((int)Session["UserID"])));
+            //return View(new Tuple<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
         }
 
         public ActionResult AddToCart(int item, int quantity, int price)
