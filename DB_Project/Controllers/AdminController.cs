@@ -15,12 +15,7 @@ namespace DB_Project.Controllers
 
         public ActionResult Users()
         {
-            return View();
-        }
-
-        public ActionResult UserList()
-        {
-            return View("~/Views/Admin/Users.cshtml", AccountCRUD.GetAllUsers());
+            return View(AccountCRUD.GetAllUsers());
         }
 
         public ActionResult UserDetail(int id)
@@ -28,12 +23,20 @@ namespace DB_Project.Controllers
             return PartialView("_UserDetail", AccountCRUD.GetAccount(id));
         }
 
-        public ActionResult UpdateUserPriviledges(int id,int value)
+        public ActionResult ChangeAccess(int id)
         {
+            return PartialView("_changeAccess", id);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateUserPriviledges(FormCollection collection)
+        {
+            int id = Int32.Parse(collection["UserID"]);
+            int value = Int32.Parse(collection["AccessStatus"]);
             if (AccountCRUD.ChangePriviledges(id, value == 1 ? "Admin" : "User"))
-                return Content("<script>alert('User's Priviledges Changed.');window.location.href=document.referrer;</script>");
+                return Content("<script>alert('User's Access Changed Successfully.');window.location = 'Users';</script>");
             else
-                return Content("<script>alert('User not found.');window.location.href=document.referrer</script>");
+                return Content("<script>alert('User not found.');window.location = 'Users';</script>");
         }
 
         public ActionResult RemoveUsers(int id)
