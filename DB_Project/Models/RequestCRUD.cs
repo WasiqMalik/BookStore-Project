@@ -118,7 +118,7 @@ namespace DB_Project.Models
 
         public static bool DeleteRequest(int id)
         {
-            using (SqlConnection ServerConnection = new SqlConnection())
+            using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
 

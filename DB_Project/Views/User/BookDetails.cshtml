@@ -145,18 +145,25 @@
                             <div class="form-group">
                                 <input type="hidden" value="@Model.Key.BookID" name="BookID" />
 
-                                <label for="Text">Review</label>
-                                <input type="text" class="form-control" placeholder="Write your comment here..." id="Text" name="ReviewText" required>
-
-                                <label for="rate">Rating 0-5 </label>
-                                <input type="range" class="form-control" id="rate" name="Rating" min="0" max="5">
-                                <div class="invalid-feedback">Please enter valid input</div>
+                                <label for="Text"><strong>Review</strong></label>
+                                <input type="text" class="form-control" size="500" placeholder="Write your comment here..." id="Text" name="ReviewText" required>
                             </div>
 
+                            <fieldset class="rating align-baseline">
+                                <input type="radio" name="review-rating" id="1" value="1" />
+                                <label for="1">1</label>
+                                <input type="radio" name="review-rating" id="2" value="2" />
+                                <label for="2">2</label>
+                                <input type="radio" name="review-rating" id="3" value="3" checked />
+                                <label for="3">3</label>
+                                <input type="radio" name="review-rating" id="4" value="4" />
+                                <label for="4">4</label>
+                                <input type="radio" name="review-rating" id="5" value="5" />
+                                <label for="5">5</label>
+                            </fieldset>
                             <div>
-                                <button type="submit" class="btn btn-success float-right">Add Review</button>
+                                <button type="submit" class="btn btn-success float-right align-bottom">Add Review</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -228,7 +235,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
