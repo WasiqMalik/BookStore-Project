@@ -8,8 +8,8 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static Book GetBook(int id)
@@ -301,19 +301,15 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
                 int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
 
-                if (Flag == 1)
-                {
-                    DataTable itemIDs = new DataTable(); //stores IDs      
-                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                    Data.Fill(itemIDs);  //get procedure result set
-
-                    foreach (DataRow row in itemIDs.Rows)
-                    {
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
-                    }
-                }
+                if (Flag == 1)                                
+                    foreach (DataRow row in itemIDs.Rows)                   
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));                                    
 
                 ServerConnection.Close();
 
