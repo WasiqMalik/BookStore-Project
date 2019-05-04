@@ -1,5 +1,6 @@
 ﻿using DB_Project.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -7,12 +8,13 @@ namespace DB_Project.Controllers
 {
     public class AdminController : Controller
     {
-        // GET: Admin
+        
         public ActionResult Console()
         {
             return View();
         }
 
+        //Users related methods
         public ActionResult Users()
         {
             return View();
@@ -28,7 +30,7 @@ namespace DB_Project.Controllers
             return PartialView("_UserDetail", AccountCRUD.GetAccount(id));
         }
 
-        public ActionResult UpdateUserPriviledges(int id,int value)
+        public ActionResult UpdateUserPriviledges(int id, int value)
         {
             if (AccountCRUD.ChangePriviledges(id, value == 1 ? "Admin" : "User"))
                 return Content("<script>alert('User's Priviledges Changed.');window.location.href=document.referrer;</script>");
@@ -38,14 +40,22 @@ namespace DB_Project.Controllers
 
         public ActionResult RemoveUsers(int id)
         {
-            if (AccountCRUD.RemoveUser(id))
-                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
+
+            List<Order> orders = OrderCRUD.GetUserOrders(id);
+
+            //if any order exists that hasnt been delievered then cannot delete account
+            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
+            {
+                AccountCRUD.RemoveUser(id);
+                return Redirect("Console");
+            }
             else
-                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
+                return Content("<script>alert('This User still has pending Orders.');window.location.href=document.referrer</script>");
+
 
         }
 
-        // GET: All Books
+        //Book related methods
         public ActionResult BooksList()
         {
             return View("~/Views/Admin/Console.cshtml", BookCRUD.GetAllBooks());
@@ -53,8 +63,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            int temp = 0;
-            return View(BookCRUD.GetBookReviews(id, temp));
+            return View(BookCRUD.GetBookReviews(id, (int)Session["UserID"]));
         }
 
         public ActionResult EditBook(int id)
@@ -131,6 +140,12 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
+        }
+
+        //Order related methods
+        public ActionResult Order()
+        {
+            return View();
         }
 
         public ActionResult AllOrders()
