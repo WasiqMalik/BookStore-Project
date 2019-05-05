@@ -30,13 +30,10 @@
 <div class="row">
     <div class="col-2">
         <div class="sidenav">
-            <a href="@Url.Action("DashBoard", "User")">DashBoard</a>
-            <a href="@Url.Action("Books", "User")">Books</a>
-            <a href="@Url.Action("Cart", "User")">Cart</a>
-            <a href="@Url.Action("Requests", "User")">Requests</a>
-            <a href="@Url.Action("History", "User")">History</a>
-            <a href="@Url.Action("Subscriptions", "User")">Subscriptions</a>
-            <a href="@Url.Action("ProfileInfo", "User")">Profile</a>
+            <a href="@Url.Action("Console", "Admin")">Books</a>
+            <a href="@Url.Action("Order", "Admin")">Orders</a>
+            <a href="@Url.Action("Users", "Admin")">Users</a>
+            <a href="@Url.Action("ProfileInfo", "Admin")">Profile</a>
         </div>
     </div>
 
@@ -60,7 +57,6 @@
         <p>DateJoined : @Model.DateJoined</p>
         <p>Account Status : @Model.AccStatus</p>
         <button href="#" type="button" class="btn btn-success" onclick="EditInfofunction(@Model.UserID)">Edit Info</button>
-        <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "User")'">Delete Account</button>
 
 
         <div class="modal fade" id="changePasswordModal">
@@ -98,7 +94,7 @@
 <script>
     var PasswordChangefunction = function (bid) {
 
-        var url = "/User/PasswordChange?id=" + bid;
+        var url = "/Admin/PasswordChange?id=" + bid;
 
         $("#changePasswordModalBodyDiv1").load(url, function () {
             $("#changePasswordModal").modal("show");
@@ -108,7 +104,7 @@
 
     var EditInfofunction = function (uid) {
 
-        var url = "/User/EditInfo?id=" + uid;
+        var url = "/Admin/EditInfo?id=" + uid;
 
         $("#editInfoModalBodyDiv1").load(url, function () {
             $("#editInfoModal").modal("show");

@@ -1,0 +1,60 @@
+﻿@model DB_Project.Models.Account
+
+<div>
+    <div class="card rounded px-5 py-2">
+        <div class="card-body">
+            <form action="ChangeInfo" class="form needs-validation" role="form" autocomplete="off" id="formSignup" novalidate method="post">
+
+                <input type="hidden" class="form-control" name="UserID" value=@Model.UserID required />
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" placeholder="your@example.com" id="email" name="Email" value="@Model.Email" required>
+                    <div class="invalid-feedback">Please enter valid email</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="usrname">Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Your Name" id="usrname" name="Username" value="@Model.Username" required>
+                    <div class="invalid-feedback">Please fill out this field</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cno.">Contact No.</label>
+                    <input type="text" class="form-control" placeholder="e.g. +920000000000" minlength="13" id="cno" name="ContactNo" value="@Model.ContactNo" required>
+                    <div class="invalid-feedback">Please fill out this field</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="add">Address</label>
+                    <input type="text" class="form-control" placeholder="Address" id="add" name="Address" value="@Model.Address" required>
+                    <div class="invalid-feedback">Please fill out this field</div>
+                </div>
+
+                @if (Model.Gender == 'M')
+                {
+                    <div>
+                        <label for="Gender">Gender </label>
+                        <input type="radio" name="Gender" value="M" checked required> Male
+                        <input type="radio" name="Gender" value="F"> Female
+                        <div class="invalid-feedback">Select Option</div>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <label for="Gender">Gender </label>
+                        <input type="radio" name="Gender" value="M" required> Male
+                        <input type="radio" name="Gender" value="F" checked> Female
+                        <div class="invalid-feedback">Select Option</div>
+                    </div>
+                }
+
+                <div>
+                    <button type="submit" class="btn btn-success btn-block">Done</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
