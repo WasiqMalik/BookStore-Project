@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "History";
+    ViewBag.Title = "Orders";
 }
 
 @model List<DB_Project.Models.Order>
@@ -42,8 +42,9 @@
     </div>
 
 
+
     <div class="container body-content">
-        <h3 class="divheading text-center">History</h3>
+        <h3 class="divheading text-center">Orders</h3>
         <hr class="hunderline" />
 
         @if (Model != null && Model.Count != 0)
@@ -63,7 +64,7 @@
                         <td>@item.UserID</td>
                         <td>@item.Date</td>
                         <td>@item.OrderStatus</td>
-                        <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                        <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>    
                     </tr>
                 }
             </table>
@@ -84,6 +85,7 @@
 
     </div>
 </div>
+
 
 <script>
 

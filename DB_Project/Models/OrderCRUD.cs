@@ -11,8 +11,8 @@ namespace DB_Project.Models
 {
     public class OrderCRUD
     {
-        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Order> GetAllOrders()
         {
@@ -113,7 +113,7 @@ namespace DB_Project.Models
                     //output parameters
                     cmd.Parameters.Add(new SqlParameter("@oid", 0));
                     cmd.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int));
-                    cmd.Parameters["@user"].Direction = ParameterDirection.Output;
+                    cmd.Parameters["@uid"].Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(new SqlParameter("@date", SqlDbType.DateTime));
                     cmd.Parameters["@date"].Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(new SqlParameter("@status", SqlDbType.VarChar, 10));
@@ -138,7 +138,7 @@ namespace DB_Project.Models
                         if (Flag == 1)
                         {
                             //intializing order obj 
-                            getOrder.UserID = (int)cmd.Parameters["@user"].Value;
+                            getOrder.UserID = (int)cmd.Parameters["@uid"].Value;
                             getOrder.Date = (string)cmd.Parameters["@date"].Value;
                             getOrder.OrderStatus = (string)cmd.Parameters["@status"].Value;
                             getOrder.Items = new List<Tuple<int, int, int>>();
