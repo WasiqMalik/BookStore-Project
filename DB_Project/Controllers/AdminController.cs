@@ -1,7 +1,6 @@
 ﻿using DB_Project.Models;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace DB_Project.Controllers
@@ -42,18 +41,10 @@ namespace DB_Project.Controllers
 
         public ActionResult RemoveUsers(int id)
         {
-
-            List<Order> orders = OrderCRUD.GetUserOrders(id);
-
-            //if any order exists that hasnt been delievered then cannot delete account
-            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
-            {
-                AccountCRUD.RemoveUser(id);
-                return Redirect("Console");
-            }
+            if (AccountCRUD.RemoveUser(id))
+                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
             else
-                return Content("<script>alert('This User still has pending Orders.');window.location.href=document.referrer</script>");
-
+                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
 
         }
 
@@ -65,7 +56,8 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            return View(BookCRUD.GetBookReviews(id, 0));
+            int temp = 0;
+            return View(BookCRUD.GetBookReviews(id, temp));
         }
 
         public ActionResult EditBook(int id)
@@ -146,12 +138,7 @@ namespace DB_Project.Controllers
 
         public ActionResult Order()
         {
-            return View();
-        }
-
-        public ActionResult AllOrders()
-        {
-            return View("~/Views/Admin/Order.cshtml", OrderCRUD.GetAllOrders());
+            return View(OrderCRUD.GetAllOrders());
         }
 
         public ActionResult RemoveOrder(int id)
@@ -195,6 +182,50 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Unsubscribed Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Operation Failed.');window.location.href=document.referrer;</script>");
+        }
+
+        //Admin Account related methods
+        public ActionResult ProfileInfo()
+        {
+            return View(AccountCRUD.GetAccount((int)Session["UserID"]));
+        }
+
+        public ActionResult PasswordChange()
+        {
+            return PartialView("_PasswordChange");
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection collection)
+        {
+            //int id = 1;
+            string newPass = collection["Password"];
+
+            if (AccountCRUD.ChangePassword((int)Session["UserID"], newPass))
+                return Content("<script>alert('Password Changed Successfully Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Password could not be Changed');window.location.href=document.referrer</script>");
+        }
+
+        public ActionResult EditInfo(int id)
+        {
+            return PartialView("_EditInfo", AccountCRUD.GetAccount(id));
+        }
+
+        [HttpPost]
+        public ActionResult ChangeInfo(FormCollection collection)
+        {
+            Account myacc = new Account();
+            myacc.UserID = Int32.Parse(collection["UserID"]);
+            myacc.Email = collection["Email"];
+            myacc.Username = collection["Username"];
+            myacc.ContactNo = collection["ContactNo"];
+            myacc.Address = collection["Address"];
+            myacc.Gender = Convert.ToChar(collection["Gender"]);
+            if (AccountCRUD.UpdateUser(myacc))
+                return Content("<script>alert('Profile Edited Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Profile Could not be Updated');window.location.href=document.referrer</script>");
         }
 
     }

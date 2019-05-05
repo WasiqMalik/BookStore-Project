@@ -28,16 +28,16 @@
                 <a href="@Url.Action("Console", "Admin")">Books</a>
                 <a href="@Url.Action("Order", "Admin")">Orders</a>
                 <a href="@Url.Action("Users", "Admin")">Users</a>
+                <a href="@Url.Action("ProfileInfo", "Admin")">Profile</a>
             </div>
         </div>
 
         <div class="container body-content">
 
-            <h2>Order</h2>
+            <h3 class="divheading text-center">Orders</h3>
+            <hr class="hunderline" />
 
-            <button type="button" class="btn btn-info btn-lg" onclick="location.href='@Url.Action("AllOrders", "Admin")'">Display All Orders</button>
-
-            @if (Model != null)
+            @if (Model != null && Model.Count != 0)
             {
                 <table class="table table-striped table-bordered table-hover" cellspacing="0">
                     <tr>
@@ -51,15 +51,15 @@
                     </tr>
                     @foreach (var item in Model)
                     {
-                    <tr>
-                        <td>@item.OrderID</td>
-                        <td>@item.UserID</td>
-                        <td>@item.Date</td>
-                        <td>@item.OrderStatus</td>
-                        <td><a href="#" class="btn btn-primary" onclick="OrderStatusfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                        <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                        <td><a href=" ../../Admin/RemoveOrder?id=@item.OrderID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
-                    </tr>
+                        <tr>
+                            <td>@item.OrderID</td>
+                            <td>@item.UserID</td>
+                            <td>@item.Date</td>
+                            <td>@item.OrderStatus</td>
+                            <td><a href="#" class="btn btn-primary" onclick="OrderStatusfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                            <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
+                            <td><a href=" ../../Admin/RemoveOrder?id=@item.OrderID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                        </tr>
                     }
                 </table>
             }

@@ -182,7 +182,28 @@ namespace DB_Project.Controllers
             if (AccountCRUD.ChangePassword((int)Session["UserID"], newPass))
                 return Content("<script>alert('Password Changed Successfully Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Book could not be Update.');window.location.href=document.referrer</script>");
+                return Content("<script>alert('Password could not be Changed');window.location.href=document.referrer</script>");
+        }
+
+        public ActionResult EditInfo(int id)
+        {
+            return PartialView("_EditInfo", AccountCRUD.GetAccount(id));
+        }
+
+        [HttpPost]
+        public ActionResult ChangeInfo(FormCollection collection)
+        {
+            Account myacc = new Account();
+            myacc.UserID = Int32.Parse(collection["UserID"]);
+            myacc.Email = collection["Email"];
+            myacc.Username = collection["Username"];
+            myacc.ContactNo = collection["ContactNo"];
+            myacc.Address = collection["Address"];
+            myacc.Gender = Convert.ToChar(collection["Gender"]);
+            if (AccountCRUD.UpdateUser(myacc))
+                return Content("<script>alert('Profile Edited Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Profile Could not be Updated');window.location.href=document.referrer</script>");
         }
 
         public ActionResult DeleteAccount()
