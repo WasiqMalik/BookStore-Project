@@ -18,7 +18,7 @@ namespace DB_Project.Controllers
             AllRequests.RemoveAll(item => item.RequestStatus == "Resolved"); //only keep unresolved requests
 
             //display pending work to the admin docking page
-            return View(new Tuple<List<Order>,List<Request>>(AllOrders,AllRequests));
+            return View(new Tuple<List<Order>, List<Request>>(AllOrders, AllRequests));
         }
 
         public ActionResult Users()
@@ -41,10 +41,11 @@ namespace DB_Project.Controllers
         {
             int id = Int32.Parse(collection["UserID"]);
             int value = Int32.Parse(collection["AccessStatus"]);
+
             if (AccountCRUD.ChangePriviledges(id, value == 1 ? "Admin" : "User"))
-                return Content("<script>alert('User's Access Changed Successfully.');window.location = 'Users';</script>");
+                return Content("<script>alert('User Status has been Updated Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('User not found.');window.location = 'Users';</script>");
+                return Content("<script>alert('User Status could not be Updated.');window.location.href=document.referrer</script>");
         }
 
         public ActionResult RemoveUsers(int id)
@@ -71,7 +72,7 @@ namespace DB_Project.Controllers
         }
 
         public ActionResult BookDetails(int id)
-        { 
+        {
             return View(BookCRUD.GetBookReviews(id, 0));
         }
 
@@ -178,7 +179,7 @@ namespace DB_Project.Controllers
             if (OrderCRUD.UpdateStatus(oid, status))
                 return Content("<script>alert('Order Status has been Updated Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Order Status could not be Update.');window.location.href=document.referrer</script>");
+                return Content("<script>alert('Order Status could not be Updated.');window.location.href=document.referrer</script>");
         }
 
         public ActionResult OrderDetails(int id)
@@ -236,6 +237,7 @@ namespace DB_Project.Controllers
             myacc.Username = collection["Username"];
             myacc.ContactNo = collection["ContactNo"];
             myacc.Address = collection["Address"];
+            myacc.AccStatus = (string)Session["Priviledges"];
             myacc.Gender = Convert.ToChar(collection["Gender"]);
             if (AccountCRUD.UpdateUser(myacc))
                 return Content("<script>alert('Profile Edited Successfully.');window.location.href=document.referrer;</script>");

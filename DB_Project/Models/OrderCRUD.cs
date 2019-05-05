@@ -64,7 +64,7 @@ namespace DB_Project.Models
                         getOrder.Items = new List<Tuple<int,int,int>>();
 
                         foreach (DataRow Row in Items.Rows)
-                            getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], (int) Row["PriceSoldAt"]));
+                            getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], Convert.ToInt32(Row["PriceSoldAt"])));
 
                         getOrder.TotalCost = CalcTotalCost(getOrder.Items);
                         OrdersList.Add(getOrder);

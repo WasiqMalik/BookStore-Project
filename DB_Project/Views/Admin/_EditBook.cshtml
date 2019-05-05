@@ -47,7 +47,7 @@
 
                 <div class="form-group">
                     <label for="C_Stock">Discount %</label>
-                    <input type="number" class="form-control" placeholder="Enter Discount" id="C_Stock" name="Discount" value="0" min="0" max="100" required>
+                    <input type="number" class="form-control" placeholder="Enter Discount" id="C_Stock" name="Discount" value="@(Model.Discount*100)" min="0" max="100" required>
                     <div class="invalid-feedback">Please enter valid input</div>
                 </div>
 
