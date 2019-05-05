@@ -7,7 +7,6 @@ namespace DB_Project.Controllers
 {
     public class UserController : Controller
     {
-        // GET: User
         public ActionResult DashBoard()
         {
             //displaying books in best seller section and recommended section
@@ -53,6 +52,14 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Item not found in Cart.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult EmptyCart()
+        {
+            ((List<Tuple<int, int, int>>)Session["OrderItems"]).Clear();
+            ((List<Tuple<int, int, int>>)Session["OrderItems"]).TrimExcess();
+
+            return Content("<script>alert('Cart has been Emptied.');window.location.href=document.referrer;</script>");
+        }
+
         public ActionResult PlaceOrder()
         {
             Order newOrder = new Order();
@@ -66,9 +73,20 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult ViewOrders()
+        {
+            List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
+            orders.RemoveAll(item => item.OrderStatus == "Delivered");
+
+            return View(orders);
+        }
+
         public ActionResult History()
         {
-            return View();
+            List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
+            orders.RemoveAll(item => item.OrderStatus != "Delivered");
+
+            return View(orders);
         }
 
         //Books related methods
@@ -189,8 +207,16 @@ namespace DB_Project.Controllers
 
         public ActionResult DeleteAccount()
         {
-            AccountCRUD.RemoveUser((int)Session["UserID"]);
-            return RedirectToAction("Login", "Account", new { area = "" });
+            List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
+
+            //if any order exists that hasnt been delievered then cannot delete account
+            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
+            {
+                AccountCRUD.RemoveUser((int)Session["UserID"]);
+                return Redirect("Home");
+            }
+            else
+                return Content("<script>alert('You still have pending Orders.');window.location.href=document.referrer</script>");
         }
 
     }

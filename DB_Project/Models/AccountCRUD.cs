@@ -7,8 +7,8 @@ namespace DB_Project.Models
 {
     public class AccountCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Account> GetAllUsers()
         {
