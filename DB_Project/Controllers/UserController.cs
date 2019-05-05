@@ -81,6 +81,32 @@ namespace DB_Project.Controllers
             return View(orders);
         }
 
+        public ActionResult Requests()
+        {
+            return View(RequestCRUD.GetRequest((int)Session["UserID"]));
+        }
+
+        [HttpPost]
+        public ActionResult AddRequest(FormCollection collection)
+        {
+            Request myreq = new Request();
+            myreq.Description = collection["Description"];
+            myreq.UserID = (int)Session["UserID"];
+            if (RequestCRUD.CreateRequest(myreq))
+                return Content("<script>alert('Request Added Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Request could not be Added.');window.location.href=document.referrer;</script>");
+        }
+
+        
+        public ActionResult RemoveRequest(int id)
+        {
+            if (RequestCRUD.DeleteRequest(id))
+                return Content("<script>alert('Request Deleted Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Request could not be Deleted.');window.location.href=document.referrer</script>");
+        }
+
         public ActionResult History()
         {
             List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
@@ -154,11 +180,6 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Unsubscribed Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Operation Failed.');window.location.href=document.referrer;</script>");
-        }
-
-        public ActionResult Requests()
-        {
-            return View();
         }
 
         //User Account related methods
