@@ -1,6 +1,7 @@
 ﻿using DB_Project.Models;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace DB_Project.Controllers
@@ -41,10 +42,18 @@ namespace DB_Project.Controllers
 
         public ActionResult RemoveUsers(int id)
         {
-            if (AccountCRUD.RemoveUser(id))
-                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
+
+            List<Order> orders = OrderCRUD.GetUserOrders(id);
+
+            //if any order exists that hasnt been delievered then cannot delete account
+            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
+            {
+                AccountCRUD.RemoveUser(id);
+                return Redirect("Console");
+            }
             else
-                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
+                return Content("<script>alert('This User still has pending Orders.');window.location.href=document.referrer</script>");
+
 
         }
 
@@ -56,8 +65,7 @@ namespace DB_Project.Controllers
 
         public ActionResult BookDetails(int id)
         {
-            int temp = 0;
-            return View(BookCRUD.GetBookReviews(id, temp));
+            return View(BookCRUD.GetBookReviews(id, 0));
         }
 
         public ActionResult EditBook(int id)
@@ -134,6 +142,11 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review has been added Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
+        }
+
+        public ActionResult Order()
+        {
+            return View();
         }
 
         public ActionResult AllOrders()
