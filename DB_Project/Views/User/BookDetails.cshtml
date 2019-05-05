@@ -46,7 +46,6 @@
                         <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
                     }
                 }
-                }
 
             </h3>
             <p>
@@ -72,19 +71,47 @@
                 }
             </p>
             <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
-            <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
-            @if (Model.Key.Stock > 0)
+
+            @*check if the required book is subscribable or not*@
+            @if (Model.Key.SubStatus == true)
             {
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddItemModal"> + Add to Cart</button>
+                if (Model.Key.Discount == 0)
+                {
+                    <p class="align-text-bottom"><strong>Price: </strong>Rs.@Model.Key.Price/Month</p>
+                }
+                else
+                {
+                    <p class="align-text-bottom"><strong>Price: </strong><strike>Rs.@Model.Key.Price</strike>/Month</p>
+                    <p class="align-text-bottom">
+                        <strong>New Price: </strong>Rs.@((int)(Model.Key.Price * (1 - Model.Key.Discount))))/Month <strong>@(Model.Key.Discount * 100)% Off</strong>
+                    </p>
+                }
+                <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
             }
             else
             {
-                <button class="btn btn-danger"> Out of Stock </button>
+                @*incase of non-subscriable items*@
+                if (Model.Key.Discount == 0)
+                {
+                    <p class="align-text-bottom"><strong>Price: </strong>Rs.@Model.Key.Price</p>
+                }
+                else
+                {
+                    <p class="align-text-bottom"><strong>Price: </strong><strike>Rs.@Model.Key.Price</strike></p>
+                    <p class="align-text-bottom">
+                        <strong>New Price: </strong>Rs.@((int)(Model.Key.Price * (1 - Model.Key.Discount))) <strong>@(Model.Key.Discount * 100)% Off</strong>
+                    </p>
+                }
+                if (Model.Key.Stock > 0)
+                {
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddItemModal"> + Add to Cart</button>
+                }
+                else
+                {
+                    <button class="btn btn-danger"> Out of Stock </button>
+                }
             }
-            @if (Model.Key.SubStatus == true)
-            {
-                <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
-            }
+
         </div>
 
 
@@ -102,7 +129,7 @@
                                 <form action="AddToCart" class="form needs-validation" role="form" autocomplete="off" method="post">
 
                                     <input type="hidden" class="form-control" id="C_ID" name="ID" value="@Model.Key.BookID" required>
-                                    <input type="hidden" class="form-control" id="C_Price" name="Price" value="@Model.Key.Price" required>
+                                    <input type="hidden" class="form-control" id="C_Price" name="Price" value="@((int)(Model.Key.Price * (1-Model.Key.Discount)))" required>
 
                                     <div class="form-group">
                                         <label for="C_Quantity">Quantity</label>
@@ -152,11 +179,11 @@
                                 <label for="1">1</label>
                                 <input type="radio" name="review-rating" id="2" value="2" />
                                 <label for="2">2</label>
-                                <input type="radio" name="review-rating" id="3" value="3" checked />
+                                <input type="radio" name="review-rating" id="3" value="3" />
                                 <label for="3">3</label>
                                 <input type="radio" name="review-rating" id="4" value="4" />
                                 <label for="4">4</label>
-                                <input type="radio" name="review-rating" id="5" value="5" />
+                                <input type="radio" name="review-rating" id="5" value="5" checked />
                                 <label for="5">5</label>
                             </fieldset>
                             <div>
@@ -169,29 +196,29 @@
         </div>
     }
 
-    @if (Model.Value != null && Model.Value.Count > 1)
+    @if (Model.Value != null)
     {
         <h3 class="divheading text-center">Book Reviews</h3>
         <hr class="hunderline" />
 
-        foreach (DB_Project.Models.Review rew in Model.Value)
+        for (int i = 0; i < Model.Value.Count; i++)
         {
-            if (rew != null)
+            if (Model.Value[i] != null)
             {
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-2">
                                 <img src="http://mindandculture.org/wordpress6/wp-content/uploads/2018/07/Fotolia_188161178_XS.jpg" class="img-rounded img-fluid" />
-                                <p class="text-secondary text-center">Posted on @rew.DatePosted</p>
+                                <p class="text-secondary text-center">Posted on @Model.Value[i].DatePosted</p>
                             </div>
                             <div class="col-md-10">
                                 <p>
-                                    <a class="float-left" href="#"><strong>@rew.UserName</strong></a>
+                                    <strong>@Model.Value[i].UserName</strong>
 
-                                    @for (int i = 0; i < 5; i++)
+                                    @for (int j = 0; j < 5; j++)
                                     {
-                                        if (i < 5 - rew.Rating)
+                                        if (j < 5 - Model.Value[i].Rating)
                                         {
                                             <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
                                         }
@@ -202,11 +229,13 @@
                                     }
                                 </p>
                                 <div class="clearfix"></div>
-                                <p>@rew.Description</p>
-                                <p>
-                                    <a class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-reply"></i> Reply</a>
-                                    <a class="float-right btn text-white btn-danger"> <i class="fa fa-heart"></i> Like</a>
-                                </p>
+                                <p>@Model.Value[i].Description</p>
+
+                                @*current user's review is alwways at 0*@
+                                @if (i == 0)
+                                {
+                                    <p><a href=" ../../User/DeleteReview?bid=@Model.Value[0].BookID&uid=@Model.Value[0].UserID" class="float-right btn btn-outline-primary ml-2"> <i class="fa fa-trash"></i> Remove</a></p>
+                                }
                             </div>
 
                         </div>

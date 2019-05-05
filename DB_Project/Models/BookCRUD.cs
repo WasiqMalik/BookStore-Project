@@ -8,8 +8,8 @@ namespace DB_Project.Models
 {
     public class BookCRUD
     {
-        //static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         //methods
         public static Book GetBook(int id)
@@ -42,7 +42,7 @@ namespace DB_Project.Models
                 cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
                 cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@disc", SqlDbType.Decimal));
+                cmd.Parameters.Add(new SqlParameter("@disc", SqlDbType.Float));
                 cmd.Parameters["@disc"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
                 cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
@@ -83,7 +83,7 @@ namespace DB_Project.Models
                     getBook.Category = (string)cmd.Parameters["@cat"].Value;
                     getBook.Price = Convert.ToInt32(cmd.Parameters["@price"].Value);
                     getBook.Stock = (int)cmd.Parameters["@stock"].Value;
-                    getBook.Discount = Convert.ToInt32(cmd.Parameters["@disc"].Value);
+                    getBook.Discount = (double)cmd.Parameters["@disc"].Value;
                     getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
                     getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
                     getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
@@ -312,7 +312,7 @@ namespace DB_Project.Models
 
                 if (Flag == 1)                                
                     foreach (DataRow row in itemIDs.Rows)                   
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));                                    
+                        books.Add(BookCRUD.GetBook((int)row["ID"]));                                    
 
                 ServerConnection.Close();
 

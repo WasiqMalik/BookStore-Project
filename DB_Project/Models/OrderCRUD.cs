@@ -11,8 +11,8 @@ namespace DB_Project.Models
 {
     public class OrderCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Order> GetAllOrders()
         {
@@ -139,12 +139,12 @@ namespace DB_Project.Models
                         {
                             //intializing order obj 
                             getOrder.UserID = (int)cmd.Parameters["@uid"].Value;
-                            getOrder.Date = (string)cmd.Parameters["@date"].Value;
+                            getOrder.Date = Convert.ToString(cmd.Parameters["@date"].Value);
                             getOrder.OrderStatus = (string)cmd.Parameters["@status"].Value;
                             getOrder.Items = new List<Tuple<int, int, int>>();
 
                             foreach (DataRow Row in Items.Rows)
-                                getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], (int)Row["PriceSoldAt"]));
+                                getOrder.Items.Add(new Tuple<int, int, int>((int)Row["ItemID"], (int)Row["Quantity"], Convert.ToInt32(Row["PriceSoldAt"])));
 
                             getOrder.TotalCost = CalcTotalCost(getOrder.Items);
                             OrdersList.Add(getOrder);
@@ -178,19 +178,19 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
+                DataTable itemIDs = new DataTable(); //stores IDs      
+                SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                Data.Fill(itemIDs);  //get procedure result set
+
                 int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
 
                 if (Flag == 1)
                 {                    
-                    DataTable itemIDs = new DataTable(); //stores IDs      
-                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                    Data.Fill(itemIDs);  //get procedure result set
-
                     foreach (DataRow row in itemIDs.Rows)
                     {
                         //add the book object along with its quantity to the returning list
                         Book OrderedBook = BookCRUD.GetBook((int)row["ItemID"]);
-                        OrderedBook.Price = (int)row["PriceSoldAt"];
+                        OrderedBook.Price = Convert.ToInt32(row["PriceSoldAt"]);
                         books.Add(new KeyValuePair<Book, int>(OrderedBook,(int)row["Quantity"]));
                     }
                 }

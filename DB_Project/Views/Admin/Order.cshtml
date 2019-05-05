@@ -57,9 +57,9 @@
                             <td>@item.UserID</td>
                             <td>@item.Date</td>
                             <td>@item.OrderStatus</td>
-                            <td><a href="#" class="btn btn-primary" onclick="OrderStatusfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                            <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                            <td><a href=" ../../Admin/RemoveOrder?id=@item.OrderID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
+                            <td><a href="#" class="btn btn-primary" onclick="OrderStatusfunction(@item.OrderID)"><i class="fa fa-pencil-square-o"></i> </a> </td>
+                            <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="fa fa-archive"></i> </a> </td>
+                            <td><a href=" ../../Admin/RemoveOrder?id=@item.OrderID" class="btn btn-danger"><i class="fa fa-trash"></i> </a> </td>
                         </tr>
                     }
                 </table>

@@ -51,6 +51,7 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    <th>Discount %</th>
                     <th>SubStatus</th>
                     <th>Authors</th>
                     <th>Genres</th>
@@ -59,37 +60,38 @@
                 </tr>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td><a href=" ../../Admin/BookDetails?id=@item.BookID">@item.Title</a></td>
-                        <td>@item.Synopsis</td>
-                        <td>@item.Publisher</td>
-                        <td>@item.Category</td>
-                        <td>@item.Price</td>
-                        <td>@item.Stock</td>
-                        <td>@item.SubStatus</td>
-                        <td>
-                            @if (item.Authors != null)
+                <tr>
+                    <td><a href=" ../../Admin/BookDetails?id=@item.BookID">@item.Title</a></td>
+                    <td>@item.Synopsis</td>
+                    <td>@item.Publisher</td>
+                    <td>@item.Category</td>
+                    <td>@item.Price</td>
+                    <td>@item.Stock</td>
+                    <td>@(item.Discount * 100)</td>
+                    <td>@item.SubStatus</td>
+                    <td>
+                        @if (item.Authors != null)
+                        {
+                            for (int i = 0; i < item.Authors.Count - 1; i++)
                             {
-                                for (int i = 0; i < item.Authors.Count - 1; i++)
-                                {
-                                    @item.Authors[i].Insert(item.Authors[i].Length, ", ")
-                                }
-                                @item.Authors[item.Authors.Count - 1]
+                                @item.Authors[i].Insert(item.Authors[i].Length, ", ")
                             }
-                        </td>
-                        <td>
-                            @if (item.Genres != null)
+                            @item.Authors[item.Authors.Count - 1]
+                        }
+                    </td>
+                    <td>
+                        @if (item.Genres != null)
+                        {
+                            for (int i = 0; i < item.Genres.Count - 1; i++)
                             {
-                                for (int i = 0; i < item.Genres.Count - 1; i++)
-                                {
-                                    @item.Genres[i].Insert(item.Genres[i].Length, ", ")
-                                }
-                                @item.Genres[item.Genres.Count - 1]
+                                @item.Genres[i].Insert(item.Genres[i].Length, ", ")
                             }
-                        </td>
-                        <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="glyphicon glyphicon-pencil"></i> </a> </td>
-                        <td><a href=" ../../Admin/RemoveBook?id=@item.BookID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
-                    </tr>
+                            @item.Genres[item.Genres.Count - 1]
+                        }
+                    </td>
+                    <td><a href="#" class="btn btn-success" onclick="EditBookfunction(@item.BookID)"><i class="fa fa-pencil-square-o"></i> </a> </td>
+                    <td><a href=" ../../Admin/RemoveBook?id=@item.BookID" class="btn btn-danger"><i class="fa fa-trash"></i> </a> </td>
+                </tr>
                 }
             </table>
         }

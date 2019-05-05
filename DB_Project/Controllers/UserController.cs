@@ -12,7 +12,6 @@ namespace DB_Project.Controllers
         {
             //displaying books in best seller section and recommended section
             return View(new Tuple<List<Book>, List<Book>>(BookCRUD.BestSellers(), BookCRUD.UserRecommendations((int)Session["UserID"])));
-            //return View(new Tuple<List<Book>, List<Book>>(BookCRUD.GetAllBooks(), BookCRUD.GetAllBooks()));
         }
 
         //Shopping Cart and User Order related methods
@@ -23,6 +22,7 @@ namespace DB_Project.Controllers
             foreach (var tuple in items)
             {
                 Book getBook = BookCRUD.GetBook(tuple.Item1);
+                getBook.Stock = tuple.Item2;  //place item quanity in stock var only for display
                 if (getBook != null)
                     BooksList.Add(getBook);
             }
@@ -69,7 +69,12 @@ namespace DB_Project.Controllers
             newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
 
             if (OrderCRUD.CreateOrder(newOrder))
+            {
+                //emptying cart
+                ((List<Tuple<int, int, int>>)Session["OrderItems"]).Clear();
+                ((List<Tuple<int, int, int>>)Session["OrderItems"]).TrimExcess();
                 return Content("<script>alert('Order Placed Successfully.');window.location.href=document.referrer;</script>");
+            }
             else
                 return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
         }
@@ -166,6 +171,14 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Review Failed.');window.location.href=document.referrer;</script>");
         }
 
+        public ActionResult DeleteReview(int bid, int uid)
+        {
+            if (ReviewCRUD.RemoveReview(bid,uid))
+                return Content("<script>alert('Review Deleted Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Operation Failed.');window.location.href=document.referrer</script>");
+        }
+
         public ActionResult Subscriptions()
         {
             return View(SubscriptionCRUD.GetSubscribedItems((int)Session["UserID"]));
@@ -176,7 +189,7 @@ namespace DB_Project.Controllers
             if (SubscriptionCRUD.AddSubscription(id, (int)Session["UserID"]))
                 return Content("<script>alert('Subscribed Successfully.');window.location.href=document.referrer;</script>");
             else
-                return Content("<script>alert('Subscription Failed.');window.location.href=document.referrer;</script>");
+                return Content("<script>alert('You are already Subscribed.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult UnSubscribe(int id)

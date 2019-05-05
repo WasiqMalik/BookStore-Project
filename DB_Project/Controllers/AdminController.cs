@@ -1,8 +1,8 @@
 ﻿using DB_Project.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using System.Collections.Generic;
 
 namespace DB_Project.Controllers
 {
@@ -11,7 +11,14 @@ namespace DB_Project.Controllers
         // GET: Admin
         public ActionResult Console()
         {
-            return View();
+            List<Order> AllOrders = OrderCRUD.GetAllOrders();
+            List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]); //pass admin id to get all requests
+
+            AllOrders.RemoveAll(item => item.OrderStatus == "Delievered"); //only keep undelievered orders
+            AllRequests.RemoveAll(item => item.RequestStatus == "Resolved"); //only keep unresolved requests
+
+            //display pending work to the admin docking page
+            return View(new Tuple<List<Order>,List<Request>>(AllOrders,AllRequests));
         }
 
         public ActionResult Users()
@@ -64,9 +71,8 @@ namespace DB_Project.Controllers
         }
 
         public ActionResult BookDetails(int id)
-        {
-            int temp = 0;
-            return View(BookCRUD.GetBookReviews(id, temp));
+        { 
+            return View(BookCRUD.GetBookReviews(id, 0));
         }
 
         public ActionResult EditBook(int id)
@@ -87,7 +93,7 @@ namespace DB_Project.Controllers
             newBook.Category = collection["Category"];
             newBook.Price = Int32.Parse(collection["Price"]);
             newBook.Stock = Int32.Parse(collection["Stock"]);
-            newBook.Discount = Int32.Parse(collection["Discount"]);
+            newBook.Discount = (double.Parse(collection["Discount"])) / 100;
             newBook.SubStatus = Convert.ToBoolean(collection["SubStatus"]);
             newBook.Authors = collection["Authors"].Split(',').ToList();
             newBook.Genres = collection["Genres"].Split(',').ToList();
