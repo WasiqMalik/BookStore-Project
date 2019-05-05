@@ -74,12 +74,16 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
         }
 
-        public ActionResult ViewOrders()
+        public ActionResult Orders()
         {
             List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
             orders.RemoveAll(item => item.OrderStatus == "Delivered");
-
             return View(orders);
+        }
+
+        public ActionResult OrderDetails(int id)
+        {
+            return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
         }
 
         public ActionResult Requests()

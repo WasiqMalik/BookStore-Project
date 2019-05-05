@@ -34,6 +34,7 @@
             <a href="@Url.Action("Books", "User")">Books</a>
             <a href="@Url.Action("Cart", "User")">Cart</a>
             <a href="@Url.Action("Requests", "User")">Requests</a>
+            <a href="@Url.Action("Orders", "User")">Orders</a>
             <a href="@Url.Action("History", "User")">History</a>
             <a href="@Url.Action("Subscriptions", "User")">Subscriptions</a>
             <a href="@Url.Action("ProfileInfo", "User")">Profile</a>
@@ -56,6 +57,7 @@
                 <th>Publisher</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Quantity</th>
                 <th>Change Quantity</th>
                 <th>Remove</th>
             </tr>
@@ -66,6 +68,7 @@
                     <td>@item.Publisher</td>
                     <td>@item.Category</td>
                     <td>@item.Price</td>
+                    <td>@item.Stock</td>
                     <td><a href="#" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-pencil"></i> </a> </td>
                     <td><a href=" ../../User/RemoveFromCart?id=@item.BookID" class="btn btn-danger"><i class="glyphicon glyphicon-bin"></i> </a> </td>
                 </tr>

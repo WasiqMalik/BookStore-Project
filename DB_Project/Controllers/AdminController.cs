@@ -49,9 +49,9 @@ namespace DB_Project.Controllers
         }
 
         // GET: All Books
-        public ActionResult BooksList()
+        public ActionResult Books()
         {
-            return View("~/Views/Admin/Console.cshtml", BookCRUD.GetAllBooks());
+            return View(BookCRUD.GetAllBooks());
         }
 
         public ActionResult BookDetails(int id)
@@ -111,7 +111,6 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Book could not be added.');window.location.href=document.referrer</script>");
         }
 
-        [HttpPost]
         public ActionResult RemoveBook(int id)
         {
             if (BookCRUD.DeleteBook(id))
