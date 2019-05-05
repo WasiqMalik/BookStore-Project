@@ -22,61 +22,60 @@
 }
 
 @*This block is displaying book along with the information and cover*@
-    <div class="container body-content">
-        <h3 class="divheading text-center">Book Details</h3>
-        <hr class="hunderline" />
+<div class="container body-content">
+    <h3 class="divheading text-center">Book Details</h3>
+    <hr class="hunderline" />
 
-        <div class="card rounded px-5 py-2">
-            <div class="card-body">
-                <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
+    <div class="card rounded px-5 py-2">
+        <div class="card-body">
+            <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
 
-                <h3>
-                    @Model.Key.Title
-                    @if (Model.Key.AverageRating >= 0 && Model.Key.AverageRating <= 5)
-                    {
-                        //loop 5 times to print 5 star ratings
-                        for (int i = 0; i < 5; i++)
-                        {
-                            if (i < Model.Key.AverageRating)
-                            {
-                                <span class="justify-content-center"><i class="text-warning fa fa-star"></i></span>
-                            }
-                            else
-                            {
-                                <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
-                            }
-                        }
-                    }
+            <h3>
+                @Model.Key.Title
 
-                </h3>
-                <p>
-                    By @if (Model.Key.Authors != null)
+                @*loop 5 times to print 5 star ratings*@
+                @for (int i = 0; i < 5; i++)
+                {
+                    if (i < Model.Key.AverageRating)
                     {
-                        for (int i = 0; i < Model.Key.Authors.Count - 1; i++)
-                        {
-                            @Model.Key.Authors[i].Insert(Model.Key.Authors[i].Length, ", ")
-                        }
-                        @Model.Key.Authors[Model.Key.Authors.Count - 1]
+                        <span class="justify-content-center"><i class="text-warning fa fa-star"></i></span>
                     }
-                </p>
-                <p><strong>Publisher: </strong>@Model.Key.Publisher</p>
-                <p>
-                    <strong>Genres: </strong>
-                    @if (Model.Key.Genres != null)
+                    else
                     {
-                        for (int i = 0; i < Model.Key.Genres.Count - 1; i++)
-                        {
-                            @Model.Key.Genres[i].Insert(Model.Key.Genres[i].Length, ", ")
-                        }
-                        @Model.Key.Genres[Model.Key.Genres.Count - 1]
+                        <span class="justify-content-center"><i class="text-warning fa fa-star-o"></i></span>
                     }
-                </p>
-                <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
-                <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
-                <button type="button" class="btn btn-success" onclick="location.href='../../Admin/BookSubscriptions?id=@Model.Key.BookID'"> Show All Subscribers </button>
-            </div>
+                }
+
+
+            </h3>
+            <p>
+                By @if (Model.Key.Authors != null)
+                {
+                    for (int i = 0; i < Model.Key.Authors.Count - 1; i++)
+                    {
+                        @Model.Key.Authors[i].Insert(Model.Key.Authors[i].Length, ", ")
+                    }
+                    @Model.Key.Authors[Model.Key.Authors.Count - 1]
+                }
+            </p>
+            <p><strong>Publisher: </strong>@Model.Key.Publisher</p>
+            <p>
+                <strong>Genres: </strong>
+                @if (Model.Key.Genres != null)
+                {
+                    for (int i = 0; i < Model.Key.Genres.Count - 1; i++)
+                    {
+                        @Model.Key.Genres[i].Insert(Model.Key.Genres[i].Length, ", ")
+                    }
+                    @Model.Key.Genres[Model.Key.Genres.Count - 1]
+                }
+            </p>
+            <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
+            <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
+            <button type="button" class="btn btn-success" onclick="location.href='../../Admin/BookSubscriptions?id=@Model.Key.BookID'"> Show All Subscribers </button>
         </div>
     </div>
+</div>
 
 @if (Model.Value != null && Model.Value.Count > 1)
 {
@@ -98,19 +97,16 @@
                             <div class="col-md-10">
                                 <p>
                                     <a class="float-left" href="#"><strong>@rew.UserName</strong></a>
-                                    @if (rew.Rating >= 0 && rew.Rating <= 5)
+
+                                    @for (int i = 0; i < 5; i++)
                                     {
-                                        //loop 5 times to print 5 star ratings
-                                        for (int i = 0; i < 5; i++)
+                                        if (i < 5 - rew.Rating)
                                         {
-                                            if (i < 5 - rew.Rating)
-                                            {
-                                                <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
-                                            }
+                                            <span class="float-right"><i class="text-warning fa fa-star-o"></i></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
                                         }
                                     }
 
