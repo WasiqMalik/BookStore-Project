@@ -142,6 +142,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\animate.css" />
     <Content Include="Content\DataTables\extensions\AutoFill\css\autoFill.bootstrap.css" />
     <Content Include="Content\DataTables\extensions\AutoFill\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\DataTables\extensions\AutoFill\css\autoFill.bootstrap4.css" />

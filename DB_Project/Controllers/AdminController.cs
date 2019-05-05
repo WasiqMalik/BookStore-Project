@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Collections.Generic;
 
 namespace DB_Project.Controllers
 {
@@ -41,10 +42,18 @@ namespace DB_Project.Controllers
 
         public ActionResult RemoveUsers(int id)
         {
-            if (AccountCRUD.RemoveUser(id))
-                return Content("<script>alert('Account Deleted Successfully.');window.location = 'Users';</script>");
+
+            List<Order> orders = OrderCRUD.GetUserOrders(id);
+
+            //if any order exists that hasnt been delievered then cannot delete account
+            if (orders.FindIndex(item => item.OrderStatus != "Delivered") < 0)
+            {
+                AccountCRUD.RemoveUser(id);
+                return Redirect("Console");
+            }
             else
-                return Content("<script>alert('Account Deletion Failed.');window.location = 'Users';</script>");
+                return Content("<script>alert('This User still has pending Orders.');window.location.href=document.referrer</script>");
+
 
         }
 
@@ -78,6 +87,7 @@ namespace DB_Project.Controllers
             newBook.Category = collection["Category"];
             newBook.Price = Int32.Parse(collection["Price"]);
             newBook.Stock = Int32.Parse(collection["Stock"]);
+            newBook.Discount = Int32.Parse(collection["Discount"]);
             newBook.SubStatus = Convert.ToBoolean(collection["SubStatus"]);
             newBook.Authors = collection["Authors"].Split(',').ToList();
             newBook.Genres = collection["Genres"].Split(',').ToList();

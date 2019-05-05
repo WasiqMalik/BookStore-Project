@@ -42,6 +42,8 @@ namespace DB_Project.Models
                 cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
                 cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(new SqlParameter("@disc", SqlDbType.Decimal));
+                cmd.Parameters["@disc"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
                 cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
@@ -81,11 +83,12 @@ namespace DB_Project.Models
                     getBook.Category = (string)cmd.Parameters["@cat"].Value;
                     getBook.Price = Convert.ToInt32(cmd.Parameters["@price"].Value);
                     getBook.Stock = (int)cmd.Parameters["@stock"].Value;
+                    getBook.Discount = Convert.ToInt32(cmd.Parameters["@disc"].Value);
                     getBook.SubStatus = (bool)cmd.Parameters["@sub"].Value;
                     getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
                     getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
                     getBook.AverageRating = Convert.ToInt32(cmd2.Parameters["@avg"].Value);
-
+                   
                     Server.Close();
 
                     return getBook;
@@ -424,6 +427,7 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
                 cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
                 cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
+                cmd.Parameters.Add(new SqlParameter("@disc", newBook.Discount));
 
                 //passing table paras
                 DataTable authtable = new DataTable();

@@ -15,11 +15,12 @@ namespace DB_Project.Models
         public string Synopsis { get; set; }
         public string Publisher { get; set; }
         public string Category { get; set; }
-        public List<string> Authors { get; set; }
-        public List<string> Genres { get; set; }
         public int Price { get; set; }
         public int Stock { get; set; }
-        public bool SubStatus { get; set; }
+        public int Discount { get; set; }
         public int AverageRating { get; set; }
+        public bool SubStatus { get; set; }
+        public List<string> Authors { get; set; }
+        public List<string> Genres { get; set; }
     }
 }
