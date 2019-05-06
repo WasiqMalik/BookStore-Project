@@ -70,7 +70,17 @@
                 }
             </p>
             <p><strong>Synopsis </strong>@Model.Key.Synopsis</p>
-            <p class="align-text-bottom"><strong>Price: </strong>@Model.Key.Price</p>
+            @if (Model.Key.Discount == 0)
+            {
+                <p class="align-text-bottom"><strong>Price: </strong>Rs.@Model.Key.Price</p>
+            }
+            else
+            {
+                <p class="align-text-bottom"><strong>Price: </strong><strike>Rs.@Model.Key.Price</strike></p>
+                <p class="align-text-bottom">
+                    <strong>New Price: </strong>Rs.@((int)(Model.Key.Price * (1 - Model.Key.Discount))) <strong>@(Model.Key.Discount * 100)% Off</strong>
+                </p>
+            }
             <button type="button" class="btn btn-success" onclick="location.href='../../Admin/BookSubscriptions?id=@Model.Key.BookID'"> Show All Subscribers </button>
         </div>
     </div>

@@ -47,7 +47,7 @@
         <h3 class="divheading text-center">Cart</h3>
         <hr class="hunderline" />
 
-        <button class="btn btn-success btn-block float-right" onclick="location.href='@Url.Action("PlaceOrder", "User")'"> Confirm</button>
+        <button class="btn btn-success btn-block" onclick="location.href='@Url.Action("PlaceOrder", "User")'"> Confirm</button>
 
         @if (Model != null)
         {
@@ -58,20 +58,18 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th>Change Quantity</th>
                 <th>Remove</th>
             </tr>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td><a href=" ../../User/BookDetails?id=@item.BookID">@item.Title</a>  </td>
-                    <td>@item.Publisher</td>
-                    <td>@item.Category</td>
-                    <td>@item.Price</td>
-                    <td>@item.Stock</td>
-                    <td><a href="#" class="btn btn-success" onclick=""><i class="fa fa-pencil-square-o"></i> </a> </td>
-                    <td><a href=" ../../User/RemoveFromCart?id=@item.BookID" class="btn btn-danger"><i class="fa fa-trash"></i> </a> </td>
-                </tr>
+            <tr>
+                <td><a href=" ../../User/BookDetails?id=@item.BookID">@item.Title</a>  </td>
+                <td>@item.Publisher</td>
+                <td>@item.Category</td>
+                <td>@item.Price</td>
+                <td>@item.Stock</td>
+                <td><a href=" ../../User/RemoveFromCart?id=@item.BookID" class="btn btn-danger"><i class="fa fa-trash"></i> </a> </td>
+            </tr>
             }
             <tr>
                 <td><b>Total</b></td>
@@ -79,7 +77,7 @@
                 <td></td>
                 <td><b>@Model.Sum(i=>i.Price)</b></td>
                 <td></td>
-                <td><button class="btn btn-danger btn-block"> Clear All </button></td>
+                <td><button class="btn btn-danger btn-block" onclick="location.href='@Url.Action("EmptyCart", "User")'"> Clear All </button></td>
             </tr>
         </table>
         }

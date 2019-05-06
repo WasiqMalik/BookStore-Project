@@ -1,0 +1,25 @@
+﻿@model int
+
+<div>
+    <div class="card rounded px-5 py-2">
+        <div class="card-body">
+            <form action="UpdateRStatus" class="form needs-validation" role="form" autocomplete="off" method="post">
+
+                <input type="hidden" class="form-control" id="C_RequestID" name="RequestID" value=@Model required />
+
+                <div>
+                    <label for="RequestStatus">Status</label>
+                    <input type="radio" name="RequestStatus" value="Unresolved" required>Unresolved
+                    <input type="radio" name="RequestStatus" value="Resolved">Resolved
+                    <div class="invalid-feedback">Select Option</div>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-success float-right">Update Status</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

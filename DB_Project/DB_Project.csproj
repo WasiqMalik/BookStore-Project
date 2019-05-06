@@ -577,6 +577,8 @@
     <Content Include="Views\Admin\Books.cshtml" />
     <Content Include="Views\User\Orders.cshtml" />
     <Content Include="Views\User\_OrderDetails.cshtml" />
+    <Content Include="Views\Admin\Requests.cshtml" />
+    <Content Include="Views\Admin\_RequestStatus.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
