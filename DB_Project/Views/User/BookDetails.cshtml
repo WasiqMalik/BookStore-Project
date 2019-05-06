@@ -9,13 +9,18 @@
     <nav id="mynavbar" class="navbar navbar-expand-sm bg-light">
 
         <a class="navbar-brand" href="#">BookStore</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("DashBoard", "User")"> DashBoard </a>
+            </li>
+        </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Cart", "User")"> (Cart Icon) </a>
+                <a class="nav-link" href="@Url.Action("Cart", "User")"><i class="fa fa-shopping-cart"></i></a>
             </li>
             @if (Session["UserName"] != null)
             {
-                <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
+                <p class="navbar-text">Welcome, @Session["UserName"].ToString() </p>
             }
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "Home")"> Logout </a>
@@ -30,7 +35,7 @@
     <hr class="hunderline" />
     <div class="card rounded px-5 py-2">
         <div class="card-body">
-            <img class="float-right" src="https://media.wiley.com/product_data/coverImage300/33/11180633/1118063333.jpg">
+            <img class="float-right" src="https://read.macmillan.com/wp-content/uploads/2016/04/book-cover-placeholder-188x300.png">
 
             <h3>
                 @Model.Key.Title
@@ -141,7 +146,8 @@
 
 @*This block displays all book reviews, with current user review on top, if user hasnt added a review, add review option is shown*@
 <div class="container">
-
+    <h3 class="divheading text-center">Book Reviews</h3>
+    <hr class="hunderline" />
     @if (Model.Value[0] == null)
     {
         <div class="card">
@@ -184,8 +190,6 @@
 
     @if (Model.Value != null)
     {
-        <h3 class="divheading text-center">Book Reviews</h3>
-        <hr class="hunderline" />
 
         for (int i = 0; i < Model.Value.Count; i++)
         {

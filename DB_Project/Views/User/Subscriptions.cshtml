@@ -16,6 +16,9 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Cart", "User")"><i class="fa fa-shopping-cart"></i></a>
+            </li>
+            <li class="nav-item">
                 @if (Session["UserName"] != null)
                 {
                     <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
