@@ -191,6 +191,7 @@ namespace DB_Project.Controllers
         public ActionResult Requests()
         {
             List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]); //pass admin id to get all requests
+            AllRequests.RemoveAll(item => item.RequestStatus != "Resolved");
             return View(AllRequests);
         }
 

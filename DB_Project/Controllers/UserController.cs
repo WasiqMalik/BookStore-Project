@@ -72,15 +72,20 @@ namespace DB_Project.Controllers
             newOrder.Items = (List<Tuple<int, int, int>>)Session["OrderItems"];
             newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
 
-            if (newOrder.Items.Count > 0 && OrderCRUD.CreateOrder(newOrder))
+            if (newOrder.Items.Count > 0)
             {
-                //emptying cart
-                ((List<Tuple<int, int, int>>)Session["OrderItems"]).Clear();
-                ((List<Tuple<int, int, int>>)Session["OrderItems"]).TrimExcess();
-                return Content("<script>alert('Order Placed Successfully.');window.location.href=document.referrer;</script>");
+                if (OrderCRUD.CreateOrder(newOrder))
+                {
+                    //emptying cart
+                    ((List<Tuple<int, int, int>>)Session["OrderItems"]).Clear();
+                    ((List<Tuple<int, int, int>>)Session["OrderItems"]).TrimExcess();
+                    return Content("<script>alert('Order Placed Successfully.');window.location.href=document.referrer;</script>");
+                }
+                else
+                    return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
             }
             else
-                return Content("<script>alert('Order could not be placed.');window.location.href=document.referrer;</script>");
+                return Content("<script>alert('Cart is empty');window.location.href=document.referrer;</script>");  
         }
 
         public ActionResult Orders()
@@ -157,6 +162,9 @@ namespace DB_Project.Controllers
 
             switch (scat)
             {
+                case "Title":
+                    return View("~/Views/User/Books.cshtml", BookCRUD.TitleSearch(svalue));
+
                 case "Genre":
                     return View("~/Views/User/Books.cshtml", BookCRUD.GenreSearch(svalue));
 

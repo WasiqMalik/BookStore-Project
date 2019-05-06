@@ -15,6 +15,9 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Cart", "User")"> <i class="fa fa-shopping-cart" style="font-size:28px"></i> </a>
+            </li>
             @if (Session["UserName"] != null)
             {
                 <p class="navbar-text"> Welcome, @Session["UserName"].ToString() </p>
@@ -32,7 +35,6 @@
         <div class="sidenav">
             <a href="@Url.Action("DashBoard", "User")">DashBoard</a>
             <a href="@Url.Action("Books", "User")">Books</a>
-            <a href="@Url.Action("Cart", "User")">Cart</a>
             <a href="@Url.Action("Requests", "User")">Requests</a>
             <a href="@Url.Action("Orders", "User")">Orders</a>
             <a href="@Url.Action("History", "User")">History</a>
@@ -47,48 +49,33 @@
         <h3 class="divheading text-center">Books</h3>
         <hr class="hunderline" />
 
-        <div class="form-group">
-            <input class="form-control" id="searchInput" type="text" placeholder="Search..">
-        </div>
+        <form action="SearchBy" class="form needs-validation" role="form" autocomplete="off" method="post">
+            <div class="form-group row">
+                <div class="col-5">
+                    <input type="text" class="form-control float-right" placeholder="Enter Search Text.." name="searchString" required >
+                    <div class="invalid-feedback">Please enter valid input</div>
+                </div>
 
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#SearchByModal">Search Settings</button>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-success btn-block">Search By</button>
+                </div>
 
-        <div class="modal fade" id="SearchByModal" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Search By</h3>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body" id="addBookModalBodyDiv1">
-                        <div class="card rounded px-5 py-2">
-
-                            <form action="SearchBy" class="form needs-validation" role="form" autocomplete="off" method="post">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Enter Search Text.." name="searchString" required>
-                                    <div class="invalid-feedback">Please enter valid input</div>
-                                </div>
-
-                                <div>
-                                    <label for="searchBy">Search By</label>
-                                    <input type="radio" name="searchBy" value="none" checked>None
-                                    <input type="radio" name="searchBy" value="Genre">Genre
-                                    <input type="radio" name="searchBy" value="Author">Author
-                                    <input type="radio" name="searchBy" value="Category">Category
-                                    <div class="invalid-feedback">Select Option</div>
-                                </div>
-
-                                <div>
-                                    <button type="submit" class="btn btn-success float-right">Done</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
+                <div class="col-5">
+                    <select class="form-control" name="searchBy">
+                        <option value="None">--Select--</option>
+                        <option value="Title">Title</option>
+                        <option value="Genre">Genre</option>
+                        <option value="Author">Author</option>
+                        <option value="Category">Category</option>
+                    </select>
+                    <div class="invalid-feedback">Please enter valid input</div>
                 </div>
             </div>
-        </div>
+        </form>
 
+        <div class="form-group">
+            <input class="form-control" id="searchInput" type="text" placeholder="Filter on Title">
+        </div>
 
 
         <div id="searchDIV" class="mt-3">

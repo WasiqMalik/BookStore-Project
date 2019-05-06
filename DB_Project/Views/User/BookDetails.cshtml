@@ -11,7 +11,7 @@
         <a class="navbar-brand" href="#">BookStore</a>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Cart", "User")"> (Cart Icon) </a>
+                <a class="nav-link" href="@Url.Action("Cart", "User")"> <i class="fa fa-shopping-cart" style="font-size:28px"></i> </a>
             </li>
             @if (Session["UserName"] != null)
             {
@@ -89,6 +89,7 @@
             {
 
                 <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddItemModal"> + Add to Cart</button>
             }
             else if (Model.Key.Stock > 0)
             {
@@ -144,6 +145,9 @@
 
     @if (Model.Value[0] == null)
     {
+        <h3 class="divheading text-center">Book Reviews</h3>
+        <hr class="hunderline" />
+
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -184,8 +188,6 @@
 
     @if (Model.Value != null)
     {
-        <h3 class="divheading text-center">Book Reviews</h3>
-        <hr class="hunderline" />
 
         for (int i = 0; i < Model.Value.Count; i++)
         {
