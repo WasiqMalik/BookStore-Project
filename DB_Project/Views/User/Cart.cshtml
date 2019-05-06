@@ -66,7 +66,7 @@
                 <td><a href=" ../../User/BookDetails?id=@item.BookID">@item.Title</a>  </td>
                 <td>@item.Publisher</td>
                 <td>@item.Category</td>
-                <td>@item.Price</td>
+                <td>@((int)(item.Price*(1-item.Discount)))</td>
                 <td>@item.Stock</td>
                 <td><a href=" ../../User/RemoveFromCart?id=@item.BookID" class="btn btn-danger"><i class="fa fa-trash"></i> </a> </td>
             </tr>
@@ -75,7 +75,7 @@
                 <td><b>Total</b></td>
                 <td></td>
                 <td></td>
-                <td><b>@Model.Sum(i=>i.Price)</b></td>
+                <td><b>@Model.Sum(i=> ((int)(i.Price * (1 - i.Discount))) * i.Stock)</b></td>
                 <td></td>
                 <td><button class="btn btn-danger btn-block" onclick="location.href='@Url.Action("EmptyCart", "User")'"> Clear All </button></td>
             </tr>

@@ -1,6 +1,5 @@
 ﻿using DB_Project.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -32,12 +31,17 @@ namespace DB_Project.Controllers
 
         public ActionResult AddToCart(FormCollection collection)
         {
-            int item = Int32.Parse(collection["ID"]);
+            int id = Int32.Parse(collection["ID"]);
             int price = Int32.Parse(collection["Price"]);
             int quantity = Int32.Parse(collection["Quantity"]);
-            ((List<Tuple<int, int, int>>)Session["OrderItems"]).Add(new Tuple<int, int, int>(item, quantity, price));
 
-            return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");
+            if(((List<Tuple<int, int, int>>)Session["OrderItems"]).FindIndex(item => item.Item1==id) < 0)
+            {
+                ((List<Tuple<int, int, int>>)Session["OrderItems"]).Add(new Tuple<int, int, int>(id, quantity, price));
+                return Content("<script>alert('Item Added to Cart.');window.location.href=document.referrer;</script>");
+            }
+            else
+                return Content("<script>alert('Item Already in Cart.');window.location.href=document.referrer;</script>");
         }
 
         public ActionResult RemoveFromCart(int id)
@@ -68,7 +72,7 @@ namespace DB_Project.Controllers
             newOrder.Items = (List<Tuple<int, int, int>>)Session["OrderItems"];
             newOrder.TotalCost = OrderCRUD.CalcTotalCost(newOrder.Items);
 
-            if (OrderCRUD.CreateOrder(newOrder))
+            if (newOrder.Items.Count > 0 && OrderCRUD.CreateOrder(newOrder))
             {
                 //emptying cart
                 ((List<Tuple<int, int, int>>)Session["OrderItems"]).Clear();
@@ -119,7 +123,7 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Request could not be Added.');window.location.href=document.referrer;</script>");
         }
 
-        
+
         public ActionResult RemoveRequest(int id)
         {
             if (RequestCRUD.DeleteRequest(id))
@@ -187,7 +191,7 @@ namespace DB_Project.Controllers
 
         public ActionResult DeleteReview(int bid, int uid)
         {
-            if (ReviewCRUD.RemoveReview(bid,uid))
+            if (ReviewCRUD.RemoveReview(bid, uid))
                 return Content("<script>alert('Review Deleted Successfully.');window.location.href=document.referrer;</script>");
             else
                 return Content("<script>alert('Operation Failed.');window.location.href=document.referrer</script>");

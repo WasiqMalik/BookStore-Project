@@ -85,7 +85,12 @@
                 </p>
             }
 
-            @if (Model.Key.Stock > 0)
+            @if (Model.Key.SubStatus == true)
+            {
+
+                <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
+            }
+            else if (Model.Key.Stock > 0)
             {
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddItemModal"> + Add to Cart</button>
             }
@@ -93,14 +98,6 @@
             {
                 <button class="btn btn-danger"> Out of Stock </button>
             }
-
-            @if (Model.Key.SubStatus == true)
-            {
-
-                <button type="button" class="btn btn-success" onclick="location.href='../../User/Subscribe?id=@Model.Key.BookID'"> Subscribe </button>
-            }
-
-
         </div>
 
 

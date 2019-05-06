@@ -9,8 +9,8 @@ namespace DB_Project.Models
 {
     public class RequestCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static bool CreateRequest(Request newRequest)
         {
@@ -91,16 +91,15 @@ namespace DB_Project.Models
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
                 cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
                 
-
-
                 DataTable sqlRequests = new DataTable();                 //stores requests of a user or all requests for an admin
                 List<Request> RequestsList = new List<Request>();        //store requests objects for all user's requests in db
                 SqlDataAdapter Data = new SqlDataAdapter(cmd);
                 Data.Fill(sqlRequests);
 
-                Request addrequest = new Request();
+                
                 foreach (DataRow row in sqlRequests.Rows)
                 {
+                    Request addrequest = new Request();
                     addrequest.RequestID = (int)row["ReqID"];
                     addrequest.UserID = (int)row["UserID"];
                     addrequest.Description = (string)row["Req_Description"];

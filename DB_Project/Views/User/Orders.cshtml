@@ -53,7 +53,8 @@
                 <tr>
                     <th>OrderID</th>
                     <th>Date</th>
-                    <th>OrderStatus</th>
+                    <th>Order Status</th>
+                    <th>Total Cost</th>
                     <th>Details</th>
                     <th>Delete</th>
                 </tr>
@@ -63,6 +64,7 @@
                     <td>@item.OrderID</td>
                     <td>@item.Date</td>
                     <td>@item.OrderStatus</td>
+                    <td>@item.TotalCost</td>
                     <td><a href="#" class="btn btn-success" onclick="OrderDetailsfunction(@item.OrderID)"><i class="fa fa-archive"></i> </a> </td>
                     @if (item.OrderStatus == "Placed")
                     {

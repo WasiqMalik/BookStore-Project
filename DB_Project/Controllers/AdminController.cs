@@ -155,7 +155,6 @@ namespace DB_Project.Controllers
         public ActionResult Order()
         {
             List<Order> AllOrders = OrderCRUD.GetAllOrders();
-            AllOrders.RemoveAll(item => item.OrderStatus != "Delivered");
             return View(AllOrders);
         }
 
@@ -192,7 +191,6 @@ namespace DB_Project.Controllers
         public ActionResult Requests()
         {
             List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]); //pass admin id to get all requests
-            AllRequests.RemoveAll(item => item.RequestStatus != "Resolved"); //only keep unresolved requests
             return View(AllRequests);
         }
 

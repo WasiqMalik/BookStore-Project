@@ -37,6 +37,16 @@ namespace DB_Project.Controllers
                 return Content("<script>alert('Incorrect Email or Password.');window.location = 'Login';</script>");
         }
 
+        public ActionResult Logout()
+        {
+            Session["UserID"] = null;
+            Session["UserName"] = null;
+            Session["Priviledges"] = null;
+            Session["OrderItems"] = null;
+
+            return RedirectToAction("Index", "Home");
+        }
+
         public ActionResult Register(Account reg)
         {
             if (AccountCRUD.RegisterUser(reg))
