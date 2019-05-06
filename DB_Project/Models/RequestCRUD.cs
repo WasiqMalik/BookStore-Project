@@ -20,22 +20,32 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "createRequest";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "createRequest";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", newRequest.UserID));
-                cmd.Parameters.Add(new SqlParameter("@Descp", newRequest.Description));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", newRequest.UserID));
+                    cmd.Parameters.Add(new SqlParameter("@Descp", newRequest.Description));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
 
@@ -50,23 +60,32 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdateRequestStatus";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UpdateRequestStatus";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@requestID", reqid));
-                cmd.Parameters.Add(new SqlParameter("@rstatus", rstat));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@requestID", reqid));
+                    cmd.Parameters.Add(new SqlParameter("@rstatus", rstat));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
 
-                cmd.ExecuteNonQuery();
-
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -80,36 +99,45 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "getRequest";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", userid));
-
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-                
-                DataTable sqlRequests = new DataTable();                 //stores requests of a user or all requests for an admin
                 List<Request> RequestsList = new List<Request>();        //store requests objects for all user's requests in db
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(sqlRequests);
-
-                
-                foreach (DataRow row in sqlRequests.Rows)
+                try
                 {
-                    Request addrequest = new Request();
-                    addrequest.RequestID = (int)row["ReqID"];
-                    addrequest.UserID = (int)row["UserID"];
-                    addrequest.Description = (string)row["Req_Description"];
-                    addrequest.RequestStatus = (string)row["Request_Status"];
-                    addrequest.Date = Convert.ToString(row["Request_Date"]);
+                    cmd.CommandText = "getRequest";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    RequestsList.Add(addrequest);
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", userid));
+
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    DataTable sqlRequests = new DataTable();                 //stores requests of a user or all requests for an admin                    
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(sqlRequests);
+
+
+                    foreach (DataRow row in sqlRequests.Rows)
+                    {
+                        Request addrequest = new Request();
+                        addrequest.RequestID = (int)row["ReqID"];
+                        addrequest.UserID = (int)row["UserID"];
+                        addrequest.Description = (string)row["Req_Description"];
+                        addrequest.RequestStatus = (string)row["Request_Status"];
+                        addrequest.Date = Convert.ToString(row["Request_Date"]);
+
+                        RequestsList.Add(addrequest);
+                    }
                 }
-
-                ServerConnection.Close();
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return RequestsList;
 
@@ -124,23 +152,33 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "RemoveRequest";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "RemoveRequest";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@rid" , id));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@rid", id));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
 
                 return Flag == 1;
-
             }
         }
 

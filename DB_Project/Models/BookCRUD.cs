@@ -18,41 +18,47 @@ namespace DB_Project.Models
             using (SqlConnection Server = new SqlConnection(ConnectionString))
             {
                 Server.Open();
-
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "GetBook";
-                cmd.Connection = Server;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "GetBook";
+                    cmd.Connection = Server;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //input para
-                cmd.Parameters.Add(new SqlParameter("@Itid", id));
+                    //input para
+                    cmd.Parameters.Add(new SqlParameter("@Itid", id));
 
-                //output parameters
-                cmd.Parameters.Add(new SqlParameter("@title", SqlDbType.VarChar, 30));
-                cmd.Parameters["@title"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@synp", SqlDbType.VarChar, 500));
-                cmd.Parameters["@synp"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@pub", SqlDbType.VarChar, 20));
-                cmd.Parameters["@pub"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@cat", SqlDbType.VarChar, 10));
-                cmd.Parameters["@cat"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@price", SqlDbType.SmallMoney));
-                cmd.Parameters["@price"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@stock", SqlDbType.Int));
-                cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
-                cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@disc", SqlDbType.Float));
-                cmd.Parameters["@disc"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
-                cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
-                cmd.Parameters["@genreStr"].Direction = ParameterDirection.Output;
+                    //output parameters
+                    cmd.Parameters.Add(new SqlParameter("@title", SqlDbType.VarChar, 30));
+                    cmd.Parameters["@title"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@synp", SqlDbType.VarChar, 500));
+                    cmd.Parameters["@synp"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@pub", SqlDbType.VarChar, 20));
+                    cmd.Parameters["@pub"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@cat", SqlDbType.VarChar, 10));
+                    cmd.Parameters["@cat"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@price", SqlDbType.SmallMoney));
+                    cmd.Parameters["@price"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@stock", SqlDbType.Int));
+                    cmd.Parameters["@stock"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@sub", SqlDbType.Bit));
+                    cmd.Parameters["@sub"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@disc", SqlDbType.Float));
+                    cmd.Parameters["@disc"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@authorStr", SqlDbType.VarChar, 500));
+                    cmd.Parameters["@authorStr"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@genreStr", SqlDbType.VarChar, 500));
+                    cmd.Parameters["@genreStr"].Direction = ParameterDirection.Output;
 
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required book id retrieved 
 
@@ -62,18 +68,30 @@ namespace DB_Project.Models
 
                     //call procedure from db
                     SqlCommand cmd2 = new SqlCommand();
-                    cmd2.CommandText = "CalculateAverageRating";
-                    cmd2.Connection = Server;
-                    cmd2.CommandType = System.Data.CommandType.StoredProcedure;
+                    try
+                    {
 
-                    //procedure paras
-                    cmd2.Parameters.Add(new SqlParameter("@ITEMID", id));
-                    cmd2.Parameters.Add(new SqlParameter("@avg", SqlDbType.Int));
-                    cmd2.Parameters["@avg"].Direction = ParameterDirection.Output;
-                    cmd2.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                    cmd2.Parameters["@flag"].Direction = ParameterDirection.Output;
+                        cmd2.CommandText = "CalculateAverageRating";
+                        cmd2.Connection = Server;
+                        cmd2.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    cmd2.ExecuteNonQuery();  //run procedure
+                        //procedure paras
+                        cmd2.Parameters.Add(new SqlParameter("@ITEMID", id));
+                        cmd2.Parameters.Add(new SqlParameter("@avg", SqlDbType.Int));
+                        cmd2.Parameters["@avg"].Direction = ParameterDirection.Output;
+                        cmd2.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                        cmd2.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                        cmd2.ExecuteNonQuery();  //run procedure
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.Write("SQL Server Error" + ex);
+                    }
+                    finally
+                    {
+                        Server.Close();
+                    }
 
                     //intializing book obj 
                     getBook.BookID = id;
@@ -88,8 +106,6 @@ namespace DB_Project.Models
                     getBook.Authors = ((string)cmd.Parameters["@authorStr"].Value).Split(',').ToList<string>();
                     getBook.Genres = ((string)cmd.Parameters["@genreStr"].Value).Split(',').ToList<string>();
                     getBook.AverageRating = Convert.ToInt32(cmd2.Parameters["@avg"].Value);
-                   
-                    Server.Close();
 
                     return getBook;
                 }
@@ -104,21 +120,30 @@ namespace DB_Project.Models
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
                 ServerConnection.Open();
+                List<Book> BooksList = new List<Book>(); //store books objects for all books in db 
 
-                SqlCommand cmd = new SqlCommand();
-                DataTable sqlBooks = new DataTable(); //stores IDs of all books in db
-                List<Book> BooksList = new List<Book>(); //store books objects for all books in db            
-                SqlDataAdapter Data = new SqlDataAdapter("Select ItemID From [Books]", ServerConnection);
-                Data.Fill(sqlBooks);
-
-                foreach (DataRow row in sqlBooks.Rows)
+                try
                 {
-                    Book book = GetBook((int)row["ItemID"]);
-                    if (book != null)
-                        BooksList.Add(book);
-                }
+                    SqlCommand cmd = new SqlCommand();
+                    DataTable sqlBooks = new DataTable(); //stores IDs of all books in db                           
+                    SqlDataAdapter Data = new SqlDataAdapter("Select ItemID From [Books]", ServerConnection);
+                    Data.Fill(sqlBooks);
 
-                ServerConnection.Close();
+                    foreach (DataRow row in sqlBooks.Rows)
+                    {
+                        Book book = GetBook((int)row["ItemID"]);
+                        if (book != null)
+                            BooksList.Add(book);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return BooksList;
             }
@@ -153,22 +178,33 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "SearchBook";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //parameters
-                cmd.Parameters.Add(new SqlParameter("@namestr", search));
+                try
+                {
 
-                DataTable itemIDs = new DataTable(); //stores IDs      
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(itemIDs);  //get procedure result set
+                    //setting up command to call procedure
+                    cmd.CommandText = "SearchBook";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                foreach (DataRow row in itemIDs.Rows)
-                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    //parameters
+                    cmd.Parameters.Add(new SqlParameter("@namestr", search));
 
-                ServerConnection.Close();
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return books;
             }
@@ -182,31 +218,42 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "SearchByAuthor";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //parameters
-                cmd.Parameters.Add(new SqlParameter("@authstr", search));
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();
-
-                int Flag = (int)cmd.Parameters["@flag"].Value;
-
-                if (Flag == 1)
+                try
                 {
-                    DataTable itemIDs = new DataTable(); //stores IDs      
-                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                    Data.Fill(itemIDs);  //get procedure result set
+                    //setting up command to call procedure
+                    cmd.CommandText = "SearchByAuthor";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    foreach (DataRow row in itemIDs.Rows)
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    //parameters
+                    cmd.Parameters.Add(new SqlParameter("@authstr", search));
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();
+
+                    int Flag = (int)cmd.Parameters["@flag"].Value;
+
+                    if (Flag == 1)
+                    {
+                        DataTable itemIDs = new DataTable(); //stores IDs      
+                        SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                        Data.Fill(itemIDs);  //get procedure result set
+
+                        foreach (DataRow row in itemIDs.Rows)
+                            books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
                 }
 
-                ServerConnection.Close();
                 return books;
             }
         }
@@ -219,32 +266,42 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "SearchByGenre";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //parameters
-                cmd.Parameters.Add(new SqlParameter("@genre", search));
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();
-
-                int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
-
-                if (Flag == 1)
+                try
                 {
-                    DataTable itemIDs = new DataTable(); //stores IDs      
-                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                    Data.Fill(itemIDs);  //get procedure result set
+                    //setting up command to call procedure
+                    cmd.CommandText = "SearchByGenre";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    foreach (DataRow row in itemIDs.Rows)
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    //parameters
+                    cmd.Parameters.Add(new SqlParameter("@genre", search));
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
+                    cmd.ExecuteNonQuery();
+
+                    int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
+
+                    if (Flag == 1)
+                    {
+                        DataTable itemIDs = new DataTable(); //stores IDs      
+                        SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                        Data.Fill(itemIDs);  //get procedure result set
+
+                        foreach (DataRow row in itemIDs.Rows)
+                            books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
                 }
 
-                ServerConnection.Close();
                 return books;
             }
         }
@@ -257,31 +314,41 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "SearchByCategory";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //parameters
-                cmd.Parameters.Add(new SqlParameter("@cat", search));
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();
-
-                int Flag = (int)cmd.Parameters["@flag"].Value;
-
-                if (Flag == 1)
+                try
                 {
-                    DataTable itemIDs = new DataTable(); //stores IDs      
-                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                    Data.Fill(itemIDs);  //get procedure result set
+                    //setting up command to call procedure
+                    cmd.CommandText = "SearchByCategory";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    foreach (DataRow row in itemIDs.Rows)
-                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    //parameters
+                    cmd.Parameters.Add(new SqlParameter("@cat", search));
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();
+
+                    int Flag = (int)cmd.Parameters["@flag"].Value;
+
+                    if (Flag == 1)
+                    {
+                        DataTable itemIDs = new DataTable(); //stores IDs      
+                        SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                        Data.Fill(itemIDs);  //get procedure result set
+
+                        foreach (DataRow row in itemIDs.Rows)
+                            books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
                 }
 
-                ServerConnection.Close();
                 return books;
             }
         }
@@ -294,27 +361,36 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "RecommendBooks";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    //setting up command to call procedure
+                    cmd.CommandText = "RecommendBooks";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //parameters
-                cmd.Parameters.Add(new SqlParameter("@uid", id));
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //parameters
+                    cmd.Parameters.Add(new SqlParameter("@uid", id));
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                DataTable itemIDs = new DataTable(); //stores IDs      
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(itemIDs);  //get procedure result set
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
 
-                int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
+                    int Flag = (int)cmd.Parameters["@flag"].Value;  //check if required order id found
 
-                if (Flag == 1)                                
-                    foreach (DataRow row in itemIDs.Rows)                   
-                        books.Add(BookCRUD.GetBook((int)row["ID"]));                                    
-
-                ServerConnection.Close();
+                    if (Flag == 1)
+                        foreach (DataRow row in itemIDs.Rows)
+                            books.Add(BookCRUD.GetBook((int)row["ID"]));
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return books;
             }
@@ -328,21 +404,30 @@ namespace DB_Project.Models
 
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //setting up command to call procedure
-                cmd.CommandText = "BestSellers";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                DataTable itemIDs = new DataTable(); //stores IDs      
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(itemIDs);  //get procedure result set
-
-                foreach (DataRow row in itemIDs.Rows)
+                try
                 {
-                    books.Add(BookCRUD.GetBook((int)row["ItemID"]));
-                }
+                    //setting up command to call procedure
+                    cmd.CommandText = "BestSellers";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                ServerConnection.Close();
+                    DataTable itemIDs = new DataTable(); //stores IDs      
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(itemIDs);  //get procedure result set
+
+                    foreach (DataRow row in itemIDs.Rows)
+                    {
+                        books.Add(BookCRUD.GetBook((int)row["ItemID"]));
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return books;
             }
@@ -356,51 +441,61 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "InsertBook";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
-                cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
-                cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
-                cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
-                cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
-                cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
-                cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
-
-                //passing table paras
-                DataTable authtable = new DataTable();
-                authtable.Columns.Add("auth", typeof(string));
-                foreach (string str in newBook.Authors)
+                try
                 {
-                    DataRow row = authtable.NewRow();
-                    row["auth"] = str;
-                    authtable.Rows.Add(row);
-                }
+                    cmd.CommandText = "InsertBook";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                DataTable gentable = new DataTable();
-                gentable.Columns.Add("auth", typeof(string));
-                foreach (string str in newBook.Genres)
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
+                    cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
+                    cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
+                    cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
+                    cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
+                    cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
+                    cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
+
+                    //passing table paras
+                    DataTable authtable = new DataTable();
+                    authtable.Columns.Add("auth", typeof(string));
+                    foreach (string str in newBook.Authors)
+                    {
+                        DataRow row = authtable.NewRow();
+                        row["auth"] = str;
+                        authtable.Rows.Add(row);
+                    }
+
+                    DataTable gentable = new DataTable();
+                    gentable.Columns.Add("auth", typeof(string));
+                    foreach (string str in newBook.Genres)
+                    {
+                        DataRow row = gentable.NewRow();
+                        row["auth"] = str;
+                        gentable.Rows.Add(row);
+                    }
+
+                    cmd.Parameters.Add(new SqlParameter("@auth", authtable));
+                    cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
+                    cmd.Parameters.Add(new SqlParameter("@gen", gentable));
+                    cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
+
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
                 {
-                    DataRow row = gentable.NewRow();
-                    row["auth"] = str;
-                    gentable.Rows.Add(row);
+                    Console.Write("SQL Server Error" + ex);
                 }
-
-                cmd.Parameters.Add(new SqlParameter("@auth", authtable));
-                cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
-                cmd.Parameters.Add(new SqlParameter("@gen", gentable));
-                cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
-
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();  //run procedure
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -414,53 +509,62 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdateBook";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@id", newBook.BookID));
-                cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
-                cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
-                cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
-                cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
-                cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
-                cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
-                cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
-                cmd.Parameters.Add(new SqlParameter("@disc", newBook.Discount));
-
-                //passing table paras
-                DataTable authtable = new DataTable();
-                authtable.Columns.Add("auth", typeof(string));
-                foreach (string str in newBook.Authors)
+                try
                 {
-                    DataRow row = authtable.NewRow();
-                    row["auth"] = str;
-                    authtable.Rows.Add(row);
-                }
+                    cmd.CommandText = "UpdateBook";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                DataTable gentable = new DataTable();
-                gentable.Columns.Add("auth", typeof(string));
-                foreach (string str in newBook.Genres)
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@id", newBook.BookID));
+                    cmd.Parameters.Add(new SqlParameter("@title", newBook.Title));
+                    cmd.Parameters.Add(new SqlParameter("@synp", newBook.Synopsis));
+                    cmd.Parameters.Add(new SqlParameter("@pub", newBook.Publisher));
+                    cmd.Parameters.Add(new SqlParameter("@cat", newBook.Category));
+                    cmd.Parameters.Add(new SqlParameter("@price", newBook.Price));
+                    cmd.Parameters.Add(new SqlParameter("@stock", newBook.Stock));
+                    cmd.Parameters.Add(new SqlParameter("@sub", newBook.SubStatus));
+                    cmd.Parameters.Add(new SqlParameter("@disc", newBook.Discount));
+
+                    //passing table paras
+                    DataTable authtable = new DataTable();
+                    authtable.Columns.Add("auth", typeof(string));
+                    foreach (string str in newBook.Authors)
+                    {
+                        DataRow row = authtable.NewRow();
+                        row["auth"] = str;
+                        authtable.Rows.Add(row);
+                    }
+
+                    DataTable gentable = new DataTable();
+                    gentable.Columns.Add("auth", typeof(string));
+                    foreach (string str in newBook.Genres)
+                    {
+                        DataRow row = gentable.NewRow();
+                        row["auth"] = str;
+                        gentable.Rows.Add(row);
+                    }
+
+                    cmd.Parameters.Add(new SqlParameter("@auth", authtable));
+                    cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
+                    cmd.Parameters.Add(new SqlParameter("@gen", gentable));
+                    cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
+
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
                 {
-                    DataRow row = gentable.NewRow();
-                    row["auth"] = str;
-                    gentable.Rows.Add(row);
+                    Console.Write("SQL Server Error" + ex);
                 }
-
-                cmd.Parameters.Add(new SqlParameter("@auth", authtable));
-                cmd.Parameters["@auth"].SqlDbType = SqlDbType.Structured;
-                cmd.Parameters.Add(new SqlParameter("@gen", gentable));
-                cmd.Parameters["@gen"].SqlDbType = SqlDbType.Structured;
-
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();  //run procedure
-
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -474,22 +578,32 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdatePrice";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UpdatePrice";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@id", id));
-                cmd.Parameters.Add(new SqlParameter("@price", newPrice));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+                    cmd.Parameters.Add(new SqlParameter("@price", newPrice));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -503,22 +617,31 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdatePrice";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UpdatePrice";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@id", id));
-                cmd.Parameters.Add(new SqlParameter("@stocks", newStock));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+                    cmd.Parameters.Add(new SqlParameter("@stocks", newStock));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
-
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -531,21 +654,31 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "DeleteBook";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "DeleteBook";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@id", id));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
