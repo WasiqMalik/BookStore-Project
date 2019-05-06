@@ -91,9 +91,20 @@ namespace DB_Project.Controllers
             return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
         }
 
+        public ActionResult RemoveOrder(int id)
+        {
+            if (OrderCRUD.DeleteOrder(id))
+                return Content("<script>alert('Order Deleted Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Order could not be found.');window.location.href=document.referrer</script>");
+        }
+
         public ActionResult Requests()
         {
-            return View(RequestCRUD.GetRequest((int)Session["UserID"]));
+            List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]);
+            AllRequests.RemoveAll(item => item.RequestStatus == "Resolved");
+
+            return View(AllRequests);
         }
 
         [HttpPost]
@@ -119,10 +130,13 @@ namespace DB_Project.Controllers
 
         public ActionResult History()
         {
-            List<Order> orders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
-            orders.RemoveAll(item => item.OrderStatus != "Delivered");
+            List<Order> AllOrders = OrderCRUD.GetUserOrders((int)Session["UserID"]);
+            List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]);
 
-            return View(orders);
+            AllOrders.RemoveAll(item => item.OrderStatus != "Delivered");
+            AllRequests.RemoveAll(item => item.RequestStatus != "Resolved");
+
+            return View(new Tuple<List<Order>, List<Request>>(AllOrders, AllRequests));
         }
 
         //Books related methods

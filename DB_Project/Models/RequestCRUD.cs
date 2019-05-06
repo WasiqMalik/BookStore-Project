@@ -9,8 +9,8 @@ namespace DB_Project.Models
 {
     public class RequestCRUD
     {
-        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static bool CreateRequest(Request newRequest)
         {
@@ -42,7 +42,7 @@ namespace DB_Project.Models
             }
         }
 
-        public static bool UpdateRequest(int reqid)
+        public static bool UpdateRequest(int reqid, string rstat)
         {
             using (SqlConnection ServerConnection = new SqlConnection(ConnectionString))
             {
@@ -50,12 +50,13 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "update_Request_Status";
+                cmd.CommandText = "UpdateRequestStatus";
                 cmd.Connection = ServerConnection;
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 //passing parameters to procedure
                 cmd.Parameters.Add(new SqlParameter("@requestID", reqid));
+                cmd.Parameters.Add(new SqlParameter("@rstatus", rstat));
 
                 //passing output para
                 cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));

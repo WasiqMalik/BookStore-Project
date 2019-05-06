@@ -46,20 +46,19 @@
         <h3 class="divheading text-center">Account Info</h3>
         <hr class="hunderline" />
 
-        <p>Email : @Model.Email <p>
+        <p><strong>Email : </strong>@Model.Email <p>
             <button href="#" type="button" class="btn btn-info" onclick="PasswordChangefunction(@Model.UserID)">Change Password</button>
 
 
             <h3 class="divheading text-center">Personal Info</h3>
             <hr class="hunderline" />
 
-        <p>Name : @Model.Username </p>
-        <p>Email : @Model.Email </p>
-        <p>Gender : @Model.Gender </p>
-        <p>Address : @Model.Address</p>
-        <p>Contact : @Model.ContactNo</p>
-        <p>DateJoined : @Model.DateJoined</p>
-        <p>Account Status : @Model.AccStatus</p>
+        <p><strong>Name : </strong>@Model.Username </p>
+        <p><strong>Gender : </strong>@Model.Gender </p>
+        <p><strong>Address : </strong>@Model.Address</p>
+        <p><strong>Contact : </strong>@Model.ContactNo</p>
+        <p><strong>DateJoined : </strong>@Model.DateJoined</p>
+        <p><strong>Account Status : </strong>@Model.AccStatus</p>
         <button href="#" type="button" class="btn btn-success" onclick="EditInfofunction(@Model.UserID)">Edit Info</button>
         <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("DeleteAccount", "User")'">Delete Account</button>
 
@@ -68,7 +67,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Change Password</h3>
+                        <h3 class="modal-title divheading col-12 text-center">Change Password</h3>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body" id="changePasswordModalBodyDiv1">
@@ -81,7 +80,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Edit Profile Info</h3>
+                        <h3 class="modal-title divheading col-12 text-center">Edit Profile Info</h3>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body" id="editInfoModalBodyDiv1">

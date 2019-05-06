@@ -5,16 +5,14 @@
         <div class="card-body">
             <form action="UpdateStatus" class="form needs-validation" role="form" autocomplete="off" method="post">
 
-                <div class="form-group">
-                    <input type="text" class="form-control" id="C_BookID" name="OrderID" value=@Model required />
-                </div>
+                    <input type="hidden" class="form-control" id="C_BookID" name="OrderID" value=@Model required />
 
                 <div>
                     <label for="OrderStatus">Status</label>
                     <input type="radio" name="OrderStatus" value="Placed" required>Placed
                     <input type="radio" name="OrderStatus" value="In Process">In Process
                     <input type="radio" name="OrderStatus" value="Dispatched">Dispatched
-                    <input type="radio" name="OrderStatus" value="Delieverd">Delieverd
+                    <input type="radio" name="OrderStatus" value="Delivered">Delivered
                     <div class="invalid-feedback">Select Option</div>
                 </div>
 

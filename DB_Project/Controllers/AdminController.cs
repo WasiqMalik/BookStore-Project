@@ -14,7 +14,7 @@ namespace DB_Project.Controllers
             List<Order> AllOrders = OrderCRUD.GetAllOrders();
             List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]); //pass admin id to get all requests
 
-            AllOrders.RemoveAll(item => item.OrderStatus == "Delievered"); //only keep undelievered orders
+            AllOrders.RemoveAll(item => item.OrderStatus == "Delivered"); //only keep undelievered orders
             AllRequests.RemoveAll(item => item.RequestStatus == "Resolved"); //only keep unresolved requests
 
             //display pending work to the admin docking page
@@ -154,7 +154,9 @@ namespace DB_Project.Controllers
 
         public ActionResult Order()
         {
-            return View(OrderCRUD.GetAllOrders());
+            List<Order> AllOrders = OrderCRUD.GetAllOrders();
+            AllOrders.RemoveAll(item => item.OrderStatus != "Delivered");
+            return View(AllOrders);
         }
 
         public ActionResult RemoveOrder(int id)
@@ -185,6 +187,30 @@ namespace DB_Project.Controllers
         public ActionResult OrderDetails(int id)
         {
             return PartialView("_OrderDetails", OrderCRUD.GetOrderItems(id));
+        }
+
+        public ActionResult Requests()
+        {
+            List<Request> AllRequests = RequestCRUD.GetRequest((int)Session["UserID"]); //pass admin id to get all requests
+            AllRequests.RemoveAll(item => item.RequestStatus != "Resolved"); //only keep unresolved requests
+            return View(AllRequests);
+        }
+
+        public ActionResult RequestStatus(int id)
+        {
+            return PartialView("_RequestStatus", id);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateRStatus(FormCollection collection)
+        {
+            int rid = Int32.Parse(collection["RequestID"]);
+            string status = collection["RequestStatus"];
+
+            if (RequestCRUD.UpdateRequest(rid, status))
+                return Content("<script>alert('Request Status has been Updated Successfully.');window.location.href=document.referrer;</script>");
+            else
+                return Content("<script>alert('Request Status could not be Updated.');window.location.href=document.referrer</script>");
         }
 
         public ActionResult BookSubscriptions(int id)
