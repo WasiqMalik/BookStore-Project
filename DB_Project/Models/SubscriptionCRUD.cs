@@ -8,8 +8,8 @@ namespace DB_Project.Models
 {
     public class SubscriptionCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //public static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static bool AddSubscription(int bid, int uid)
         {
@@ -19,22 +19,31 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "addSubscription";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "addSubscription";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", uid));
-                cmd.Parameters.Add(new SqlParameter("@itemid", bid));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", uid));
+                    cmd.Parameters.Add(new SqlParameter("@itemid", bid));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
-
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
 
@@ -49,20 +58,30 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UnSubscribe";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UnSubscribe";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", uid));
-                cmd.Parameters.Add(new SqlParameter("@itemid", bid));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", uid));
+                    cmd.Parameters.Add(new SqlParameter("@itemid", bid));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();
-
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
 
                 return Flag == 1;
@@ -78,26 +97,37 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "ItemsSubscribers";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@itemid", bid));
-
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
+                List<Account> UsersList = new List<Account>();
                 DataTable users = new DataTable(); //stores IDs returned by db
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(users);    //execute procedure
+                try
+                {
+                    cmd.CommandText = "ItemsSubscribers";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@itemid", bid));
+
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(users);    //execute procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
 
                 if (Flag == 1)
-                {
-                    List<Account> UsersList = new List<Account>();
+                {                   
                     foreach (DataRow row in users.Rows)
                     {
                         Account getAcc = AccountCRUD.GetAccount((int)row["SubscriberID"]);
@@ -119,26 +149,39 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UsersSubscription";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", uid));
-
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-
+                List<Book> BooksList = new List<Book>();
                 DataTable users = new DataTable(); //stores IDs returned by db
-                SqlDataAdapter Data = new SqlDataAdapter(cmd);
-                Data.Fill(users);    //execute procedure
+                try
+                {
+                    cmd.CommandText = "UsersSubscription";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", uid));
+
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+
+
+                    SqlDataAdapter Data = new SqlDataAdapter(cmd);
+                    Data.Fill(users);    //execute procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
 
                 if (Flag == 1) //if found
                 {
-                    List<Book> BooksList = new List<Book>();
+                    
                     foreach (DataRow row in users.Rows)
                     {
                         Book getBook = BookCRUD.GetBook((int)row["ItemID"]);

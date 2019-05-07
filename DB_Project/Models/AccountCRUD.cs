@@ -7,8 +7,8 @@ namespace DB_Project.Models
 {
     public class AccountCRUD
     {
-        //public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
-        static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
+        public static string ConnectionString = "data source=PAVILION14-BF1X; database=BookStore; integrated security = SSPI;";
+        //static string ConnectionString = "data source=DESKTOP-QGDLCC0; database=BookStore; integrated security = SSPI;";
 
         public static List<Account> GetAllUsers()
         {
@@ -17,18 +17,28 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                DataTable sqlUsers = new DataTable(); //stores IDs from db
-                List<Account> Users = new List<Account>(); //store objects for all items from db          
-                SqlDataAdapter Data = new SqlDataAdapter("Select UserID From [User]", ServerConnection);
-                Data.Fill(sqlUsers);
-
-                foreach (DataRow row in sqlUsers.Rows)
+                List<Account> Users = new List<Account>(); //store objects for all items from db    
+                try
                 {
-                    Account acc = GetAccount((int)row["UserID"]);
-                    if (acc != null)
-                        Users.Add(acc);
+                    DataTable sqlUsers = new DataTable(); //stores IDs from db                          
+                    SqlDataAdapter Data = new SqlDataAdapter("Select UserID From [User]", ServerConnection);
+                    Data.Fill(sqlUsers);
+
+                    foreach (DataRow row in sqlUsers.Rows)
+                    {
+                        Account acc = GetAccount((int)row["UserID"]);
+                        if (acc != null)
+                            Users.Add(acc);
+                    }
                 }
-                ServerConnection.Close();
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 return Users;
             }
@@ -40,39 +50,48 @@ namespace DB_Project.Models
             {
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //calling login procedure from db
-                cmd.CommandText = "GetUser";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    //calling login procedure from db
+                    cmd.CommandText = "GetUser";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", id));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", id));
 
-                //passing output variables to procedure
-                cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
-                cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char,1));
-                cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
-                cmd.Parameters["@conta"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 50));
-                cmd.Parameters["@Address"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@access", SqlDbType.VarChar, 5));
-                cmd.Parameters["@access"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@dJoined", SqlDbType.Date));
-                cmd.Parameters["@dJoined"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@email", SqlDbType.VarChar, 30));
-                cmd.Parameters["@email"].Direction = ParameterDirection.Output;
+                    //passing output variables to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
+                    cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@gen", SqlDbType.Char, 1));
+                    cmd.Parameters["@gen"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@conta", SqlDbType.Char, 13));
+                    cmd.Parameters["@conta"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@Address", SqlDbType.VarChar, 50));
+                    cmd.Parameters["@Address"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@access", SqlDbType.VarChar, 5));
+                    cmd.Parameters["@access"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@dJoined", SqlDbType.Date));
+                    cmd.Parameters["@dJoined"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@email", SqlDbType.VarChar, 30));
+                    cmd.Parameters["@email"].Direction = ParameterDirection.Output;
 
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
-
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 //get output values from procedure
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 if (Flag == 1)
                 {
@@ -99,29 +118,38 @@ namespace DB_Project.Models
             {
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //calling login procedure from db
-                cmd.CommandText = "LoginValidate";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    //calling login procedure from db
+                    cmd.CommandText = "LoginValidate";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@em", email));
-                cmd.Parameters.Add(new SqlParameter("@pa", password));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@em", email));
+                    cmd.Parameters.Add(new SqlParameter("@pa", password));
 
-                //passing output variables to procedure
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int));
-                cmd.Parameters["@uid"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@acc_pr", SqlDbType.VarChar, 5));
-                cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
-                cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
-                cmd.ExecuteNonQuery();  //run procedure
-                
+                    //passing output variables to procedure
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@uid", SqlDbType.Int));
+                    cmd.Parameters["@uid"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@acc_pr", SqlDbType.VarChar, 5));
+                    cmd.Parameters["@acc_pr"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(new SqlParameter("@uname", SqlDbType.VarChar, 30));
+                    cmd.Parameters["@uname"].Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 //get output values from procedure
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 if (Flag == 1)
                 {
@@ -133,7 +161,7 @@ namespace DB_Project.Models
                     return retAcc;
                 }
                 else
-                    return null;             
+                    return null;
             }
         }
 
@@ -143,27 +171,35 @@ namespace DB_Project.Models
             {
                 ServerConnection.Open();
                 SqlCommand cmd = new SqlCommand();
-                //calling signup procedure from db
-                cmd.CommandText = "Signup";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    //calling signup procedure from db
+                    cmd.CommandText = "Signup";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uname", newUser.Username));
-                cmd.Parameters.Add(new SqlParameter("@gender", newUser.Gender));
-                cmd.Parameters.Add(new SqlParameter("@cno", newUser.ContactNo));
-                cmd.Parameters.Add(new SqlParameter("@sadd", newUser.Address));
-                cmd.Parameters.Add(new SqlParameter("email", newUser.Email));
-                cmd.Parameters.Add(new SqlParameter("@psw", newUser.Password));
-                cmd.Parameters.Add(new SqlParameter("@acc_pr", "User"));
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uname", newUser.Username));
+                    cmd.Parameters.Add(new SqlParameter("@gender", newUser.Gender));
+                    cmd.Parameters.Add(new SqlParameter("@cno", newUser.ContactNo));
+                    cmd.Parameters.Add(new SqlParameter("@sadd", newUser.Address));
+                    cmd.Parameters.Add(new SqlParameter("email", newUser.Email));
+                    cmd.Parameters.Add(new SqlParameter("@psw", newUser.Password));
+                    cmd.Parameters.Add(new SqlParameter("@acc_pr", "User"));
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery(); //run procedure
-
+                    cmd.ExecuteNonQuery(); //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
-
 
                 return Flag == 1;
             }
@@ -177,27 +213,36 @@ namespace DB_Project.Models
 
                 //calling procedure from db
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdateUser";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UpdateUser";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", user.UserID));
-                cmd.Parameters.Add(new SqlParameter("@uname", user.Username));
-                cmd.Parameters.Add(new SqlParameter("@gen", user.Gender));
-                cmd.Parameters.Add(new SqlParameter("@conta", user.ContactNo));
-                cmd.Parameters.Add(new SqlParameter("@Address", user.Address));
-                cmd.Parameters.Add(new SqlParameter("@access", user.AccStatus));
-                cmd.Parameters.Add(new SqlParameter("@email", user.Email));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", user.UserID));
+                    cmd.Parameters.Add(new SqlParameter("@uname", user.Username));
+                    cmd.Parameters.Add(new SqlParameter("@gen", user.Gender));
+                    cmd.Parameters.Add(new SqlParameter("@conta", user.ContactNo));
+                    cmd.Parameters.Add(new SqlParameter("@Address", user.Address));
+                    cmd.Parameters.Add(new SqlParameter("@access", user.AccStatus));
+                    cmd.Parameters.Add(new SqlParameter("@email", user.Email));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
-
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -210,22 +255,31 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "Changestatus";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "Changestatus";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", id));
-                cmd.Parameters.Add(new SqlParameter("@str", newAccess));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", id));
+                    cmd.Parameters.Add(new SqlParameter("@str", newAccess));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
-
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -238,22 +292,32 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "UpdatePassword";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "UpdatePassword";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", id));
-                cmd.Parameters.Add(new SqlParameter("@newpass", newPass));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", id));
+                    cmd.Parameters.Add(new SqlParameter("@newpass", newPass));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
@@ -266,21 +330,31 @@ namespace DB_Project.Models
                 ServerConnection.Open();
 
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "DeleteUser";
-                cmd.Connection = ServerConnection;
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                try
+                {
+                    cmd.CommandText = "DeleteUser";
+                    cmd.Connection = ServerConnection;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                //passing parameters to procedure
-                cmd.Parameters.Add(new SqlParameter("@uid", id));
+                    //passing parameters to procedure
+                    cmd.Parameters.Add(new SqlParameter("@uid", id));
 
-                //passing output para
-                cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
-                cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
+                    //passing output para
+                    cmd.Parameters.Add(new SqlParameter("@flag", SqlDbType.Int));
+                    cmd.Parameters["@flag"].Direction = ParameterDirection.Output;
 
-                cmd.ExecuteNonQuery();  //run procedure
+                    cmd.ExecuteNonQuery();  //run procedure
+                }
+                catch (SqlException ex)
+                {
+                    Console.Write("SQL Server Error" + ex);
+                }
+                finally
+                {
+                    ServerConnection.Close();
+                }
 
                 int Flag = (int)cmd.Parameters["@flag"].Value;
-                ServerConnection.Close();
 
                 return Flag == 1;
             }
